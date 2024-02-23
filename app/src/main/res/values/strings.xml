@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BudgetBuddy</string>
+    <string name="channel_name">Canal de notificaciones BudgetBuddy</string>
+    <string name="channel_description">Aquí te informaremos de tus acciones en la aplicación.</string>
 </resources>
