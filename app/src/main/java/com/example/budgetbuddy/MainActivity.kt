@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,19 +17,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.navigation.MyAppNavigation
 import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
+
     val appViewModel by viewModels<AppViewModel>()
     companion object{
         const val CHANNEL_ID = "BudgetBuddy"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("BudgetBuddy", "Init")
         super.onCreate(savedInstanceState)
         createNotificationChannel()
+        Log.d("BudgetBuddy", "Notificaciones")
         setContent {
             BudgetBuddyTheme {
                 // A surface container using the 'background' color from the theme
@@ -37,10 +47,22 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NotificationPermission()
-                    MyAppNavigation(appViewModel = appViewModel)
+                    val navController: NavHostController = rememberNavController()
+                    MyAppNavigation(
+                        appViewModel = appViewModel
+                    )
                 }
             }
         }
+
+    }
+    private fun cambiarIdioma(codigo: String){
+        resources.configuration.setLocale(Locale(codigo))
+        resources.updateConfiguration(resources.configuration, resources.displayMetrics)
+
+        resources.configuration.locale = Locale(codigo)
+        resources.updateConfiguration(resources.configuration, resources.displayMetrics)
+        Log.d("CAMBIOOOOOOOOOOOOOOO", "CAMBIOOOOOOOOOOOOOOO")
     }
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

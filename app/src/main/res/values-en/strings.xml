@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BudgetBuddy</string>
+    <string name="channel_name">BudgetBuddy notification channel</string>
+    <string name="channel_description">Here we will give app related notifications</string>
+
+    <string name="app_description">We welcome you to our expense management platform.\n\n
+         We are excited that you have decided to join us.\n\n
+         In BudgetBuddy, you will be able to view and monitor your expenses efficiently.
+         Explore our powerful management tools and maintain complete control over costs and resources.</string>
+
+    <string name="list_explain">This is your list of expenses for today:</string>
+    <string name="cantidad"> Quantity: $1%d €</string>
+
+    <string name="change_lang">Change language to:</string>
+
+    <string name="back">Go back</string>
+    <string name="menu">Menu</string>
+    <string name="infor">Information</string>
+    <string name="ok">OK</string>
+</resources>

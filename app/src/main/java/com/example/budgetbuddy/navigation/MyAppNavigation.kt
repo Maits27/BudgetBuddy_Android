@@ -22,11 +22,10 @@ fun MyAppNavigation(
         startDestination = AppScreens.PantallaPrincipal.route
     ) {
         composable(route = AppScreens.PantallaPrincipal.route){
-            PantallaPrincipal(navController, appViewModel)
+            PantallaPrincipal(navController, appViewModel, modifier)
         }
         composable(route = AppScreens.SegundaPantalla.route){
-            SegundaPantalla(navController, appViewModel)
+            SegundaPantalla(navController, appViewModel, modifier)
         }
-
     }
 }

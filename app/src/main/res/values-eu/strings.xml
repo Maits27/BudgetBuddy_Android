@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BudgetBuddy</string>
+    <string name="channel_name">BudgetBuddy notifikazio kanala</string>
+    <string name="channel_description">Hemen zure ekintzen berri emango dizugu aplikazioan.</string>
+
+    <string name="app_description">Ongietorria ematen dizugu gastuak kudeatzeko plataformara.\n\n
+         Pozik gaude gurekin bat egitea erabaki duzulako.\n\n
+         BudgetBuddy-n, zure gastuak modu eraginkorrean ikusi eta kontrolatu ahal izango dituzu.
+         Arakatu gure kudeaketa tresna indartsuak eta mantendu kostuen eta baliabideen kontrol osoa.</string>
+
+    <string name="list_explain">Hau da zure gaurko gastuen zerrenda:</string>
+    <string name="cantidad"> Zenbatekoa: $1%d €</string>
+
+    <string name="change_lang">Aldatu hizkuntza:</string>
+
+    <string name="back">Atzera</string>
+    <string name="menu">Menua</string>
+    <string name="infor">Informazioa</string>
+    <string name="ok">OK</string>
+</resources>

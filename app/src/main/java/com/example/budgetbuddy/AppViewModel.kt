@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.budgetbuddy.Data.Gasto
+import com.example.budgetbuddy.Data.Idioma
 
 class AppViewModel: ViewModel() {
 
-    var id by mutableStateOf(0)
+    var idioma by mutableStateOf(Idioma.ES)
+        private set
     var listadoGastos: MutableList<Gasto> = mutableListOf()
         private set
 
@@ -29,6 +31,13 @@ class AppViewModel: ViewModel() {
         return gasto
     }
 
+    fun cambiarIdioma(code:String){
+        for (i in Idioma.entries){
+            if (code == i.code) {
+                idioma = i
+            }
+        }
+    }
 
 }
 
