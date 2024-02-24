@@ -2,4 +2,8 @@
     <string name="app_name">BudgetBuddy</string>
     <string name="channel_name">Canal de notificaciones BudgetBuddy</string>
     <string name="channel_description">Aquí te informaremos de tus acciones en la aplicación.</string>
+
+    <string name="list_explain">Este es tu listado de gastos de hoy:</string>
+    <string name="cantidad"> Cantidad: $1%d €</string>
+
 </resources>
