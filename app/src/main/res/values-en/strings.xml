@@ -12,10 +12,15 @@
     <string name="list_explain">This is your list of expenses for today:</string>
     <string name="cantidad"> Quantity: $1%d €</string>
 
+    <string name="add_element">Add a new element:</string>
+    <string name="name_element">Name</string>
+    <string name="price_element">Prize (1,2€)</string>
+
     <string name="change_lang">Change language to:</string>
 
     <string name="back">Go back</string>
     <string name="menu">Menu</string>
     <string name="infor">Information</string>
     <string name="ok">OK</string>
+    <string name="add">Add</string>
 </resources>

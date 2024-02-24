@@ -1,18 +1,15 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -31,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -43,21 +39,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Button
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Idioma
 import com.example.budgetbuddy.R
-import java.util.Locale
-import android.content.res.Resources
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.TopAppBar
+import androidx.navigation.NavHost
+import com.example.budgetbuddy.navigation.AppScreens
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -75,8 +71,9 @@ fun BodyContent(navController: NavController, appViewModel: AppViewModel, modifi
     var showLang by rememberSaveable { mutableStateOf(false) }
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        floatingActionButton = { AddButton{navController.navigate(AppScreens.SegundaPantalla.route)} },
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(text = stringResource(id = R.string.app_name))},
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -93,21 +90,6 @@ fun BodyContent(navController: NavController, appViewModel: AppViewModel, modifi
                     }
                 },
                 actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = stringResource(id = R.string.menu),
-                            tint = Color.White
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                actions = {
                     IconButton( onClick = { showInfo = true } ){
                         Icon(
                             Icons.Filled.Info,
@@ -122,10 +104,27 @@ fun BodyContent(navController: NavController, appViewModel: AppViewModel, modifi
                             tint = Color.White
                         )
                     }
-                }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = stringResource(id = R.string.menu),
+                            tint = Color.White
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
             )
             Informacion(showInfo) { showInfo = false }
             Idiomas(showLang, appViewModel){ showLang = false }
+        },
+        bottomBar = {
+            BottomNavigation (
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.tertiary,
+            ){
+                //TODO
+            }
+
         }
     ){ innerPadding ->
         ScrollContent(innerPadding, appViewModel, modifier)
@@ -163,6 +162,8 @@ fun ScrollContent(innerPadding: PaddingValues, appViewModel: AppViewModel, modif
                 }
             }
         }
+
+
         /*  TODO:
              Uso de ListView+CardView personalizado o de RecyclerView+CardView
              para mostrar listados de elementos con diferentes características.
@@ -175,6 +176,8 @@ fun ScrollContent(innerPadding: PaddingValues, appViewModel: AppViewModel, modif
              el uso de Fragments (1 punto).
         * */
     }
+
+
 }
 
 @Composable
@@ -205,7 +208,9 @@ fun Idiomas(show: Boolean, appViewModel: AppViewModel, onConfirm: () -> Unit) {
             title = { Text(text = stringResource(id = R.string.change_lang)) },
             text = {
                 Column (
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ){
@@ -222,5 +227,17 @@ fun Idiomas(show: Boolean, appViewModel: AppViewModel, onConfirm: () -> Unit) {
                 }
             }
         )
+    }
+}
+
+@Composable
+fun AddButton(onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onClick() },
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.tertiary,
+        shape = CircleShape
+    ) {
+        Icon(Icons.Filled.Add, stringResource(id = R.string.add))
     }
 }

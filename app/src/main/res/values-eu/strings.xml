@@ -12,10 +12,15 @@
     <string name="list_explain">Hau da zure gaurko gastuen zerrenda:</string>
     <string name="cantidad"> Zenbatekoa: $1%d €</string>
 
+    <string name="add_element">Gehitu elementu bat:</string>
+    <string name="name_element">Gastuaren izena</string>
+    <string name="price_element">Zenbatekoa eurotan (1,2€)</string>
+
     <string name="change_lang">Aldatu hizkuntza:</string>
 
     <string name="back">Atzera</string>
     <string name="menu">Menua</string>
     <string name="infor">Informazioa</string>
     <string name="ok">OK</string>
+    <string name="add">Gehitu</string>
 </resources>
