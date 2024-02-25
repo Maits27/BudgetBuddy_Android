@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     val navController: NavHostController = rememberNavController()
                     MyAppNavigation(
                         appViewModel = appViewModel
-                    )
+                    ){code: String -> cambiarIdioma(code)}
                 }
             }
         }

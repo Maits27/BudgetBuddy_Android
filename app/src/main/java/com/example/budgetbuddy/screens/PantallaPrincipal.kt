@@ -57,7 +57,13 @@ import com.example.budgetbuddy.navigation.AppScreens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PantallaPrincipal(navController: NavController, appViewModel: AppViewModel, modifier: Modifier){
+fun PantallaPrincipal(
+    navController: NavController,
+    appViewModel: AppViewModel,
+    modifier: Modifier,
+    cambiarIdioma:(String) -> Unit
+){
+    cambiarIdioma(appViewModel.idioma.code)
     Scaffold {
         BodyContent(navController, appViewModel, modifier)
     }

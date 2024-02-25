@@ -14,7 +14,8 @@ import com.example.budgetbuddy.screens.SegundaPantalla
 fun MyAppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    appViewModel: AppViewModel
+    appViewModel: AppViewModel,
+    cambiarIdioma: (String) -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -22,7 +23,7 @@ fun MyAppNavigation(
         startDestination = AppScreens.PantallaPrincipal.route
     ) {
         composable(route = AppScreens.PantallaPrincipal.route){
-            PantallaPrincipal(navController, appViewModel, modifier)
+            PantallaPrincipal(navController, appViewModel, modifier){code: String -> cambiarIdioma(code)}
         }
         composable(route = AppScreens.SegundaPantalla.route){
             SegundaPantalla(navController, appViewModel, modifier)
