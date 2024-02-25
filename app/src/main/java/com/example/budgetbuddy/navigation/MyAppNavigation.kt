@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.screens.BodyContent
 import com.example.budgetbuddy.screens.PantallaPrincipal
 import com.example.budgetbuddy.screens.SegundaPantalla
 

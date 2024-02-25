@@ -52,6 +52,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.TopAppBar
 import androidx.navigation.NavHost
+import androidx.navigation.Navigation.findNavController
 import com.example.budgetbuddy.navigation.AppScreens
 
 
@@ -163,7 +164,7 @@ fun ScrollContent(innerPadding: PaddingValues, appViewModel: AppViewModel, modif
                         shape = CardDefaults.elevatedShape
                     ){
                         Text(text = it.nombre)
-                        Text(text = stringResource(id = R.string.cantidad, it.cantidad))
+                        Text(text = stringResource(id = R.string.cantidad, it.cantidad.toString()))
                     }
                 }
             }
