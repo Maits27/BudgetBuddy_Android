@@ -11,6 +11,9 @@
     <string name="list_explain">Este es tu listado de gastos de hoy:</string>
     <string name="cantidad"> Cantidad: %s€</string>
 
+    <string name="factura_init">La factura hasta la fecha es la siguiente:\n\n</string>
+    <string name="factura_total">Total: %s€</string>
+
     <string name="add_element">Añade un nuevo elemento:</string>
     <string name="name_element">Nombre del gasto</string>
     <string name="price_element">Cuantía en euros (1.2€)</string>
@@ -24,5 +27,6 @@
     <string name="infor">Información</string>
     <string name="ok">OK</string>
     <string name="error">Error</string>
+    <string name="delete">Borrar</string>
     <string name="add">Añadir</string>
 </resources>

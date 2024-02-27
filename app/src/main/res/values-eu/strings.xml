@@ -12,6 +12,9 @@
     <string name="list_explain">Hau da zure gaurko gastuen zerrenda:</string>
     <string name="cantidad"> Zenbatekoa: %s€</string>
 
+    <string name="factura_init">Orain arteko faktura hurrengoa da:\n\n</string>
+    <string name="factura_total">Totala: %s€</string>
+
     <string name="add_element">Gehitu elementu bat:</string>
     <string name="name_element">Gastuaren izena</string>
     <string name="price_element">Zenbatekoa eurotan (1.2€)</string>
@@ -25,5 +28,6 @@
     <string name="infor">Informazioa</string>
     <string name="ok">OK</string>
     <string name="error">Errorea</string>
+    <string name="delete">Ezabatu</string>
     <string name="add">Gehitu</string>
 </resources>

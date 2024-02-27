@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,9 @@ import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
 import com.example.budgetbuddy2.screens.MainView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
@@ -56,6 +60,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
     private fun cambiarIdioma(codigo: String){
         resources.configuration.setLocale(Locale(codigo))
         resources.updateConfiguration(resources.configuration, resources.displayMetrics)

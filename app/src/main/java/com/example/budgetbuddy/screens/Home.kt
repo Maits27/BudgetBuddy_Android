@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -47,14 +49,18 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -72,6 +78,13 @@ fun Home(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
+    val forceRefresh by appViewModel.forceRefresh.collectAsState()
+
+    // Actualiza la lista cuando forceRefresh cambia
+    if (forceRefresh) {
+        // Lógica para recargar la lista o realizar cualquier otra acción necesaria
+        appViewModel.refreshComplete() // Marcar como completado después de actualizar
+    }
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -88,15 +101,31 @@ fun Home(
             items(appViewModel.listadoGastos){
                 Card (
                     modifier = Modifier
-                        .fillMaxWidth().padding(3.dp),
+                        .fillMaxWidth()
+                        .padding(3.dp),
                     shape = CardDefaults.elevatedShape,
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
                 ){
-                    Column (
-                        modifier.padding(16.dp)
-                    ){
-                        Text(text = it.nombre)
-                        Text(text = stringResource(id = R.string.cantidad, it.cantidad))
+                    Row (
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column (
+                            modifier.padding(16.dp).weight(3f)
+                        ){
+                            Text(text = it.nombre)
+                            Text(text = stringResource(id = R.string.cantidad, it.cantidad))
+                        }
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            onClick = { appViewModel.borrarGasto(it) }
+                        ) {
+                            Icon(Icons.Filled.Delete, stringResource(id = R.string.add), tint = Color.Black)
+                        }
                     }
                 }
             }

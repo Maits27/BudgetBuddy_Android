@@ -9,6 +9,9 @@
         En BudgetBuddy, podrás ver y supervisar tus gastos de manera eficiente.
         Explora nuestras potentes herramientas de gestión y mantén un control total sobre los costos y recursos.</string>
 
+    <string name="factura_init">La factura hasta la fecha es la siguiente:\n\n</string>
+    <string name="factura_total">Total: %s€</string>
+
     <string name="list_explain">Este es tu listado de gastos de hoy:</string>
     <string name="cantidad"> Cantidad: %s€</string>
 
@@ -25,5 +28,6 @@
     <string name="infor">Información</string>
     <string name="ok">OK</string>
     <string name="error">Error</string>
+    <string name="delete">Borrar</string>
     <string name="add">Añadir</string>
 </resources>
