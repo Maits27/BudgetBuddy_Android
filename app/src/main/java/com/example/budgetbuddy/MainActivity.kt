@@ -21,8 +21,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.navigation.AppScreens
-import com.example.budgetbuddy.navigation.MyAppNavigation
 import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
+import com.example.budgetbuddy2.screens.MainView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import java.util.Locale
@@ -48,8 +48,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NotificationPermission()
                     val navController: NavHostController = rememberNavController()
-                    MyAppNavigation(
-                        appViewModel = appViewModel
+                    MainView(
+                        appViewModel = appViewModel,
+                        modifier = Modifier,
                     ){code: String -> cambiarIdioma(code)}
                 }
             }

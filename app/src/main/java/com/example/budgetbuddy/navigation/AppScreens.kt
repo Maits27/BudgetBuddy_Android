@@ -1,7 +1,8 @@
 package com.example.budgetbuddy.navigation
 
-sealed class AppScreens (val route: String) {
-    object PantallaPrincipal: AppScreens("pantalla_principal")
-    object SegundaPantalla: AppScreens("segunda_pantalla")
 
+sealed class AppScreens (val route: String) {
+    object Home: AppScreens("Home")
+    object Add: AppScreens("Add")
+    object Facturas: AppScreens("Facturas")
 }

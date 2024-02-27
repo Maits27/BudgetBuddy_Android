@@ -1,23 +1,17 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,27 +21,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.ErrorDeInsert
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.navigation.AppScreens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SegundaPantalla(navController: NavController, appViewModel: AppViewModel, modifier: Modifier){
+fun Add(
+    innerPadding: PaddingValues,
+    appViewModel: AppViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+){
     var nombre by remember { mutableStateOf("") }
     var euros by remember { mutableStateOf("") }
-    var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(false) }
     var isTextFieldFocused2 by remember { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
     var showError by rememberSaveable { mutableStateOf(false) }
+    var error_message by remember { mutableStateOf("") }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -102,7 +100,6 @@ fun SegundaPantalla(navController: NavController, appViewModel: AppViewModel, mo
                 if (nombre!="" && euros!=""){
                     if (euros.toDoubleOrNull() != null){
                         appViewModel.añadrirGasto(nombre, euros.toDouble())
-                        Log.d("Segunda pantalla", appViewModel.listadoGastos.toString())
                     }else{
                         showError = true
                         error_message = error_double
@@ -111,40 +108,16 @@ fun SegundaPantalla(navController: NavController, appViewModel: AppViewModel, mo
                     showError = true
                     error_message = error_insert
                 }
+                if(!showError){
+                    navController.navigateUp()
+                }
             },
             Modifier
                 .padding(8.dp, 16.dp)
         ) {
             Text(text = stringResource(id = R.string.add))
         }
-        Button(
-            onClick = {
-                navController.navigateUp()
-            },
-            Modifier
-                .padding(8.dp, 16.dp)
-        ) {
-            Text(text = stringResource(id = R.string.back))
-        }
+
         ErrorDeInsert(show = showError, mensaje = error_message) { showError = false }
-    }
-}
-
-
-@Composable
-fun ErrorDeInsert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
-    if(show){
-        AlertDialog(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-            onDismissRequest = {},
-            confirmButton = { TextButton(onClick = { onConfirm() }) {
-                Text(text = stringResource(id = R.string.ok))
-            }
-            },
-            title = { Text(text = stringResource(id = R.string.error), color = MaterialTheme.colorScheme.onError) },
-            text = {
-                Text(text = mensaje, color = MaterialTheme.colorScheme.onPrimary)
-            }
-        )
     }
 }
