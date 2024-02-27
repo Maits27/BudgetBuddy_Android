@@ -1,5 +1,6 @@
 package com.example.budgetbuddy
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,9 +15,16 @@ class AppViewModel: ViewModel() {
     var listadoGastos: MutableList<Gasto> = mutableListOf()
         private set
 
-    fun añadrirGasto(nombre: String, cantidad: Double){
+    init {
+        // Código a ejecutar al iniciar el ViewModel
+        for (cantidad in 1..10){
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad)
+        }
+        Log.d("appviewmodel", listadoGastos.toString())
+    }
+    fun añadirGasto(nombre: String, cantidad: Double){
         if (nombre != ""){
-            if (cantidad>0f){
+            if (cantidad>0.0){
                 listadoGastos.add(Gasto(nombre, cantidad))
             }
         }

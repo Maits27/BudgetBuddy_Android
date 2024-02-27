@@ -10,7 +10,7 @@
          Explore our powerful management tools and maintain complete control over costs and resources.</string>
 
     <string name="list_explain">This is your list of expenses for today:</string>
-    <string name="cantidad"> Quantity: $1%s €</string>
+    <string name="cantidad"> Quantity: %s€</string>
 
     <string name="add_element">Add a new element:</string>
     <string name="name_element">Name</string>

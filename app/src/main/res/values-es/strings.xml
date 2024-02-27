@@ -10,7 +10,7 @@
         Explora nuestras potentes herramientas de gestión y mantén un control total sobre los costos y recursos.</string>
 
     <string name="list_explain">Este es tu listado de gastos de hoy:</string>
-    <string name="cantidad"> Cantidad: $1%s €</string>
+    <string name="cantidad"> Cantidad: %s€</string>
 
     <string name="add_element">Añade un nuevo elemento:</string>
     <string name="name_element">Nombre del gasto</string>

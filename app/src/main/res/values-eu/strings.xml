@@ -10,7 +10,7 @@
          Arakatu gure kudeaketa tresna indartsuak eta mantendu kostuen eta baliabideen kontrol osoa.</string>
 
     <string name="list_explain">Hau da zure gaurko gastuen zerrenda:</string>
-    <string name="cantidad"> Zenbatekoa: $1%s €</string>
+    <string name="cantidad"> Zenbatekoa: %s€</string>
 
     <string name="add_element">Gehitu elementu bat:</string>
     <string name="name_element">Gastuaren izena</string>

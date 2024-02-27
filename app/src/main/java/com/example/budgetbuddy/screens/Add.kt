@@ -1,13 +1,18 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedTextField
@@ -33,24 +38,28 @@ import com.example.budgetbuddy.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Add(
-    innerPadding: PaddingValues,
     appViewModel: AppViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
     var nombre by remember { mutableStateOf("") }
-    var euros by remember { mutableStateOf("") }
+    var euros by rememberSaveable { mutableStateOf("") }
+    var error_message by remember { mutableStateOf("") }
+
     var isTextFieldFocused by remember { mutableStateOf(false) }
     var isTextFieldFocused2 by remember { mutableStateOf(false) }
     var showError by rememberSaveable { mutableStateOf(false) }
-    var error_message by remember { mutableStateOf("") }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Text(text = stringResource(id = R.string.add_element), Modifier.padding(16.dp))
+        Text(
+            text = stringResource(id = R.string.add_element),
+            Modifier.padding(16.dp)
+        )
         Divider()
 
         OutlinedTextField(
@@ -99,7 +108,7 @@ fun Add(
             onClick = {
                 if (nombre!="" && euros!=""){
                     if (euros.toDoubleOrNull() != null){
-                        appViewModel.añadrirGasto(nombre, euros.toDouble())
+                        appViewModel.añadirGasto(nombre, euros.toDouble())
                     }else{
                         showError = true
                         error_message = error_double

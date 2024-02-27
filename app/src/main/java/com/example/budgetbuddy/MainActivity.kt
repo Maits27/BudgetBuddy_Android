@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NotificationPermission()
-                    val navController: NavHostController = rememberNavController()
                     MainView(
                         appViewModel = appViewModel,
                         modifier = Modifier,
@@ -63,7 +62,6 @@ class MainActivity : ComponentActivity() {
 
         resources.configuration.locale = Locale(codigo)
         resources.updateConfiguration(resources.configuration, resources.displayMetrics)
-        Log.d("CAMBIOOOOOOOOOOOOOOO", "CAMBIOOOOOOOOOOOOOOO")
     }
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because

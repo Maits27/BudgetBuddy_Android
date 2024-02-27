@@ -2,6 +2,7 @@ package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
@@ -66,7 +68,6 @@ import com.example.budgetbuddy.R
 
 @Composable
 fun Home(
-    innerPadding: PaddingValues,
     appViewModel: AppViewModel,
     navController: NavController,
     modifier: Modifier = Modifier
@@ -82,17 +83,17 @@ fun Home(
         Divider()
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
         ){
             items(appViewModel.listadoGastos){
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.wrapContentSize()
+                Card (
+                    modifier = Modifier
+                        .fillMaxWidth().padding(3.dp),
+                    shape = CardDefaults.elevatedShape,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
                 ){
-                    Card (
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = CardDefaults.elevatedShape
+                    Column (
+                        modifier.padding(16.dp)
                     ){
                         Text(text = it.nombre)
                         Text(text = stringResource(id = R.string.cantidad, it.cantidad))
@@ -100,33 +101,7 @@ fun Home(
                 }
             }
         }
-
-
-        /*  TODO:
-             Uso de ListView+CardView personalizado o de RecyclerView+CardView
-             para mostrar listados de elementos con diferentes características.
-             Usar una base de datos local, para listar, añadir y modificar elementos
-             y características de cada elemento.
-             Uso de diálogos.
-             Usar notificaciones locales
-             Permitir que una misma funcionalidad se comporte de manera distinta
-             dependiendo de la orientación (o del tamaño) del dispositivo mediante
-             el uso de Fragments (1 punto).
-        * */
-    }
-
-
-}
-
-@Composable
-fun AddButton(onClick: () -> Unit) {
-    FloatingActionButton(
-        onClick = { onClick() },
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.tertiary,
-        shape = CircleShape
-    ) {
-        Icon(Icons.Filled.Settings, stringResource(id = R.string.add))
     }
 }
+
 

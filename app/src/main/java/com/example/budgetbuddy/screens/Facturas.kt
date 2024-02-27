@@ -8,7 +8,6 @@ import com.example.budgetbuddy.AppViewModel
 
 @Composable
 fun Facturas(
-    innerPadding: PaddingValues,
     appViewModel: AppViewModel,
     navController: NavController,
     modifier: Modifier = Modifier
