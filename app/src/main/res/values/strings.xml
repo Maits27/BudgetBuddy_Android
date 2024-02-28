@@ -13,6 +13,8 @@
 
     <string name="factura_init">La factura hasta la fecha es la siguiente:\n\n</string>
     <string name="factura_total">Total: %s€</string>
+    <string name="date_pick">Elige una fecha</string>
+    <string name="date">Fecha actual: %s</string>
 
     <string name="add_element">Añade un nuevo elemento:</string>
     <string name="name_element">Nombre del gasto</string>

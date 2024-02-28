@@ -1,6 +1,9 @@
 package com.example.budgetbuddy
 
+import android.os.Build
+import android.text.format.DateFormat
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,8 +13,14 @@ import com.example.budgetbuddy.Data.Idioma
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import kotlin.random.Random
 
+@RequiresApi(Build.VERSION_CODES.O)
 class AppViewModel: ViewModel() {
 
     private val _forceRefresh = MutableStateFlow(false)
@@ -21,6 +30,8 @@ class AppViewModel: ViewModel() {
 
     var idioma by mutableStateOf(Idioma.ES)
         private set
+    var fecha by mutableStateOf(LocalDate.now())
+    private set
     var listadoGastos: MutableList<Gasto> = mutableListOf()
         private set
 
@@ -31,14 +42,14 @@ class AppViewModel: ViewModel() {
     init {
         // Código a ejecutar al iniciar el ViewModel
         for (cantidad in 1..10){
-            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad)
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.now())
         }
-        Log.d("appviewmodel", listadoGastos.toString())
     }
-    fun añadirGasto(nombre: String, cantidad: Double){
+
+    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate){
         if (nombre != ""){
             if (cantidad>0.0){
-                listadoGastos.add(Gasto(nombre, cantidad))
+                listadoGastos.add(Gasto(nombre, cantidad, fecha))
             }
         }
     }
@@ -59,6 +70,9 @@ class AppViewModel: ViewModel() {
     }
     fun cambiarFactura(factura: String){
         facturaActual = factura
+    }
+    fun cambiarFecha(nueva_fecha: LocalDate){
+        fecha = nueva_fecha
     }
 
     fun cambiarIdioma(code:String){

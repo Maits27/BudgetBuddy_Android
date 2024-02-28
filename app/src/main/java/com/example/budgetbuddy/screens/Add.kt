@@ -1,6 +1,8 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -34,6 +36,8 @@ import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.ErrorDeInsert
 import com.example.budgetbuddy.R
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -42,12 +46,12 @@ fun Add(
     navController: NavController,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
-    var nombre by remember { mutableStateOf("") }
+    var nombre by rememberSaveable { mutableStateOf("") }
     var euros by rememberSaveable { mutableStateOf("") }
+    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var error_message by remember { mutableStateOf("") }
 
-    var isTextFieldFocused by remember { mutableStateOf(false) }
-    var isTextFieldFocused2 by remember { mutableStateOf(false) }
+    var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -68,7 +72,7 @@ fun Add(
             label = { Text(stringResource(id = R.string.name_element)) },
             keyboardActions = KeyboardActions(
                 onDone = {
-                    isTextFieldFocused = false
+                    isTextFieldFocused = -1
                     keyboardController?.hide()
                 }
             ),
@@ -76,7 +80,9 @@ fun Add(
                 .padding(16.dp)
                 .fillMaxWidth()
                 .onFocusChanged {
-                    isTextFieldFocused = it.isFocused
+                    if(it.isFocused){
+                        isTextFieldFocused = 0
+                    }
                 }
         )
         Divider()
@@ -89,7 +95,7 @@ fun Add(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    isTextFieldFocused2 = false
+                    isTextFieldFocused = -1
                     keyboardController?.hide()
                 }
             ),
@@ -97,9 +103,41 @@ fun Add(
                 .padding(16.dp)
                 .fillMaxWidth()
                 .onFocusChanged {
-                    isTextFieldFocused2 = it.isFocused
+                    if(it.isFocused){
+                        isTextFieldFocused = 1
+                    }
                 }
         )
+        OutlinedTextField(
+            value = "",
+            onValueChange = {
+                fecha = try {
+                    LocalDate.parse(it)
+                } catch (e: DateTimeParseException) {
+                    // Manejo de errores o asigna un valor predeterminado
+                    LocalDate.now()
+                }
+            },
+            label = { Text(stringResource(id = R.string.date_pick)) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    isTextFieldFocused = -1
+                    keyboardController?.hide()
+                }
+            ),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if(it.isFocused){
+                        isTextFieldFocused = 2
+                    }
+                }
+        )
+
 
         val error_double = stringResource(id = R.string.error_double)
         val error_insert = stringResource(id = R.string.error_insert)
@@ -108,7 +146,7 @@ fun Add(
             onClick = {
                 if (nombre!="" && euros!=""){
                     if (euros.toDoubleOrNull() != null){
-                        appViewModel.añadirGasto(nombre, euros.toDouble())
+                        appViewModel.añadirGasto(nombre, euros.toDouble(), fecha)
                     }else{
                         showError = true
                         error_message = error_double

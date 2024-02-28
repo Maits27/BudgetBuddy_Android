@@ -14,6 +14,8 @@
 
     <string name="factura_init">The bill up to now:\n\n</string>
     <string name="factura_total">Total: %s€</string>
+    <string name="date_pick">Choose a date</string>
+    <string name="date">Current date: %s</string>
 
     <string name="add_element">Add a new element:</string>
     <string name="name_element">Name</string>

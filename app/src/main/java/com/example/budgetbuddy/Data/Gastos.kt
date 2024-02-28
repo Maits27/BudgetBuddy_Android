@@ -1,4 +1,7 @@
 package com.example.budgetbuddy.Data
 
-data class Gasto(val nombre: String, val cantidad: Double)
+import java.time.LocalDate
+import java.util.Date
+
+data class Gasto(val nombre: String, val cantidad: Double, val fecha: LocalDate)
 

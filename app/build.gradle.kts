@@ -51,9 +51,12 @@ android {
 
 dependencies {
 
+//    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
     implementation("androidx.compose.material:material:1.6.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
