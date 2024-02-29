@@ -67,6 +67,7 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.time.LocalDate
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,9 +80,10 @@ fun MainView(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
-    var factura by rememberSaveable { mutableStateOf("") }
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
+    var showDownloadOk by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
+
 
     var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, LocalDate.now(), TipoGasto.Otros)) }
 
@@ -94,7 +96,8 @@ fun MainView(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 FloatButton( painterResource(id = R.drawable.download)) {
-                    saveToFile(context, "factura.txt", appViewModel.facturaActual)
+                    showDownloadOk = guardarDatosEnArchivo(appViewModel.facturaActual)
+                    showDownloadError = !showDownloadOk
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
                 FloatButton( painterResource(id = R.drawable.add)) {
@@ -272,29 +275,22 @@ fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHos
         }
     }
 }
-@RequiresApi(Build.VERSION_CODES.O)
-private fun saveToFile(context: Context, fileName: String, content: String) {
+private fun guardarDatosEnArchivo(datos: String): Boolean {
+    val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
+    return if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
+        val directorioDescargas = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val archivo = File(directorioDescargas, "Factura_${1}.txt")
 
-    try {
-        val root = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "BudgetBuddy")
-        if (!root.exists()) {
-            root.mkdirs()
+        try {
+            FileWriter(archivo).use { writer ->
+                writer.append("$datos")
+            }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
         }
-
-        val file = File(root, fileName)
-        val writer = FileWriter(file)
-        writer.append(content)
-        writer.flush()
-        writer.close()
-
-        // Notificar al usuario que la descarga fue exitosa
-        // Puedes utilizar un Toast o cualquier otro método de notificación
-
-    } catch (e: IOException) {
-        e.printStackTrace()
-
-        // Notificar al usuario que hubo un error en la descarga
-        // Puedes utilizar un Toast o cualquier otro método de notificación
+    } else {
+        false
     }
 }
-

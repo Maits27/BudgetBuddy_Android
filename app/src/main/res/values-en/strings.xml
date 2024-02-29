@@ -26,6 +26,7 @@
 
     <string name="gasto_dia">Total expense of the month (%s)</string>
     <string name="gasto_tipo">Total expenses for each type</string>
+    <string name="no_data">No data</string>
 
     <string name="change_lang">Change language to:</string>
     <string name="error_insert">Write on every field</string>

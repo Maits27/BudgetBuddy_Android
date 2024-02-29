@@ -25,6 +25,7 @@
 
     <string name="gasto_dia">Gastos por día del mes (%s)</string>
     <string name="gasto_tipo">Gasto total de cada tipo</string>
+    <string name="no_data">No hay datos</string>
 
     <string name="change_lang">Cambia el idioma a:</string>
     <string name="error_insert">Escribe en todos los campos</string>

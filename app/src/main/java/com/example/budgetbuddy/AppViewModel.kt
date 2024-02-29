@@ -47,11 +47,11 @@ class AppViewModel: ViewModel() {
     /*INICIALIZAR DATOS*/
     init {
         // Código a ejecutar al iniciar el ViewModel
-        for (cantidad in 1..10){
+        for (cantidad in 1 until 10){
             añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad), TipoGasto.Comida)
-            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
-            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
-            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
+            añadirGasto("Gasto Inicial 1$cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
+            añadirGasto("Gasto Inicial 2$cantidad", 1.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
+            añadirGasto("Gasto Inicial 3$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
         }
         cambiarGastosFecha()
     }
@@ -165,8 +165,12 @@ class AppViewModel: ViewModel() {
         var datos = mutableMapOf<TipoGasto, Double>()
         var datosTipo = mutableListOf<GastoTipo>()
         for (gasto in listadoGastos){
-            var suma = datos.getOrDefault(gasto.tipo, 0.0)
-            datos[gasto.tipo] = suma + gasto.cantidad
+            if (gasto.fecha.monthValue == fecha.monthValue){
+                if (gasto.fecha.year == fecha.year) {
+                    var suma = datos.getOrDefault(gasto.tipo, 0.0)
+                    datos[gasto.tipo] = suma + gasto.cantidad
+                }
+            }
         }
         for ((type, value) in datos) {
             datosTipo.add(GastoTipo(value, type))

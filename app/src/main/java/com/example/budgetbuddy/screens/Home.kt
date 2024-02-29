@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -114,55 +115,73 @@ fun Home(
             appViewModel.cambiarFecha(it)
         }
         Divider()
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
-        ){
-            items(appViewModel.listadoGastosFecha){
-                Card (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(3.dp),
-                    shape = CardDefaults.elevatedShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
-                ){
-                    Row (
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column (
-                            modifier
-                                .padding(16.dp)
-                                .weight(3f)
-                        ){
-                            Text(text = it.nombre)
-                            Text(text = stringResource(id = R.string.cantidad, it.cantidad))
-                            Text(text = stringResource(id = R.string.tipo, it.tipo.tipo))
-                        }
-                        Button(
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent
-                            ),
-                            onClick = {
-                                onEdit(it)
-                                navController.navigate(AppScreens.Edit.route)
+        if(!appViewModel.listadoGastosFecha.isEmpty()){
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
+            ){
+                items(appViewModel.listadoGastosFecha){
+                    Card (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(3.dp),
+                        shape = CardDefaults.elevatedShape,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                    ){
+                        Row (
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column (
+                                modifier
+                                    .padding(16.dp)
+                                    .weight(3f)
+                            ){
+                                Text(text = it.nombre)
+                                Text(text = stringResource(id = R.string.cantidad, it.cantidad))
+                                Text(text = stringResource(id = R.string.tipo, it.tipo.tipo))
                             }
-                        ) {
-                            Icon(Icons.Filled.Create, stringResource(id = R.string.edit), tint = Color.Black)
-                        }
-                        Button(
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent
-                            ),
-                            onClick = { appViewModel.borrarGasto(it) }
-                        ) {
-                            Icon(Icons.Filled.Delete, stringResource(id = R.string.add), tint = Color.Black)
+                            Button(
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                onClick = {
+                                    onEdit(it)
+                                    navController.navigate(AppScreens.Edit.route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            ) {
+                                Icon(Icons.Filled.Create, stringResource(id = R.string.edit), tint = Color.Black)
+                            }
+                            Button(
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                onClick = { appViewModel.borrarGasto(it) }
+                            ) {
+                                Icon(Icons.Filled.Delete, stringResource(id = R.string.add), tint = Color.Black)
+                            }
                         }
                     }
                 }
+            }
+        }else{
+            Column (
+                modifier = Modifier
+                    .padding(vertical = 30.dp, horizontal = 10.dp)
+                    .height(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(text = stringResource(id = R.string.no_data))
             }
         }
     }

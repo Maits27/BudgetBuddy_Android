@@ -26,6 +26,7 @@
 
     <string name="gasto_dia">Hilabeteko gastuak (%s)</string>
     <string name="gasto_tipo">Mota bakoitzeko gastuak</string>
+    <string name="no_data">Ez dago daturik</string>
 
     <string name="change_lang">Aldatu hizkuntza:</string>
     <string name="error_insert">Gehitu datu guztiak</string>

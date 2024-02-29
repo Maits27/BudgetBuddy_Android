@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
@@ -71,31 +72,45 @@ fun Facturas(
     )
 
     Column (
-        modifier.padding(10.dp),
+        modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)))
-        Card (
-            shape = CardDefaults.outlinedShape,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background
-            ),
-            elevation = CardDefaults.cardElevation(pressedElevation = 4.dp),
-            border = BorderStroke(width = 2.dp, color = Color.DarkGray),
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = factura,
-                Modifier
-                    .padding(16.dp)
-                    .background(color = Color.Transparent),
-                color = Color.DarkGray)
+        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
+            modifier = Modifier.padding(16.dp))
+        if (!appViewModel.listadoGastosFecha.isEmpty()){
+            Card (
+                shape = CardDefaults.outlinedShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                ),
+                elevation = CardDefaults.cardElevation(pressedElevation = 4.dp),
+                border = BorderStroke(width = 2.dp, color = Color.DarkGray),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = factura,
+                    Modifier
+                        .padding(16.dp)
+                        .background(color = Color.Transparent),
+                    color = Color.DarkGray)
+            }
+        }else{
+            Column (
+                modifier = Modifier
+                    .padding(vertical = 30.dp, horizontal = 10.dp)
+                    .height(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(text = stringResource(id = R.string.no_data))
+            }
         }
         Button(
-            onClick = { showCalendar = true }
+            onClick = { showCalendar = true },
+            Modifier.padding(16.dp)
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
