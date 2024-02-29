@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -96,7 +97,7 @@ fun MainView(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 FloatButton( painterResource(id = R.drawable.download)) {
-                    showDownloadOk = guardarDatosEnArchivo(appViewModel.facturaActual)
+                    showDownloadOk = guardarDatosEnArchivo(appViewModel.facturaActual, appViewModel.fecha_txt())
                     showDownloadError = !showDownloadOk
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
@@ -275,22 +276,17 @@ fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHos
         }
     }
 }
-private fun guardarDatosEnArchivo(datos: String): Boolean {
+private fun guardarDatosEnArchivo(datos: String, nombre: String): Boolean {
     val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
-    return if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
+    if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
         val directorioDescargas = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val archivo = File(directorioDescargas, "Factura_${1}.txt")
+        val archivo = File(directorioDescargas, "Factura${nombre}.txt")
 
-        try {
-            FileWriter(archivo).use { writer ->
-                writer.append("$datos")
-            }
-            true
-        } catch (e: IOException) {
-            e.printStackTrace()
-            false
+
+        FileWriter(archivo).use { writer ->
+            writer.append(datos)
         }
-    } else {
-        false
+        Log.d("Download","Download")
     }
+    return true
 }

@@ -141,6 +141,10 @@ class AppViewModel: ViewModel() {
         return "${fecha.monthValue}/${fecha.year}"
     }
 
+    fun fecha_txt(fecha: LocalDate = this.fecha): String {
+        return "${fecha.dayOfMonth}_${fecha.monthValue}_${fecha.year}"
+    }
+
 
     /*PRINTEAR ELEMENTOS GRAFICOS*/
 

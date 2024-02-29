@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NotificationPermission()
+//                    FilePermission()
                     MainView(
                         appViewModel = appViewModel,
                         modifier = Modifier,
@@ -93,13 +94,24 @@ class MainActivity : ComponentActivity() {
 
 }
 
-    @OptIn(ExperimentalPermissionsApi::class)
-    @Composable
-    fun NotificationPermission(){
-        val permissionState = rememberPermissionState(
-            permission = android.Manifest.permission.POST_NOTIFICATIONS)
-        LaunchedEffect(true){
-            permissionState.launchPermissionRequest()
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun NotificationPermission(){
+    val permissionState = rememberPermissionState(
+        permission = android.Manifest.permission.POST_NOTIFICATIONS)
+    LaunchedEffect(true){
+        permissionState.launchPermissionRequest()
     }
+
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun FilePermission(){
+    val permissionState = rememberPermissionState(
+        permission = android.Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    LaunchedEffect(true){
+        permissionState.launchPermissionRequest()
+    }
+
+}
