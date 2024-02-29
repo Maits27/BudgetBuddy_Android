@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,9 +50,11 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.OutlinedTextField
@@ -69,6 +72,7 @@ import androidx.navigation.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.Calendario
 import com.example.budgetbuddy.R
 
 
@@ -78,27 +82,40 @@ fun Home(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
-    val forceRefresh by appViewModel.forceRefresh.collectAsState()
 
+    val forceRefresh by appViewModel.forceRefresh.collectAsState()
     // Actualiza la lista cuando forceRefresh cambia
     if (forceRefresh) {
         // Lógica para recargar la lista o realizar cualquier otra acción necesaria
         appViewModel.refreshComplete() // Marcar como completado después de actualizar
     }
+
+    var showCalendar by remember { mutableStateOf(false) }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
         Text(
-            text = stringResource(id = R.string.list_explain),
-            Modifier.padding(16.dp)
+            text = stringResource(id = R.string.list_explain, appViewModel.escribirFecha()),
+            Modifier.padding(top = 16.dp)
         )
+        Button(
+            onClick = { showCalendar = true },
+            Modifier.padding(10.dp)
+        ) {
+            Text(text = stringResource(id = R.string.date_pick))
+        }
+        Calendario(show = showCalendar, appViewModel = appViewModel) {
+            showCalendar = false
+            appViewModel.cambiarFecha(it)
+        }
         Divider()
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
         ){
-            items(appViewModel.listadoGastos){
+            items(appViewModel.listadoGastosFecha){
                 Card (
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,10 +129,13 @@ fun Home(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column (
-                            modifier.padding(16.dp).weight(3f)
+                            modifier
+                                .padding(16.dp)
+                                .weight(3f)
                         ){
                             Text(text = it.nombre)
                             Text(text = stringResource(id = R.string.cantidad, it.cantidad))
+                            Text(text = stringResource(id = R.string.tipo, it.tipo.tipo))
                         }
                         Button(
                             modifier = Modifier.weight(1f),
@@ -124,7 +144,16 @@ fun Home(
                             ),
                             onClick = { appViewModel.borrarGasto(it) }
                         ) {
-                            Icon(Icons.Filled.Delete, stringResource(id = R.string.add), tint = Color.Black)
+                            Icon(Icons.Filled.Create, stringResource(id = R.string.edit), tint = Color.Black)
+                        }
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            onClick = { appViewModel.borrarGasto(it) }
+                        ) {
+                            Icon(Icons.Filled.Delete, stringResource(id = R.string.delete), tint = Color.Black)
                         }
                     }
                 }

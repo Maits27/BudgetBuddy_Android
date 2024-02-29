@@ -9,10 +9,11 @@
          BudgetBuddy-n, zure gastuak modu eraginkorrean ikusi eta kontrolatu ahal izango dituzu.
          Arakatu gure kudeaketa tresna indartsuak eta mantendu kostuen eta baliabideen kontrol osoa.</string>
 
-    <string name="list_explain">Hau da zure gaurko gastuen zerrenda:</string>
+    <string name="list_explain">Hau da zure %s gastuen zerrenda:</string>
     <string name="cantidad"> Zenbatekoa: %s€</string>
+    <string name="tipo"> Mota: %s</string>
 
-    <string name="factura_init">Orain arteko faktura hurrengoa da:\n\n</string>
+    <string name="factura_init">%s faktura hurrengoa da:\n\n</string>
     <string name="factura_total">Totala: %s€</string>
     <string name="date_pick">Aukeratu data bat</string>
     <string name="date">Oraingo data: %s</string>
@@ -20,6 +21,11 @@
     <string name="add_element">Gehitu elementu bat:</string>
     <string name="name_element">Gastuaren izena</string>
     <string name="price_element">Zenbatekoa eurotan (1.2€)</string>
+
+    <string name="edit_element">Editatu elementua:</string>
+
+    <string name="gasto_dia">Hilabeteko gastuak (%s)</string>
+    <string name="gasto_tipo">Mota bakoitzeko gastuak</string>
 
     <string name="change_lang">Aldatu hizkuntza:</string>
     <string name="error_insert">Gehitu datu guztiak</string>
@@ -31,5 +37,6 @@
     <string name="ok">OK</string>
     <string name="error">Errorea</string>
     <string name="delete">Ezabatu</string>
+    <string name="edit">Editatu</string>
     <string name="add">Gehitu</string>
 </resources>

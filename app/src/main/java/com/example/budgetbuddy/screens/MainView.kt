@@ -1,8 +1,11 @@
 package com.example.budgetbuddy2.screens
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Environment
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -80,6 +84,7 @@ fun MainView(
     val navController = rememberNavController()
 
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
     val isVertical = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -87,7 +92,7 @@ fun MainView(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 FloatButton( painterResource(id = R.drawable.download)) {
-                    showDownloadError = !guardarDatosEnArchivo(appViewModel.facturaActual)
+                    saveToFile(context, "factura.txt", appViewModel.facturaActual)
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
                 FloatButton( painterResource(id = R.drawable.add)) {
@@ -136,7 +141,6 @@ fun MainView(
                     }
 
                 },
-                scrollBehavior = scrollBehavior,
             )
             Informacion(showInfo) { showInfo = false }
             Idiomas(showLang, appViewModel){ showLang = false }
@@ -147,10 +151,9 @@ fun MainView(
                     backgroundColor = MaterialTheme.colorScheme.secondary
                 ){
                     val items = listOf(
-                        Diseño(AppScreens.Facturas, "Facturas", painterResource(id = R.drawable.bill)),
+                        Diseño(AppScreens.Facturas, "Factura", painterResource(id = R.drawable.bill)),
                         Diseño(AppScreens.Home, "Home", painterResource(id = R.drawable.home)),
-                        Diseño(AppScreens.Dashboards, "Dashboards", painterResource(id = R.drawable.dashboard)),
-                        Diseño(AppScreens.Add, "Add", painterResource(id = R.drawable.add)),
+                        Diseño(AppScreens.Dashboards, "Metrics", painterResource(id = R.drawable.dashboard)),
                     )
 
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -193,7 +196,6 @@ fun MainView(
                 startDestination = AppScreens.Home.route
             ) {
                 composable(AppScreens.Home.route) { Home(appViewModel, navController) }
-                composable( AppScreens.Add.route) { Add(appViewModel, navController) }
                 composable( AppScreens.Facturas.route) { Facturas(appViewModel, navController) }
                 composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, navController) }
             }
@@ -263,22 +265,28 @@ fun NavHorizontal(innerPadding: PaddingValues, navController:NavHostController, 
         }
     }
 }
-private fun guardarDatosEnArchivo(datos: String): Boolean {
-    val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
-    return if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
-        val directorioDescargas = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val archivo = File(directorioDescargas, "Factura.txt")
+@RequiresApi(Build.VERSION_CODES.O)
+private fun saveToFile(context: Context, fileName: String, content: String) {
 
-        try {
-            FileWriter(archivo).use { writer ->
-                writer.append("$datos")
-            }
-            true
-        } catch (e: IOException) {
-            e.printStackTrace()
-            false
+    try {
+        val root = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "BudgetBuddy")
+        if (!root.exists()) {
+            root.mkdirs()
         }
-    } else {
-        false
+
+        val file = File(root, fileName)
+        val writer = FileWriter(file)
+        writer.append(content)
+        writer.flush()
+        writer.close()
+
+        // Notificar al usuario que la descarga fue exitosa
+        // Puedes utilizar un Toast o cualquier otro método de notificación
+
+    } catch (e: IOException) {
+        e.printStackTrace()
+
+        // Notificar al usuario que hubo un error en la descarga
+        // Puedes utilizar un Toast o cualquier otro método de notificación
     }
 }

@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -102,7 +103,7 @@ fun ErrorDeInsert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
             },
             title = { Text(text = stringResource(id = R.string.error), color = MaterialTheme.colorScheme.onError) },
             text = {
-                Text(text = mensaje, color = MaterialTheme.colorScheme.onPrimary)
+                Text(text = mensaje, color = Color.Black)
             }
         )
     }

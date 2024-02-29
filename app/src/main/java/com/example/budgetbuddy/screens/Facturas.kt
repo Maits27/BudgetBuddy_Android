@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,19 +54,28 @@ fun Facturas(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
+
+    val forceRefresh by appViewModel.forceRefresh.collectAsState()
+    // Actualiza la lista cuando forceRefresh cambia
+    if (forceRefresh) {
+        // Lógica para recargar la lista o realizar cualquier otra acción necesaria
+        appViewModel.refreshComplete() // Marcar como completado después de actualizar
+    }
+
     var fecha by rememberSaveable { mutableStateOf(appViewModel.fecha) }
     var showCalendar by remember { mutableStateOf(false) }
 
-    var factura = stringResource(id = R.string.factura_init)
-    factura += crearElementosFactura(appViewModel)
-    factura += stringResource(id = R.string.factura_total, appViewModel.gastoTotal().toString())
-    appViewModel.cambiarFactura(factura)
+    var factura = appViewModel.cambiarFactura(
+        stringResource(id = R.string.factura_init, "${appViewModel.escribirFecha(fecha)}"),
+        stringResource(id = R.string.factura_total, appViewModel.gastoTotalFecha().toString())
+    )
+
     Column (
         modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Text(text = stringResource(id = R.string.date, "${fecha.dayOfMonth}/${fecha.monthValue}/${fecha.year}"))
+        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)))
         Card (
             shape = CardDefaults.outlinedShape,
             colors = CardDefaults.cardColors(
@@ -84,7 +94,9 @@ fun Facturas(
                     .background(color = Color.Transparent),
                 color = Color.DarkGray)
         }
-        Button(onClick = { showCalendar = true }) {
+        Button(
+            onClick = { showCalendar = true }
+        ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
         Calendario(show = showCalendar, appViewModel = appViewModel) {
@@ -95,12 +107,5 @@ fun Facturas(
     }
 }
 
-private fun crearElementosFactura(appViewModel: AppViewModel): String{
-    var factura = ""
-    for (gasto in appViewModel.listadoGastos){
-        factura += "${gasto.nombre}:\t${gasto.cantidad}€\n"
-    }
-    return factura+"\n"
-}
 
 

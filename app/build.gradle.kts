@@ -52,6 +52,7 @@ android {
 dependencies {
 
 //    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation("com.github.tehras:charts:0.2.4-alpha")
 
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")

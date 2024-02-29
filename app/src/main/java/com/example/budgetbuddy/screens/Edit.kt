@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Calendario
+import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.ErrorDeInsert
 import com.example.budgetbuddy.R
@@ -59,21 +60,23 @@ import java.time.format.DateTimeParseException
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Add(
+fun Edit(
+    gasto: Gasto,
     appViewModel: AppViewModel,
     navController: NavController,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
-    var nombre by rememberSaveable { mutableStateOf("") }
-    var euros by rememberSaveable { mutableStateOf("") }
-    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
+    var nombre by rememberSaveable { mutableStateOf(gasto.nombre) }
+    var euros by rememberSaveable { mutableStateOf(gasto.cantidad.toString()) }
+    var fecha by rememberSaveable { mutableStateOf(gasto.fecha) }
+    var selectedOption by remember { mutableStateOf(gasto.tipo) }
+
     var error_message by remember { mutableStateOf("") }
 
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(TipoGasto.Otros) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -82,7 +85,7 @@ fun Add(
         verticalArrangement = Arrangement.Top
     ){
         Text(
-            text = stringResource(id = R.string.add_element),
+            text = stringResource(id = R.string.edit_element),
             Modifier.padding(16.dp)
         )
         Divider()
@@ -162,8 +165,6 @@ fun Add(
                 }
             }
         }
-
-
         OutlinedTextField(
             value = euros,
             onValueChange = { euros = it },
@@ -186,6 +187,7 @@ fun Add(
                     }
                 }
         )
+
         OutlinedTextField(
             value = fecha.toString(),
             onValueChange = {
@@ -227,7 +229,7 @@ fun Add(
             onClick = {
                 if (nombre!="" && euros!=""){
                     if (euros.toDoubleOrNull() != null){
-                        appViewModel.añadirGasto(nombre, euros.toDouble(), fecha, selectedOption)
+                        appViewModel.editarGasto(gasto, nombre, euros.toDouble(), fecha, selectedOption)
                     }else{
                         showError = true
                         error_message = error_double
@@ -243,7 +245,7 @@ fun Add(
             Modifier
                 .padding(8.dp, 16.dp)
         ) {
-            Text(text = stringResource(id = R.string.add))
+            Text(text = stringResource(id = R.string.edit))
         }
 
         ErrorDeInsert(show = showError, mensaje = error_message) { showError = false }

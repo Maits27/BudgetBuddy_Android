@@ -9,7 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.budgetbuddy.Data.Gasto
+import com.example.budgetbuddy.Data.GastoDia
+import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.Idioma
+import com.example.budgetbuddy.Data.TipoGasto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.security.MessageDigest
@@ -31,7 +34,9 @@ class AppViewModel: ViewModel() {
     var idioma by mutableStateOf(Idioma.ES)
         private set
     var fecha by mutableStateOf(LocalDate.now())
-    private set
+        private set
+    var listadoGastosFecha: MutableList<Gasto> = mutableListOf()
+        private set
     var listadoGastos: MutableList<Gasto> = mutableListOf()
         private set
 
@@ -39,25 +44,72 @@ class AppViewModel: ViewModel() {
         private set
 
 
+    /*INICIALIZAR DATOS*/
     init {
         // Código a ejecutar al iniciar el ViewModel
         for (cantidad in 1..10){
-            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.now())
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad), TipoGasto.Comida)
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
+            añadirGasto("Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
         }
+        cambiarGastosFecha()
     }
 
-    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate){
+    /*AÑADIR Y ELIMINAR ELEMENTOS*/
+
+    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo:TipoGasto){
         if (nombre != ""){
             if (cantidad>0.0){
-                listadoGastos.add(Gasto(nombre, cantidad, fecha))
+                listadoGastos.add(Gasto(nombre, cantidad, fecha, tipo))
             }
         }
+        cambiarFecha(fecha)
+        this.triggerRefresh()
     }
 
     fun borrarGasto(gasto: Gasto){
         listadoGastos.remove(gasto)
         this.triggerRefresh()
     }
+
+    private fun crearElementosFactura(): String{
+        var factura = ""
+        for (gasto in listadoGastosFecha){
+            factura += "${gasto.nombre} (${gasto.tipo.tipo}):\t\t${gasto.cantidad}€\n"
+        }
+        return factura+"\n"
+    }
+
+    /*EDITAR ELEMENTOS*/
+
+    fun cambiarFactura(init: String, end:String):String{
+        facturaActual = init+crearElementosFactura()+end
+        this.triggerRefresh()
+        return facturaActual
+    }
+    fun cambiarFecha(nueva_fecha: LocalDate){
+        fecha = nueva_fecha
+        cambiarGastosFecha()
+    }
+    private fun cambiarGastosFecha(){
+        listadoGastosFecha = mutableListOf()
+        for (gasto in listadoGastos){
+            if (gasto.fecha == fecha){
+                listadoGastosFecha.add(gasto)
+            }
+        }
+        this.triggerRefresh()
+    }
+
+    fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
+        listadoGastos.remove(gasto_previo)
+        añadirGasto(nombre, cantidad, fecha, tipo)
+        this.triggerRefresh()
+        cambiarGastosFecha()
+    }
+
+    /*CALCULAR ELEMENTOS*/
 
     fun gastoTotal(): Double{
         var gasto: Double = 0.0
@@ -68,12 +120,61 @@ class AppViewModel: ViewModel() {
         }
         return gasto
     }
-    fun cambiarFactura(factura: String){
-        facturaActual = factura
+
+    fun gastoTotalFecha(): Double{
+        var gasto: Double = 0.0
+        if (!listadoGastosFecha.isEmpty()){
+            for (g in listadoGastosFecha){
+                gasto = gasto + g.cantidad
+            }
+        }
+        return gasto
     }
-    fun cambiarFecha(nueva_fecha: LocalDate){
-        fecha = nueva_fecha
+
+    /*PRINTEAR ELEMENTOS*/
+
+    fun escribirFecha(fecha: LocalDate = this.fecha): String {
+        return "${fecha.dayOfMonth}/${fecha.monthValue}/${fecha.year}"
     }
+
+    fun escribirMesyAño(fecha: LocalDate = this.fecha): String {
+        return "${fecha.monthValue}/${fecha.year}"
+    }
+
+
+    /*PRINTEAR ELEMENTOS GRAFICOS*/
+
+    fun sacarDatosMes(): MutableList<GastoDia>{
+        var datos = mutableMapOf<LocalDate, Double>()
+        var datosMes = mutableListOf<GastoDia>()
+        for (gasto in listadoGastos){
+            if (gasto.fecha.monthValue == fecha.monthValue){
+                if (gasto.fecha.year == fecha.year){
+                    var suma = datos.getOrDefault(gasto.fecha, 0.0)
+                    datos[gasto.fecha] = suma + gasto.cantidad
+                }
+            }
+        }
+        for ((date, value) in datos) {
+            datosMes.add(GastoDia(value, date))
+        }
+        return datosMes
+    }
+
+    fun sacarDatosPorTipo(): MutableList<GastoTipo>{
+        var datos = mutableMapOf<TipoGasto, Double>()
+        var datosTipo = mutableListOf<GastoTipo>()
+        for (gasto in listadoGastos){
+            var suma = datos.getOrDefault(gasto.tipo, 0.0)
+            datos[gasto.tipo] = suma + gasto.cantidad
+        }
+        for ((type, value) in datos) {
+            datosTipo.add(GastoTipo(value, type))
+        }
+        return datosTipo
+    }
+
+    /*PREFERENCIAS*/
 
     fun cambiarIdioma(code:String){
         for (i in Idioma.entries){
@@ -82,6 +183,8 @@ class AppViewModel: ViewModel() {
             }
         }
     }
+
+    /*SEGURIDAD*/
 
     fun hashString(input: String, algorithm: String = "SHA-256"): String {
         val bytes = input.toByteArray()

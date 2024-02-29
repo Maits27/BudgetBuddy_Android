@@ -25,11 +25,11 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xff129d72), //Verde
+    primary = Color(0xff082e20), //Verde
     secondary = Color(0xff082e20), //Verde oscuro
     tertiary = Color(0xffDEFFE6), //Verde claro
     background = Color(0xfff3f4f7), //Gris
-    onPrimary = Color(0xff082e20), //Verde oscuro
+    onPrimary = Color.White, //Verde oscuro
     onSecondary = Color.White,
     onTertiary = Color(0xff082e20), //Verde oscuro
     primaryContainer = Color(0xff082e20), //Verde oscuro
