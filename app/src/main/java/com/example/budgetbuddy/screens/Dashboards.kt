@@ -91,7 +91,7 @@ fun Barras(
     BarChart(
         barChartData = BarChartData(barras),
         modifier = Modifier
-            .padding(30.dp)
+            .padding(vertical = 30.dp, horizontal = 10.dp)
             .height(300.dp),
         labelDrawer = SimpleValueDrawer(
             drawLocation = SimpleValueDrawer.DrawLocation.XAxis
@@ -136,7 +136,7 @@ fun LeyendaColores(colors: List<Color>, datosTipo: MutableList<GastoTipo>) {
                     Row(
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(4.dp).width(100.dp)
+                        modifier = Modifier.padding(4.dp).width(150.dp)
                     ) {
                         // Cuadrado de color
                         Box(

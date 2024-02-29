@@ -1,7 +1,6 @@
 package com.example.budgetbuddy2.screens
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Environment
@@ -16,12 +15,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +33,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -48,7 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -57,16 +53,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Diseño
+import com.example.budgetbuddy.Data.Gasto
+import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Idiomas
 import com.example.budgetbuddy.Informacion
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
+import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +82,8 @@ fun MainView(
     var factura by rememberSaveable { mutableStateOf("") }
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
+
+    var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, LocalDate.now(), TipoGasto.Otros)) }
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -153,6 +155,7 @@ fun MainView(
                     val items = listOf(
                         Diseño(AppScreens.Facturas, "Factura", painterResource(id = R.drawable.bill)),
                         Diseño(AppScreens.Home, "Home", painterResource(id = R.drawable.home)),
+                        Diseño(AppScreens.Add, "Add", painterResource(id = R.drawable.add)),
                         Diseño(AppScreens.Dashboards, "Metrics", painterResource(id = R.drawable.dashboard)),
                     )
 
@@ -187,7 +190,7 @@ fun MainView(
         }
     ){ innerPadding ->
         if (!isVertical){
-            NavHorizontal(innerPadding, navController, appViewModel)
+            NavHorizontal(gastoEditable, innerPadding, navController, appViewModel)
 
         }else{
             NavHost(
@@ -195,7 +198,9 @@ fun MainView(
                 navController = navController,
                 startDestination = AppScreens.Home.route
             ) {
-                composable(AppScreens.Home.route) { Home(appViewModel, navController) }
+                composable(AppScreens.Home.route) { Home(appViewModel, navController){gastoEditable = it} }
+                composable(AppScreens.Add.route){ Add(appViewModel, navController)}
+                composable(AppScreens.Edit.route){ Edit(gastoEditable, appViewModel, navController)}
                 composable( AppScreens.Facturas.route) { Facturas(appViewModel, navController) }
                 composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, navController) }
             }
@@ -217,7 +222,8 @@ fun FloatButton(icon: Painter, onClick: () -> Unit) {
 }
 
 @Composable
-fun NavHorizontal(innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+    var gastoEditable = gasto
     Row {
         Column(
             modifier = Modifier
@@ -258,8 +264,9 @@ fun NavHorizontal(innerPadding: PaddingValues, navController:NavHostController, 
             navController = navController,
             startDestination = AppScreens.Home.route
         ) {
-            composable(AppScreens.Home.route) { Home(appViewModel, navController) }
+            composable(AppScreens.Home.route) { Home(appViewModel, navController){gastoEditable = it} }
             composable(AppScreens.Add.route) { Add(appViewModel, navController) }
+            composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController) }
             composable(AppScreens.Facturas.route) { Facturas(appViewModel, navController) }
             composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, navController) }
         }
@@ -290,3 +297,4 @@ private fun saveToFile(context: Context, fileName: String, content: String) {
         // Puedes utilizar un Toast o cualquier otro método de notificación
     }
 }
+

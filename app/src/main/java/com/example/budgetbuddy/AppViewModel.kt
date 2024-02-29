@@ -58,18 +58,17 @@ class AppViewModel: ViewModel() {
 
     /*AÑADIR Y ELIMINAR ELEMENTOS*/
 
-    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo:TipoGasto){
-        if (nombre != ""){
-            if (cantidad>0.0){
-                listadoGastos.add(Gasto(nombre, cantidad, fecha, tipo))
-            }
-        }
+    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo:TipoGasto): Gasto{
+        val gasto = Gasto(nombre, cantidad, fecha, tipo)
+        listadoGastos.add(gasto)
         cambiarFecha(fecha)
         this.triggerRefresh()
+        return gasto
     }
 
     fun borrarGasto(gasto: Gasto){
         listadoGastos.remove(gasto)
+        cambiarGastosFecha()
         this.triggerRefresh()
     }
 
@@ -102,11 +101,12 @@ class AppViewModel: ViewModel() {
         this.triggerRefresh()
     }
 
-    fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
+    fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto): Gasto{
         listadoGastos.remove(gasto_previo)
-        añadirGasto(nombre, cantidad, fecha, tipo)
+        val gasto = añadirGasto(nombre, cantidad, fecha, tipo)
         this.triggerRefresh()
         cambiarGastosFecha()
+        return gasto
     }
 
     /*CALCULAR ELEMENTOS*/

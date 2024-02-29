@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
         resources.configuration.locale = Locale(codigo)
         resources.updateConfiguration(resources.configuration, resources.displayMetrics)
     }
+
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.

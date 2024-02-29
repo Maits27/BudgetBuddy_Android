@@ -73,14 +73,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Calendario
+import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.R
+import com.example.budgetbuddy.navigation.AppScreens
 
 
 @Composable
 fun Home(
     appViewModel: AppViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onEdit:(Gasto)->Unit,
 ){
 
     val forceRefresh by appViewModel.forceRefresh.collectAsState()
@@ -142,7 +145,10 @@ fun Home(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent
                             ),
-                            onClick = { appViewModel.borrarGasto(it) }
+                            onClick = {
+                                onEdit(it)
+                                navController.navigate(AppScreens.Edit.route)
+                            }
                         ) {
                             Icon(Icons.Filled.Create, stringResource(id = R.string.edit), tint = Color.Black)
                         }
@@ -153,7 +159,7 @@ fun Home(
                             ),
                             onClick = { appViewModel.borrarGasto(it) }
                         ) {
-                            Icon(Icons.Filled.Delete, stringResource(id = R.string.delete), tint = Color.Black)
+                            Icon(Icons.Filled.Delete, stringResource(id = R.string.add), tint = Color.Black)
                         }
                     }
                 }
