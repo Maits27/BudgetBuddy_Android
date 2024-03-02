@@ -1,11 +1,8 @@
 package com.example.budgetbuddy2.screens
 
-import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Environment
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -66,9 +63,7 @@ import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
 import java.io.File
 import java.io.FileWriter
-import java.io.IOException
 import java.time.LocalDate
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +72,7 @@ fun MainView(
     modifier: Modifier,
     cambiarIdioma:(String) -> Unit
 ){
-    cambiarIdioma(appViewModel.idioma.code)
+    cambiarIdioma(appViewModel.idioma().code)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
@@ -86,7 +81,7 @@ fun MainView(
     val navController = rememberNavController()
 
 
-    var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, LocalDate.now(), TipoGasto.Otros)) }
+    var gastoEditable by remember { mutableStateOf(Gasto("","", 0.0, appViewModel.fromLocalDate(LocalDate.now())?:"", TipoGasto.Otros)) }
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -97,7 +92,7 @@ fun MainView(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 FloatButton( painterResource(id = R.drawable.download)) {
-                    showDownloadOk = guardarDatosEnArchivo(appViewModel.facturaActual, appViewModel.fecha_txt())
+                    showDownloadOk = guardarDatosEnArchivo(appViewModel.factura(), appViewModel.fecha_txt())
                     showDownloadError = !showDownloadOk
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {

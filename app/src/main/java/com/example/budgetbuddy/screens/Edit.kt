@@ -60,7 +60,7 @@ fun Edit(
 ){
     var nombre by rememberSaveable { mutableStateOf(gasto.nombre) }
     var euros by rememberSaveable { mutableStateOf(gasto.cantidad.toString()) }
-    var fecha by rememberSaveable { mutableStateOf(gasto.fecha) }
+    var fecha by rememberSaveable { mutableStateOf(appViewModel.toLocalDate(gasto.fecha)?:LocalDate.now()) }
     var selectedOption by remember { mutableStateOf(gasto.tipo) }
 
     var error_message by remember { mutableStateOf("") }

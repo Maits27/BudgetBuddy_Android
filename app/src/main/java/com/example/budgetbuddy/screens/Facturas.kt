@@ -1,14 +1,9 @@
 package com.example.budgetbuddy2.screens
 
-import android.os.Build
-import android.os.Environment
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,36 +11,29 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Calendario
 import com.example.budgetbuddy.R
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.time.Instant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.ZoneId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +43,7 @@ fun Facturas(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
+    val coroutineScope = rememberCoroutineScope()
 
     val forceRefresh by appViewModel.forceRefresh.collectAsState()
     // Actualiza la lista cuando forceRefresh cambia
@@ -62,14 +51,21 @@ fun Facturas(
         // Lógica para recargar la lista o realizar cualquier otra acción necesaria
         appViewModel.refreshComplete() // Marcar como completado después de actualizar
     }
-
-    var fecha by rememberSaveable { mutableStateOf(appViewModel.fecha) }
+    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var showCalendar by remember { mutableStateOf(false) }
 
     var factura = appViewModel.cambiarFactura(
         stringResource(id = R.string.factura_init, "${appViewModel.escribirFecha(fecha)}"),
         stringResource(id = R.string.factura_total, appViewModel.gastoTotalFecha().toString())
     )
+    coroutineScope.launch(Dispatchers.IO) {
+        fecha =appViewModel.fecha()
+
+        var factura = appViewModel.cambiarFactura(
+            stringResource(id = R.string.factura_init, "${appViewModel.escribirFecha(fecha)}"),
+            stringResource(id = R.string.factura_total, appViewModel.gastoTotalFecha().toString())
+        )
+    }
 
     Column (
         modifier.fillMaxWidth(),
@@ -78,7 +74,7 @@ fun Facturas(
     ){
         Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
             modifier = Modifier.padding(16.dp))
-        if (!appViewModel.listadoGastosFecha.isEmpty()){
+        if (!appViewModel.todosLosGastosFecha().isEmpty()){
             Card (
                 shape = CardDefaults.outlinedShape,
                 colors = CardDefaults.cardColors(
