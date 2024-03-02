@@ -42,9 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.Calendario
 import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.ErrorDeInsert
 import com.example.budgetbuddy.R
 import java.time.LocalDate
 import java.time.format.DateTimeParseException

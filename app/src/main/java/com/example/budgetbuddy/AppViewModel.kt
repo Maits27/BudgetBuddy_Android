@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.TypeConverter
 import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
@@ -18,8 +19,14 @@ import com.example.budgetbuddy.Data.Idioma
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.navigation.AppScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,10 +35,7 @@ import kotlin.random.Random
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-    private val gastoRepository: IGastoRepository, //IGastoRepository -> App module
-//    private val gastoDiaRepository: GastoDiaRepository,
-//    private val gastoTipoRepository: GastoTipoRepository,
-//    private val preferenciasRepository: PreferenciasRepository,
+    private val gastoRepository: IGastoRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -42,31 +46,18 @@ class AppViewModel @Inject constructor(
 
     var facturaActual by mutableStateOf("")
         private set
+    val listadoGastosFecha = gastoRepository.elementosFecha(fecha)
 
-
-
-    private val _forceRefresh = MutableStateFlow(false)
-    val forceRefresh: StateFlow<Boolean>
-        get() = _forceRefresh
-
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-
-    @TypeConverter
-    fun fromLocalDate(date: LocalDate?): String? {
-        return date?.format(formatter)
-    }
-
-    @TypeConverter
-    fun toLocalDate(dateString: String?): LocalDate? {
-        return dateString?.let { LocalDate.parse(it, formatter) }
-    }
+    val listadoGastos = gastoRepository.todosLosGastos()
+    var totalGasto = gastoTotalFecha()
 
     init {
-        // Código a ejecutar al iniciar el ViewModel
+        fecha = LocalDate.now()
         gastosPrueba()
     }
 
-    private fun gastosPrueba(){
+
+    fun gastosPrueba(){
         for (cantidad in 1 until 10){
             añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad), TipoGasto.Comida)
             añadirGasto("Gasto Inicial 1$cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
@@ -79,7 +70,7 @@ class AppViewModel @Inject constructor(
 
     fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo: TipoGasto):Gasto {
         val id = hashString("${nombre}${Random.nextInt(1, 101)}")
-        val gasto = Gasto(id, nombre, cantidad, fromLocalDate(fecha)?:"", tipo)
+        val gasto = Gasto(id, nombre, cantidad, fecha, tipo)
         try {
             gastoRepository.insertGasto(gasto)
         }catch (e: Exception){
@@ -90,72 +81,58 @@ class AppViewModel @Inject constructor(
 
     fun borrarGasto(gasto: Gasto){
         gastoRepository.deleteGasto(gasto)
-//        cambiarGastosFecha()
-        this.triggerRefresh()
     }
 
     private fun crearElementosFactura(): String{
         var factura = ""
-        val fecha = fromLocalDate(fecha())?:""
-        for (gasto in gastoRepository.elementosFecha(fecha)){
-            factura += "${gasto.nombre} (${gasto.tipo.tipo}):\t\t${gasto.cantidad}€\n"
+        listadoGastosFecha.map { gastos ->
+            for (gasto in gastos){
+                factura += "${gasto.nombre} (${gasto.tipo.tipo}):\t\t${gasto.cantidad}€\n"
+            }
         }
+
         return factura+"\n"
     }
 
     /*EDITAR ELEMENTOS*/
 
-    fun cambiarFactura(init: String, end:String):String{
-        facturaActual = init+crearElementosFactura()+end
-        this.triggerRefresh()
+    fun cambiarFactura(): String{
+        facturaActual = crearElementosFactura()
         return facturaActual
     }
     fun cambiarFecha(nueva_fecha: LocalDate){
         fecha = nueva_fecha
-//        cambiarGastosFecha()
     }
 
-//    private fun cambiarGastosFecha(){
-//        val fechaAhora = preferenciasRepository.conseguirFecha()[0]
-//
-//        for (gasto in gastoRepository.todosLosGastos()){
-//            if (gasto.fecha == fechaAhora){
-//                var gastoDia = GastoDia(gasto.id, gasto.nombre, gasto.cantidad, gasto.fecha, gasto.tipo)
-//                gastoDiaRepository.insertGastoDia(gastoDia)
-//            }
-//        }
-//        this.triggerRefresh()
-//    }
+
 
 
     fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
-        gastoRepository.editarGasto(Gasto(gasto_previo.id, nombre, cantidad,fromLocalDate(fecha)?:"", tipo))
-        this.triggerRefresh()
-//        cambiarGastosFecha()
+        gastoRepository.editarGasto(Gasto(gasto_previo.id, nombre, cantidad,fecha, tipo))
     }
 
     /*CALCULAR ELEMENTOS*/
 
-    fun gastoTotal(): Double{
+    fun gastoTotal(): Flow<Double>{
         return gastoRepository.gastoTotal()
     }
 
-    fun gastoTotalFecha(fecha: LocalDate=fecha()): Double{
-        return gastoRepository.gastoTotalDia(fromLocalDate(fecha)?:"")
+    fun gastoTotalFecha(fecha: LocalDate=this.fecha): Flow<Double>{
+        return gastoRepository.gastoTotalDia(fecha)
     }
 
-    fun gastoTotalTipo(tipo: TipoGasto): Double{
+    fun gastoTotalTipo(tipo: TipoGasto): Flow<Double>{
         return gastoRepository.gastoTotalTipo(tipo)
     }
 
     /*SELECCIONAR ELEMENTOS*/
 
-    fun todosLosGastos(): List<Gasto> {
+    fun todosLosGastos(): Flow<List<Gasto>> {
         return gastoRepository.todosLosGastos()
     }
 
-    fun todosLosGastosFecha(fecha: LocalDate=fecha()): List<Gasto> {
-        return gastoRepository.elementosFecha(fromLocalDate(fecha)?:"")
+    fun todosLosGastosFecha(fecha: LocalDate=this.fecha): Flow<List<Gasto>> {
+        return gastoRepository.elementosFecha(fecha)
     }
 
     fun todosLosGastosTipo(tipoGasto: TipoGasto): List<Gasto> {
@@ -168,36 +145,35 @@ class AppViewModel @Inject constructor(
     fun factura(): String{
         return facturaActual
     }
-    fun fecha(): LocalDate{
-        return fecha
-    }
+
 
     /*PRINTEAR ELEMENTOS*/
 
-    fun escribirFecha(fecha: LocalDate = fecha()): String {
+    fun escribirFecha(fecha: LocalDate = this.fecha): String {
         return "${fecha.dayOfMonth}/${fecha.monthValue}/${fecha.year}"
     }
 
-    fun escribirMesyAño(fecha: LocalDate = fecha()): String {
+    fun escribirMesyAño(fecha: LocalDate = this.fecha): String {
         return "${fecha.monthValue}/${fecha.year}"
     }
 
-    fun fecha_txt(fecha: LocalDate = fecha()): String {
+    fun fecha_txt(fecha: LocalDate = this.fecha): String {
         return "${fecha.dayOfMonth}_${fecha.monthValue}_${fecha.year}"
     }
 
     /*PRINTEAR ELEMENTOS GRAFICOS*/
 
     fun sacarDatosMes(): MutableList<GastoDia>{
-        val fecha = fecha()
         var datos = mutableMapOf<LocalDate, Double>()
         var datosMes = mutableListOf<GastoDia>()
-        for (gasto in gastoRepository.todosLosGastos()){
-            val gastoFecha = toLocalDate(gasto.fecha)?: LocalDate.now()
-            if (gastoFecha.monthValue == fecha.monthValue){
-                if (gastoFecha.year == fecha.year){
-                    var suma = datos.getOrDefault(gastoFecha, 0.0)
-                    datos[gastoFecha] = suma + gasto.cantidad
+        listadoGastos.map { gastos->
+            for (gasto in gastos){
+                val gastoFecha = gasto.fecha
+                if (gastoFecha.monthValue == fecha.monthValue){
+                    if (gastoFecha.year == fecha.year){
+                        var suma = datos.getOrDefault(gastoFecha, 0.0)
+                        datos[gastoFecha] = suma + gasto.cantidad
+                    }
                 }
             }
         }
@@ -208,18 +184,20 @@ class AppViewModel @Inject constructor(
     }
 
     fun sacarDatosPorTipo(): MutableList<GastoTipo>{
-        val fecha = fecha()
         var datos = mutableMapOf<TipoGasto, Double>()
         var datosTipo = mutableListOf<GastoTipo>()
 
-        for (gasto in gastoRepository.todosLosGastos()){
-            val gastoFecha = toLocalDate(gasto.fecha)?: LocalDate.now()
-            if (gastoFecha.monthValue == fecha.monthValue){
-                if (gastoFecha.year == fecha.year) {
-                    var suma = datos.getOrDefault(gasto.tipo, 0.0)
-                    datos[gasto.tipo] = suma + gasto.cantidad
+        listadoGastos.map { gastos ->
+            for (gasto in gastos){
+                val gastoFecha = gasto.fecha
+                if (gastoFecha.monthValue == fecha.monthValue){
+                    if (gastoFecha.year == fecha.year) {
+                        var suma = datos.getOrDefault(gasto.tipo, 0.0)
+                        datos[gasto.tipo] = suma + gasto.cantidad
+                    }
                 }
             }
+
         }
         for ((type, value) in datos) {
             datosTipo.add(GastoTipo(value, type))
@@ -238,16 +216,16 @@ class AppViewModel @Inject constructor(
         }
     }
 
-
-
-
-    private fun triggerRefresh() {
-        _forceRefresh.value = true
+    fun gastosIsEmpty(): Boolean{
+        return gastoRepository.gastosIsEmpty()
     }
 
-    // Esta función se llama cuando se ha completado la actualización
-    fun refreshComplete() {
-        _forceRefresh.value = false
+    fun fechaisEmpty(fecha: LocalDate = this.fecha): Boolean{
+        return gastoRepository.diaIsEmpty(fecha)
+    }
+
+    fun tipoisEmpty(tipo: TipoGasto): Boolean{
+        return gastoRepository.tipoIsEmpty(tipo)
     }
 }
 

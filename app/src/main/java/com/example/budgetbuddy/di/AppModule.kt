@@ -51,7 +51,7 @@ object AppModule {
      **                 Repositories                **
      *************************************************/
 
-    //-----------   Visits Repository   ------------//
+    //---------------   Repository   ----------------//
     @Singleton
     @Provides
     fun provideGastoRepository(gastoDao: GastoDao): IGastoRepository = GastoRepository(gastoDao)

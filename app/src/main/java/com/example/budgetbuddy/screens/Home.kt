@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,16 +29,18 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.Calendario
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -51,21 +52,17 @@ fun Home(
     modifier: Modifier = Modifier,
     onEdit:(Gasto)->Unit,
 ){
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-//    val forceRefresh by appViewModel.forceRefresh.collectAsState()
-//    // Actualiza la lista cuando forceRefresh cambia
-//    if (forceRefresh) {
-//        // Lógica para recargar la lista o realizar cualquier otra acción necesaria
-//        appViewModel.refreshComplete() // Marcar como completado después de actualizar
-//    }
-    var gastos: List<Gasto> = mutableListOf()
-    coroutineScope.launch(Dispatchers.IO) {
 
-        gastos = appViewModel.todosLosGastosFecha()
-    }
 
     var showCalendar by remember { mutableStateOf(false) }
+    var empty by remember { mutableStateOf(true) }
+
+    var gastos: List<Gasto> = listOf()
+    coroutineScope.launch(Dispatchers.IO) {
+        empty = appViewModel.fechaisEmpty()
+        gastos = appViewModel.listadoGastos.collectAsState(initial = emptyList())
+    }
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,11 +83,14 @@ fun Home(
             appViewModel.cambiarFecha(it)
         }
         Divider()
-        if(!gastos.isEmpty()){
+        if(!empty){
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
             ){
+                gastos.forEach{
+
+                }
                 items(gastos){
                     Card (
                         modifier = Modifier

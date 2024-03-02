@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,15 +43,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.Calendario
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.ErrorDeInsert
 import com.example.budgetbuddy.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun Edit(
     gasto: Gasto,
@@ -58,16 +59,20 @@ fun Edit(
     navController: NavController,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
+    val coroutineScope = rememberCoroutineScope()
+
     var nombre by rememberSaveable { mutableStateOf(gasto.nombre) }
     var euros by rememberSaveable { mutableStateOf(gasto.cantidad.toString()) }
-    var fecha by rememberSaveable { mutableStateOf(appViewModel.toLocalDate(gasto.fecha)?:LocalDate.now()) }
     var selectedOption by remember { mutableStateOf(gasto.tipo) }
+    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
+
+    coroutineScope.launch(Dispatchers.IO) {
+        fecha = appViewModel.fecha
+    }
 
     var error_message by remember { mutableStateOf("") }
-
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
-
     var expanded by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current

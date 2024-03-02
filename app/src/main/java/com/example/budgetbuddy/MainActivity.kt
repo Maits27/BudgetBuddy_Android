@@ -1,5 +1,6 @@
 package com.example.budgetbuddy
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -14,12 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
 import com.example.budgetbuddy2.screens.MainView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint //TODO MIRA EL REPO DE IKER
@@ -30,10 +34,14 @@ class MainActivity : ComponentActivity() {
         const val CHANNEL_ID = "BudgetBuddy"
     }
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("BudgetBuddy", "Init")
         super.onCreate(savedInstanceState)
         Log.d("BudgetBuddy", "Notificaciones")
+
+
+
         setContent {
             BudgetBuddyTheme {
                 // A surface container using the 'background' color from the theme
@@ -41,7 +49,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    FilePermission()
                     MainView(
                         appViewModel = appViewModel,
                         modifier = Modifier,

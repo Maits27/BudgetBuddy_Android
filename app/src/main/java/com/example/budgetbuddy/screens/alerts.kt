@@ -1,4 +1,4 @@
-package com.example.budgetbuddy
+package com.example.budgetbuddy.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Idioma
+import com.example.budgetbuddy.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

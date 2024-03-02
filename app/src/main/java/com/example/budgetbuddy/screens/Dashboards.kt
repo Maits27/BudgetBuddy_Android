@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.Calendario
+import com.example.budgetbuddy.Data.Gasto
+import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.R
 import com.github.tehras.charts.bar.BarChart
@@ -37,6 +40,8 @@ import com.github.tehras.charts.bar.renderer.label.SimpleValueDrawer
 import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun Dashboards(appViewModel: AppViewModel, navController: NavController){
@@ -81,10 +86,18 @@ fun Dashboards(appViewModel: AppViewModel, navController: NavController){
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Barras(
-    appViewModel: AppViewModel){
-    val datos = appViewModel.sacarDatosMes()
+    appViewModel: AppViewModel
+){
+    val coroutineScope = rememberCoroutineScope()
+    var datos: MutableList<GastoDia> = mutableListOf()
+
+    coroutineScope.launch(Dispatchers.IO) {
+        datos = appViewModel.sacarDatosMes()
+    }
+
     val datosMes = datos.sortedBy { it.fecha.dayOfMonth }
     var barras = ArrayList<BarChartData.Bar>()
 

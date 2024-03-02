@@ -1,5 +1,6 @@
 package com.example.budgetbuddy2.screens
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Environment
 import android.util.Log
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -53,18 +55,21 @@ import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.Idiomas
-import com.example.budgetbuddy.Informacion
+import com.example.budgetbuddy.screens.Idiomas
+import com.example.budgetbuddy.screens.Informacion
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
 import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileWriter
 import java.time.LocalDate
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainView(
@@ -79,12 +84,16 @@ fun MainView(
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
     var showDownloadOk by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
+    var fecha  by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
+//    val coroutineScope = rememberCoroutineScope()
+//    coroutineScope.launch(Dispatchers.IO) {
+//        fecha = appViewModel.fecha
+//    }
 
-    var gastoEditable by remember { mutableStateOf(Gasto("","", 0.0, appViewModel.fromLocalDate(LocalDate.now())?:"", TipoGasto.Otros)) }
+    var gastoEditable by remember { mutableStateOf(Gasto("","", 0.0, fecha, TipoGasto.Otros)) }
 
     val configuration = LocalConfiguration.current
-    val context = LocalContext.current
     val isVertical = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

@@ -1,5 +1,6 @@
 package com.example.budgetbuddy2.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +30,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.Calendario
+import com.example.budgetbuddy.screens.Calendario
 import com.example.budgetbuddy.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Facturas(
@@ -45,26 +49,16 @@ fun Facturas(
 ){
     val coroutineScope = rememberCoroutineScope()
 
-    val forceRefresh by appViewModel.forceRefresh.collectAsState()
-    // Actualiza la lista cuando forceRefresh cambia
-    if (forceRefresh) {
-        // Lógica para recargar la lista o realizar cualquier otra acción necesaria
-        appViewModel.refreshComplete() // Marcar como completado después de actualizar
-    }
     var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var showCalendar by remember { mutableStateOf(false) }
 
-    var factura = appViewModel.cambiarFactura(
-        stringResource(id = R.string.factura_init, "${appViewModel.escribirFecha(fecha)}"),
-        stringResource(id = R.string.factura_total, appViewModel.gastoTotalFecha().toString())
-    )
-    coroutineScope.launch(Dispatchers.IO) {
-        fecha =appViewModel.fecha()
+    var factura by remember { mutableStateOf("") }
+    var empty by remember { mutableStateOf(false)  }
 
-        var factura = appViewModel.cambiarFactura(
-            stringResource(id = R.string.factura_init, "${appViewModel.escribirFecha(fecha)}"),
-            stringResource(id = R.string.factura_total, appViewModel.gastoTotalFecha().toString())
-        )
+    coroutineScope.launch(Dispatchers.IO) {
+        fecha = appViewModel.fecha
+        factura = appViewModel.cambiarFactura()
+        empty = appViewModel.fechaisEmpty()
     }
 
     Column (
@@ -74,7 +68,7 @@ fun Facturas(
     ){
         Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
             modifier = Modifier.padding(16.dp))
-        if (!appViewModel.todosLosGastosFecha().isEmpty()){
+        if (!empty){
             Card (
                 shape = CardDefaults.outlinedShape,
                 colors = CardDefaults.cardColors(
@@ -86,12 +80,14 @@ fun Facturas(
                     .fillMaxWidth()
                     .wrapContentWidth(align = Alignment.CenterHorizontally)
             ) {
+                Text(text = stringResource(id = R.string.factura_init, appViewModel.facturaActual))
                 Text(
                     text = factura,
                     Modifier
                         .padding(16.dp)
                         .background(color = Color.Transparent),
                     color = Color.DarkGray)
+                Text(text = stringResource(id = R.string.factura_total, appViewModel.totalGasto))
             }
         }else{
             Column (

@@ -3,38 +3,48 @@ package com.example.budgetbuddy.Data
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.room.Query
 import com.example.budgetbuddy.navigation.AppScreens
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface IGastoRepository{
-    fun insertGasto(gasto: Gasto): Unit
-    fun deleteGasto(gasto: Gasto): Unit
-    fun todosLosGastos():List<Gasto>
-    fun elementosFecha(fecha: String): List<Gasto>
+    fun insertGasto(gasto: Gasto)
+    suspend fun insertGastos(gastos: List<Gasto>): List<Unit>
+    fun deleteGasto(gasto: Gasto): Int
+    fun todosLosGastos(): Flow<List<Gasto>>
+    fun elementosFecha(fecha: LocalDate): Flow<List<Gasto>>
     fun elementosTipo(tipo: TipoGasto): List<Gasto>
-    fun gastoTotal(): Double
-    fun gastoTotalDia(fecha: String): Double
-    fun gastoTotalTipo(tipoGasto: TipoGasto): Double
-    fun editarGasto(gasto: Gasto): Unit
+    fun gastoTotal(): Flow<Double>
+    fun gastoTotalDia(fecha: LocalDate): Flow<Double>
+    fun gastoTotalTipo(tipoGasto: TipoGasto): Flow<Double>
+    fun gastosIsEmpty(): Boolean
+    fun tipoIsEmpty(tipo: TipoGasto): Boolean
+    fun diaIsEmpty(fecha: LocalDate): Boolean
+    fun editarGasto(gasto: Gasto): Int
 }
+
 @Singleton
 class GastoRepository @Inject constructor(
     private val gastoDao: GastoDao
 ) : IGastoRepository {
-    override fun insertGasto(gasto: Gasto) {
-        gastoDao.insertGasto(gasto)
+    override  fun insertGasto(gasto: Gasto) {
+        return gastoDao.insertGasto(gasto)
     }
 
-    override fun deleteGasto(gasto: Gasto) {
-        gastoDao.deleteGasto(gasto)
+    override suspend fun insertGastos(gastos: List<Gasto>): List<Unit>{
+        return gastoDao.insertGastos(gastos)
     }
 
-    override fun todosLosGastos(): List<Gasto> {
+    override fun deleteGasto(gasto: Gasto): Int {
+        return gastoDao.deleteGasto(gasto)
+    }
+
+    override fun todosLosGastos(): Flow<List<Gasto>> {
         return gastoDao.todosLosGastos()
     }
 
-    override fun elementosFecha(fecha: String): List<Gasto>{
+    override fun elementosFecha(fecha: LocalDate): Flow<List<Gasto>>{
         return gastoDao.elementosFecha(fecha)
     }
 
@@ -42,94 +52,41 @@ class GastoRepository @Inject constructor(
         return gastoDao.elementosTipo(tipo)
     }
 
-    override fun gastoTotal(): Double{
+    override fun gastoTotal(): Flow<Double>{
         return gastoDao.gastoTotal()
     }
 
-    override fun gastoTotalDia(fecha: String): Double{
+    override fun gastoTotalDia(fecha: LocalDate): Flow<Double>{
         return gastoDao.gastoTotalDia(fecha)
     }
 
-    override fun gastoTotalTipo(tipoGasto: TipoGasto): Double{
+    override fun gastoTotalTipo(tipoGasto: TipoGasto): Flow<Double>{
         return gastoDao.gastoTotalTipo(tipoGasto)
     }
 
-    override fun editarGasto(gasto: Gasto){
+    override fun gastosIsEmpty(): Boolean {
+        if (gastoDao.cuantosGastos()==0){
+            return true
+        }
+        return false
+    }
+
+    override fun diaIsEmpty(fecha: LocalDate): Boolean {
+        if (gastoDao.cuantosDeDia(fecha)==0){
+            return true
+        }
+        return false
+    }
+
+    override fun tipoIsEmpty(tipo: TipoGasto): Boolean {
+        if (gastoDao.cuantosDeTipo(tipo)==0){
+            return true
+        }
+        return false
+    }
+
+    override fun editarGasto(gasto: Gasto): Int{
         return gastoDao.editarGasto(gasto)
     }
 }
 
-//
-//
-//class PreferenciasRepository @Inject constructor(
-//    private val preferenciasDao: PreferenciasDao
-//) {
-//
-//    fun insertPreferencias(preferencias: Preferencias) {
-//        preferenciasDao.insertPreferencias(preferencias)
-//    }
-//
-//    fun cambiarIdioma(idioma: Idioma){
-//        return preferenciasDao.cambiarIdioma(idioma)
-//    }
-//    fun conseguirIdioma():List<Idioma>{
-//        return preferenciasDao.conseguirIdioma()
-//    }
-//
-//    fun cambiarFactura(factura:String){
-//        return preferenciasDao.cambiarFactura(factura)
-//    }
-//    fun conseguirFactura():List<String>{
-//        return preferenciasDao.conseguirFactura()
-//    }
-//
-//    fun cambiarFecha(fecha: String){
-//        return preferenciasDao.cambiarFecha(fecha)
-//    }
-//    fun conseguirFecha():List<String>{
-//        return preferenciasDao.conseguirFecha()
-//    }
-//
-//}
-
-//
-//class GastoDiaRepository @Inject constructor(
-//    private val gastoDiaDao: GastoDiaDao
-//) {
-//
-//    fun insertGastoDia(gasto: GastoDia) {
-//        gastoDiaDao.insertGastoDia(gasto)
-//    }
-//    fun deleteTablaGastoDia(){
-//        gastoDiaDao.deleteTablaGastoDia()
-//    }
-//
-//    fun gastoTotalDia(): Double{
-//        return gastoDiaDao.gastoTotalDia()
-//    }
-//
-//    fun todosLosGastosDia(): List<GastoDia> {
-//        return gastoDiaDao.todosLosGastosDia()
-//    }
-//
-//}
-//
-//class GastoTipoRepository @Inject constructor(
-//    private val gastoTipoDao: GastoTipoDao
-//) {
-//
-//    fun insertGastoTipo(gasto: GastoTipo) {
-//        gastoTipoDao.insertGastoTipo(gasto)
-//    }
-//    fun deleteTablaGastoTipo(){
-//        gastoTipoDao.deleteTablaGastoTipo()
-//    }
-//
-//    fun gastoTotalTipo(): Double{
-//        return gastoTipoDao.gastoTotalTipo()
-//    }
-//
-//    fun todosLosGastosTipo(): List<GastoTipo> {
-//        return gastoTipoDao.todosLosGastosTipo()
-//    }
-//}
