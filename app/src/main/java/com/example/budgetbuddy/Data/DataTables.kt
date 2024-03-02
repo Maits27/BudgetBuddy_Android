@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.budgetbuddy.navigation.AppScreens
 import java.time.LocalDate
+import java.util.UUID
 
 
 data class GastoDia(val cantidad: Double, val fecha: LocalDate)
@@ -15,10 +16,14 @@ data class Diseño(val pantalla: AppScreens, val nombre: String, val icono: Pain
 
 @Entity
 data class Gasto(
-    @PrimaryKey val id: String,
     var nombre: String,
     var cantidad: Double,
     var fecha: LocalDate,
-    var tipo: TipoGasto
-)
+    var tipo: TipoGasto,
+    @PrimaryKey val id: String = UUID.randomUUID().toString()
+){
+    override fun toString(): String {
+        return "${nombre} (${tipo.tipo}):\t\t${cantidad}€\n"
+    }
+}
 

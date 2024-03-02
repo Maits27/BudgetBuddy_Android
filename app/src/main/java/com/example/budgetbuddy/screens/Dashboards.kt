@@ -69,9 +69,9 @@ fun Dashboards(appViewModel: AppViewModel, navController: NavController){
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
-        Calendario(show = showCalendar, appViewModel = appViewModel) {
+        Calendario(show = showCalendar) {
             showCalendar = false
-            appViewModel.cambiarFecha(it)
+            appViewModel.fecha = it //TODO lo de iker
         }
         Barras(appViewModel)
 

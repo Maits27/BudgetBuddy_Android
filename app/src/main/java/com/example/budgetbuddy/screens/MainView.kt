@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,7 +78,7 @@ fun MainView(
     modifier: Modifier,
     cambiarIdioma:(String) -> Unit
 ){
-    cambiarIdioma(appViewModel.idioma().code)
+    cambiarIdioma(appViewModel.idioma.code)
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
@@ -85,13 +86,14 @@ fun MainView(
     var showDownloadOk by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
     var fecha  by rememberSaveable { mutableStateOf(LocalDate.now()) }
+    val factura by appViewModel.facturaActual.collectAsState(initial = "")
 
 //    val coroutineScope = rememberCoroutineScope()
 //    coroutineScope.launch(Dispatchers.IO) {
 //        fecha = appViewModel.fecha
 //    }
 
-    var gastoEditable by remember { mutableStateOf(Gasto("","", 0.0, fecha, TipoGasto.Otros)) }
+    var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, fecha, TipoGasto.Otros)) }
 
     val configuration = LocalConfiguration.current
     val isVertical = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -101,7 +103,7 @@ fun MainView(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 FloatButton( painterResource(id = R.drawable.download)) {
-                    showDownloadOk = guardarDatosEnArchivo(appViewModel.factura(), appViewModel.fecha_txt())
+                    showDownloadOk = guardarDatosEnArchivo(factura, appViewModel.fecha_txt())
                     showDownloadError = !showDownloadOk
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {

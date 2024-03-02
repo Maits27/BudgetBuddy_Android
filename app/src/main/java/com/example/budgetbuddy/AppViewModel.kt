@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
@@ -42,17 +43,17 @@ class AppViewModel @Inject constructor(
     var idioma by mutableStateOf(Idioma.ES)
         private set
     var fecha by mutableStateOf(LocalDate.now())
-        private set
 
-    var facturaActual by mutableStateOf("")
-        private set
     val listadoGastosFecha = gastoRepository.elementosFecha(fecha)
 
     val listadoGastos = gastoRepository.todosLosGastos()
-    var totalGasto = gastoTotalFecha()
+
+    val totalGasto = gastoRepository.gastoTotalDia(fecha)
+    var facturaActual: Flow<String> =  listadoGastosFecha.map {
+        listaGastos -> listaGastos.fold(""){ f, gasto -> f + gasto.toString() }
+    }
 
     init {
-        fecha = LocalDate.now()
         gastosPrueba()
     }
 
@@ -69,8 +70,7 @@ class AppViewModel @Inject constructor(
     /*AÑADIR Y ELIMINAR ELEMENTOS*/
 
     fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo: TipoGasto):Gasto {
-        val id = hashString("${nombre}${Random.nextInt(1, 101)}")
-        val gasto = Gasto(id, nombre, cantidad, fecha, tipo)
+        val gasto = Gasto(nombre, cantidad, fecha, tipo)
         try {
             gastoRepository.insertGasto(gasto)
         }catch (e: Exception){
@@ -83,43 +83,19 @@ class AppViewModel @Inject constructor(
         gastoRepository.deleteGasto(gasto)
     }
 
-    private fun crearElementosFactura(): String{
-        var factura = ""
-        listadoGastosFecha.map { gastos ->
-            for (gasto in gastos){
-                factura += "${gasto.nombre} (${gasto.tipo.tipo}):\t\t${gasto.cantidad}€\n"
-            }
-        }
 
-        return factura+"\n"
-    }
 
     /*EDITAR ELEMENTOS*/
-
-    fun cambiarFactura(): String{
-        facturaActual = crearElementosFactura()
-        return facturaActual
-    }
-    fun cambiarFecha(nueva_fecha: LocalDate){
-        fecha = nueva_fecha
-    }
-
 
 
 
     fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
-        gastoRepository.editarGasto(Gasto(gasto_previo.id, nombre, cantidad,fecha, tipo))
+        gastoRepository.editarGasto(Gasto(nombre, cantidad,fecha, tipo, gasto_previo.id))
     }
 
     /*CALCULAR ELEMENTOS*/
 
-    fun gastoTotal(): Flow<Double>{
-        return gastoRepository.gastoTotal()
-    }
 
-    fun gastoTotalFecha(fecha: LocalDate=this.fecha): Flow<Double>{
-        return gastoRepository.gastoTotalDia(fecha)
-    }
 
     fun gastoTotalTipo(tipo: TipoGasto): Flow<Double>{
         return gastoRepository.gastoTotalTipo(tipo)
@@ -127,25 +103,10 @@ class AppViewModel @Inject constructor(
 
     /*SELECCIONAR ELEMENTOS*/
 
-    fun todosLosGastos(): Flow<List<Gasto>> {
-        return gastoRepository.todosLosGastos()
-    }
-
-    fun todosLosGastosFecha(fecha: LocalDate=this.fecha): Flow<List<Gasto>> {
-        return gastoRepository.elementosFecha(fecha)
-    }
 
     fun todosLosGastosTipo(tipoGasto: TipoGasto): List<Gasto> {
         return gastoRepository.elementosTipo(tipoGasto)
     }
-
-    fun idioma(): Idioma{
-        return idioma
-    }
-    fun factura(): String{
-        return facturaActual
-    }
-
 
     /*PRINTEAR ELEMENTOS*/
 
@@ -215,38 +176,26 @@ class AppViewModel @Inject constructor(
             }
         }
     }
-
-    fun gastosIsEmpty(): Boolean{
-        return gastoRepository.gastosIsEmpty()
-    }
-
-    fun fechaisEmpty(fecha: LocalDate = this.fecha): Boolean{
-        return gastoRepository.diaIsEmpty(fecha)
-    }
-
-    fun tipoisEmpty(tipo: TipoGasto): Boolean{
-        return gastoRepository.tipoIsEmpty(tipo)
-    }
 }
 
 
 /*SEGURIDAD*/
-
-fun hashString(input: String, algorithm: String = "SHA-256"): String {
-    val bytes = input.toByteArray()
-    val digest = MessageDigest.getInstance(algorithm)
-    val hashedBytes = digest.digest(bytes)
-
-    return bytesToHex(hashedBytes)
-}
-
-fun bytesToHex(bytes: ByteArray): String {
-    val hexChars = CharArray(bytes.size * 2)
-    for (i in bytes.indices) {
-        val v = bytes[i].toInt() and 0xFF
-        hexChars[i * 2] = "0123456789ABCDEF"[v ushr 4]
-        hexChars[i * 2 + 1] = "0123456789ABCDEF"[v and 0x0F]
-    }
-    return String(hexChars)
-}
+//
+//fun hashString(input: String, algorithm: String = "SHA-256"): String {
+//    val bytes = input.toByteArray()
+//    val digest = MessageDigest.getInstance(algorithm)
+//    val hashedBytes = digest.digest(bytes)
+//
+//    return bytesToHex(hashedBytes)
+//}
+//
+//fun bytesToHex(bytes: ByteArray): String {
+//    val hexChars = CharArray(bytes.size * 2)
+//    for (i in bytes.indices) {
+//        val v = bytes[i].toInt() and 0xFF
+//        hexChars[i * 2] = "0123456789ABCDEF"[v ushr 4]
+//        hexChars[i * 2 + 1] = "0123456789ABCDEF"[v and 0x0F]
+//    }
+//    return String(hexChars)
+//}
 

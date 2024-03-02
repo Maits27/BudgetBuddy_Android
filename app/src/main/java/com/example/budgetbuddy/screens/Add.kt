@@ -202,10 +202,10 @@ fun Add(
         )
 
 
-        Calendario(show = (isTextFieldFocused == 2), appViewModel = appViewModel) {
+        Calendario(show = (isTextFieldFocused == 2)) {
             fecha = it
             isTextFieldFocused = -1
-            appViewModel.cambiarFecha(fecha)
+            appViewModel.fecha = it //TODO lo de iker
         }
 
 

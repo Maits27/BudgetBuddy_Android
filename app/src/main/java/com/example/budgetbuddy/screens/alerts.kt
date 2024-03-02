@@ -102,7 +102,7 @@ fun ErrorDeInsert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Calendario(show: Boolean, appViewModel: AppViewModel, onConfirm: (LocalDate) -> Unit){
+fun Calendario(show: Boolean, onConfirm: (LocalDate) -> Unit){
     if (show){
         val state = rememberDatePickerState()
         var date by remember { mutableStateOf(LocalDate.now()) }
