@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +46,11 @@ import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
@@ -59,28 +62,30 @@ fun Edit(
     navController: NavController,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
-    val coroutineScope = rememberCoroutineScope()
 
     var nombre by rememberSaveable { mutableStateOf(gasto.nombre) }
     var euros by rememberSaveable { mutableStateOf(gasto.cantidad.toString()) }
     var selectedOption by remember { mutableStateOf(gasto.tipo) }
-    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
-
-    coroutineScope.launch(Dispatchers.IO) {
-        fecha = appViewModel.fecha
-    }
+    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    val coroutineScope = rememberCoroutineScope()
+    var fechaTemporal by remember {mutableStateOf(fecha)}
 
     var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
 
+    val onCalendarConfirm: (LocalDate) -> Unit = {
+        isTextFieldFocused = -1
+        fechaTemporal=it
+    }
+
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
-    ){
+    ) {
         Text(
             text = stringResource(id = R.string.edit_element),
             Modifier.padding(16.dp)
@@ -126,12 +131,12 @@ fun Edit(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = selectedOption.tipo,
+                        text = obtenerTipoEnIdioma(selectedOption, appViewModel.idioma.code),
                         modifier = Modifier.padding(16.dp)
                     )
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.End
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = null,
@@ -146,7 +151,8 @@ fun Edit(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight().background(color = MaterialTheme.colors.background),
+                    .wrapContentHeight()
+                    .background(color = MaterialTheme.colors.background),
                 // Set maxHeight to ContentHeight.Intrinsic to adjust height dynamically
             ) {
                 TipoGasto.entries.forEach { option ->
@@ -157,7 +163,10 @@ fun Edit(
                         },
                         modifier = Modifier.background(color = MaterialTheme.colors.background)
                     ) {
-                        Text(text = option.tipo, Modifier.background(color = MaterialTheme.colors.background))
+                        Text(
+                            text = obtenerTipoEnIdioma(option, appViewModel.idioma.code),
+                            Modifier.background(color = MaterialTheme.colors.background)
+                        )
                     }
                 }
             }
@@ -186,9 +195,9 @@ fun Edit(
         )
 
         OutlinedTextField(
-            value = fecha.toString(),
+            value = fechaTemporal.toString(),
             onValueChange = {
-                fecha = try {
+                fechaTemporal = try {
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {
                     // Manejo de errores o asigna un valor predeterminado
@@ -211,12 +220,7 @@ fun Edit(
         )
 
 
-        Calendario(show = (isTextFieldFocused == 2)) {
-            fecha = it
-            isTextFieldFocused = -1
-            appViewModel.fecha = it //TODO lo de iker
-        }
-
+        Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
 
 
         val error_double = stringResource(id = R.string.error_double)
@@ -224,19 +228,30 @@ fun Edit(
 
         Button(
             onClick = {
-                if (nombre!="" && euros!=""){
-                    if (euros.toDoubleOrNull() != null){
-                        appViewModel.editarGasto(gasto, nombre, euros.toDouble(), fecha, selectedOption)
-                    }else{
+                coroutineScope.launch(Dispatchers.IO) {
+                    if (nombre != "" && euros != "") {
+                        if (euros.toDoubleOrNull() != null) {
+                            appViewModel.cambiarFecha(fecha)
+                            appViewModel.editarGasto(
+                                gasto,
+                                nombre,
+                                euros.toDouble(),
+                                fechaTemporal,
+                                selectedOption
+                            )
+                        } else {
+                            showError = true
+                            error_message = error_double
+                        }
+                    } else {
                         showError = true
-                        error_message = error_double
+                        error_message = error_insert
                     }
-                }else{
-                    showError = true
-                    error_message = error_insert
-                }
-                if(!showError){
-                    navController.navigateUp()
+                    if (!showError) {
+                        withContext(Dispatchers.Main) {
+                            navController.navigateUp()
+                        }
+                    }
                 }
             },
             Modifier

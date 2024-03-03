@@ -24,6 +24,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.toList
@@ -41,22 +44,35 @@ class AppViewModel @Inject constructor(
 ) : ViewModel() {
 
     var idioma by mutableStateOf(Idioma.ES)
-        private set
-    var fecha by mutableStateOf(LocalDate.now())
 
-    val listadoGastosFecha = gastoRepository.elementosFecha(fecha)
+    private val _fecha = MutableStateFlow(LocalDate.now())
+    val fecha: Flow<LocalDate> = _fecha
+
+    val listadoGastosFecha: (LocalDate)-> Flow<List<Gasto>> = { gastoRepository.elementosFecha(it) }
 
     val listadoGastos = gastoRepository.todosLosGastos()
 
-    val totalGasto = gastoRepository.gastoTotalDia(fecha)
-    var facturaActual: Flow<String> =  listadoGastosFecha.map {
-        listaGastos -> listaGastos.fold(""){ f, gasto -> f + gasto.toString() }
+    val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
+
+    var facturaActual: (LocalDate)->  Flow<String> = {
+        listadoGastosFecha(it).map { listaGastos ->
+            listaGastos.fold("") { f, gasto -> f + gasto.toString() }
+        }
     }
 
-    init {
-        gastosPrueba()
-    }
+    val listadoGastosMes: (LocalDate)-> Flow<List<GastoDia>> = { sacarDatosMes(it) }
 
+    val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
+
+//    init {
+//        Log.d("VIEW MODEL", "INICIALIZANDO DATOS")
+//        gastosPrueba()
+//        Log.d("VIEW MODEL", "DATOS INICIALIZADOS")
+//    }
+
+    fun cambiarFecha(nuevoValor: LocalDate) {
+        _fecha.value = nuevoValor
+    }
 
     fun gastosPrueba(){
         for (cantidad in 1 until 10){
@@ -73,8 +89,9 @@ class AppViewModel @Inject constructor(
         val gasto = Gasto(nombre, cantidad, fecha, tipo)
         try {
             gastoRepository.insertGasto(gasto)
+            Log.d("VIEW MODEL", "GASTO AÑADIDO CORRECTAMENTE: ${gasto}!!!!!!!!!!!!!!!!!!!!")
         }catch (e: Exception){
-            Log.d("BASE DE DATOS", e.toString())
+            Log.d("BASE DE DATOS!!!!!!!!!!!!!!!!!!!!!!!", e.toString())
         }
         return gasto
     }
@@ -110,60 +127,47 @@ class AppViewModel @Inject constructor(
 
     /*PRINTEAR ELEMENTOS*/
 
-    fun escribirFecha(fecha: LocalDate = this.fecha): String {
+    fun escribirFecha(fecha: LocalDate): String {
         return "${fecha.dayOfMonth}/${fecha.monthValue}/${fecha.year}"
     }
 
-    fun escribirMesyAño(fecha: LocalDate = this.fecha): String {
+    fun escribirMesyAño(fecha: LocalDate): String {
         return "${fecha.monthValue}/${fecha.year}"
     }
 
-    fun fecha_txt(fecha: LocalDate = this.fecha): String {
+    fun fecha_txt(fecha: LocalDate): String {
         return "${fecha.dayOfMonth}_${fecha.monthValue}_${fecha.year}"
     }
 
     /*PRINTEAR ELEMENTOS GRAFICOS*/
 
-    fun sacarDatosMes(): MutableList<GastoDia>{
-        var datos = mutableMapOf<LocalDate, Double>()
-        var datosMes = mutableListOf<GastoDia>()
-        listadoGastos.map { gastos->
-            for (gasto in gastos){
-                val gastoFecha = gasto.fecha
-                if (gastoFecha.monthValue == fecha.monthValue){
-                    if (gastoFecha.year == fecha.year){
-                        var suma = datos.getOrDefault(gastoFecha, 0.0)
-                        datos[gastoFecha] = suma + gasto.cantidad
-                    }
-                }
+    fun sacarDatosMes(fecha: LocalDate): Flow<List<GastoDia>>{
+        Log.d("APP VIEW MODEL", "INIT SACAR GASTOS MES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        val gastosFechados = listadoGastos.map{ it.filter { gasto -> gasto.fecha.year == fecha.year } }
+        Log.d("APP VIEW MODEL", "GASTOS FECHADOS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        val gastosAgrupados = gastosFechados.map {
+            it.groupBy { gasto -> gasto.fecha }.map { (fecha, gastos) ->
+                GastoDia(
+                    cantidad = gastos.sumByDouble { it.cantidad },
+                    fecha = fecha
+                )
             }
         }
-        for ((date, value) in datos) {
-            datosMes.add(GastoDia(value, date))
-        }
-        return datosMes
+        Log.d("APP VIEW MODEL", "GASTOS AGRUPADOS END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        return gastosAgrupados
     }
 
-    fun sacarDatosPorTipo(): MutableList<GastoTipo>{
-        var datos = mutableMapOf<TipoGasto, Double>()
-        var datosTipo = mutableListOf<GastoTipo>()
-
-        listadoGastos.map { gastos ->
-            for (gasto in gastos){
-                val gastoFecha = gasto.fecha
-                if (gastoFecha.monthValue == fecha.monthValue){
-                    if (gastoFecha.year == fecha.year) {
-                        var suma = datos.getOrDefault(gasto.tipo, 0.0)
-                        datos[gasto.tipo] = suma + gasto.cantidad
-                    }
-                }
+    fun sacarDatosPorTipo(fecha: LocalDate): Flow<List<GastoTipo>>{
+        val gastosFechados = listadoGastos.map{ it.filter { gasto -> gasto.fecha.year == fecha.year } }
+        val gastosAgrupados = gastosFechados.map {
+            it.groupBy { gasto -> gasto.tipo }.map { (tipo, gastos) ->
+                GastoTipo(
+                    cantidad = gastos.sumByDouble { it.cantidad },
+                    tipo = tipo
+                )
             }
-
         }
-        for ((type, value) in datos) {
-            datosTipo.add(GastoTipo(value, type))
-        }
-        return datosTipo
+        return gastosAgrupados
     }
 
 
@@ -179,23 +183,5 @@ class AppViewModel @Inject constructor(
 }
 
 
-/*SEGURIDAD*/
-//
-//fun hashString(input: String, algorithm: String = "SHA-256"): String {
-//    val bytes = input.toByteArray()
-//    val digest = MessageDigest.getInstance(algorithm)
-//    val hashedBytes = digest.digest(bytes)
-//
-//    return bytesToHex(hashedBytes)
-//}
-//
-//fun bytesToHex(bytes: ByteArray): String {
-//    val hexChars = CharArray(bytes.size * 2)
-//    for (i in bytes.indices) {
-//        val v = bytes[i].toInt() and 0xFF
-//        hexChars[i * 2] = "0123456789ABCDEF"[v ushr 4]
-//        hexChars[i * 2 + 1] = "0123456789ABCDEF"[v and 0x0F]
-//    }
-//    return String(hexChars)
-//}
+
 

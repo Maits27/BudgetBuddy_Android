@@ -84,14 +84,10 @@ fun MainView(
     var showLang by rememberSaveable { mutableStateOf(false) }
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
     var showDownloadOk by rememberSaveable { mutableStateOf(false) }
-    val navController = rememberNavController()
-    var fecha  by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    val factura by appViewModel.facturaActual.collectAsState(initial = "")
 
-//    val coroutineScope = rememberCoroutineScope()
-//    coroutineScope.launch(Dispatchers.IO) {
-//        fecha = appViewModel.fecha
-//    }
+    val navController = rememberNavController()
+    val fecha  by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    val factura by appViewModel.facturaActual(fecha).collectAsState(initial = "")
 
     var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, fecha, TipoGasto.Otros)) }
 
@@ -102,9 +98,11 @@ fun MainView(
         floatingActionButton = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
-                FloatButton( painterResource(id = R.drawable.download)) {
-                    showDownloadOk = guardarDatosEnArchivo(factura, appViewModel.fecha_txt())
-                    showDownloadError = !showDownloadOk
+                if (factura!=""){
+                    FloatButton( painterResource(id = R.drawable.download)) {
+                        showDownloadOk = guardarDatosEnArchivo(factura, appViewModel.fecha_txt(fecha))
+                        showDownloadError = !showDownloadOk
+                    }
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
                 FloatButton( painterResource(id = R.drawable.add)) {
@@ -175,7 +173,7 @@ fun MainView(
                         BottomNavigationItem(
                             selectedContentColor = MaterialTheme.colorScheme.background,
                             icon = { Icon(screen.icono, contentDescription = null, tint = Color.White) },
-                            label = { Text(screen.nombre, color = Color.White) },
+//                            label = { Text(screen.nombre, color = Color.White) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.pantalla.route } == true,
                             onClick = {
                                 navController.navigate(screen.pantalla.route) {
@@ -264,7 +262,7 @@ fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHos
                     }
                 ) {
                     Icon(screen.icono, contentDescription = null, tint = Color.White)
-                    Text(screen.nombre, color = Color.White)
+//                    Text(screen.nombre, color = Color.White)
                 }
             }
 

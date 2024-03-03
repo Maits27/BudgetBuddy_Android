@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.ui
 
+import com.example.budgetbuddy.AppViewModel
 import java.time.LocalDate
 
 fun LocalDate.toLong(): Long{

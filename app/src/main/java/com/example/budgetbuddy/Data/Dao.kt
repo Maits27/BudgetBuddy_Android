@@ -16,7 +16,7 @@ import com.example.budgetbuddy.Data.TipoGasto
 @Dao
 interface GastoDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGasto(gasto: Gasto)
 
     suspend fun insertGastos(gastos: List<Gasto>) = gastos.map { insertGasto(it) }

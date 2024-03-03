@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
@@ -57,7 +62,11 @@ fun Add(
     var nombre by rememberSaveable { mutableStateOf("") }
     var euros by rememberSaveable { mutableStateOf("") }
     var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
+
     var error_message by remember { mutableStateOf("") }
+    val error_double = stringResource(id = R.string.error_double)
+    val error_insert = stringResource(id = R.string.error_insert)
+    val coroutineScope = rememberCoroutineScope()
 
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
@@ -65,12 +74,17 @@ fun Add(
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(TipoGasto.Otros) }
 
+    val onCalendarConfirm: (LocalDate) -> Unit = {
+        fecha = it
+        isTextFieldFocused = -1
+    }
+
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
-    ){
+    ) {
         Text(
             text = stringResource(id = R.string.add_element),
             Modifier.padding(16.dp)
@@ -116,12 +130,12 @@ fun Add(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = selectedOption.tipo,
+                        text = obtenerTipoEnIdioma(selectedOption, appViewModel.idioma.code),
                         modifier = Modifier.padding(16.dp)
                     )
-                    Row (
+                    Row(
                         horizontalArrangement = Arrangement.End
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = null,
@@ -147,7 +161,10 @@ fun Add(
                         },
                         modifier = Modifier.background(color = MaterialTheme.colors.background)
                     ) {
-                        Text(text = option.tipo, Modifier.background(color = MaterialTheme.colors.background))
+                        Text(
+                            text = obtenerTipoEnIdioma(option, appViewModel.idioma.code),
+                            Modifier.background(color = MaterialTheme.colors.background)
+                        )
                     }
                 }
             }
@@ -202,32 +219,34 @@ fun Add(
         )
 
 
-        Calendario(show = (isTextFieldFocused == 2)) {
-            fecha = it
-            isTextFieldFocused = -1
-            appViewModel.fecha = it //TODO lo de iker
-        }
+        Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
 
-
-
-        val error_double = stringResource(id = R.string.error_double)
-        val error_insert = stringResource(id = R.string.error_insert)
 
         Button(
             onClick = {
-                if (nombre!="" && euros!=""){
-                    if (euros.toDoubleOrNull() != null){
-                        appViewModel.añadirGasto(nombre, euros.toDouble(), fecha, selectedOption)
-                    }else{
+                coroutineScope.launch(Dispatchers.IO) {
+                    if (nombre != "" && euros != "") {
+                        if (euros.toDoubleOrNull() != null) {
+                            appViewModel.cambiarFecha(fecha)
+                            appViewModel.añadirGasto(
+                                nombre,
+                                euros.toDouble(),
+                                fecha,
+                                selectedOption
+                            )
+                        } else {
+                            showError = true
+                            error_message = error_double
+                        }
+                    } else {
                         showError = true
-                        error_message = error_double
+                        error_message = error_insert
                     }
-                }else{
-                    showError = true
-                    error_message = error_insert
-                }
-                if(!showError){
-                    navController.navigateUp()
+                    if (!showError) {
+                        withContext(Dispatchers.Main) {
+                            navController.navigateUp()
+                        }
+                    }
                 }
             },
             Modifier

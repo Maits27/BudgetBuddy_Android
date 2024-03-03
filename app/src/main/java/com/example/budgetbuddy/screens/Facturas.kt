@@ -49,12 +49,15 @@ fun Facturas(
 
     var showCalendar by remember { mutableStateOf(false) }
 
-    val factura by appViewModel.facturaActual.collectAsState(initial = "")
-    val gastos by appViewModel.listadoGastosFecha.collectAsState(emptyList())
+    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    val factura by appViewModel.facturaActual(fecha).collectAsState(initial = "")
+    val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
+    val totalGastos by appViewModel.totalGasto(fecha).collectAsState(0.0)
     val onCalendarConfirm: (LocalDate) -> Unit = {
         showCalendar = false
-        appViewModel.fecha = it
+        appViewModel.cambiarFecha(it)
     }
+
 
 
     Column (
@@ -62,7 +65,7 @@ fun Facturas(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha()),
+        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
             modifier = Modifier.padding(16.dp))
         when {
             gastos.isNotEmpty() -> {
@@ -78,23 +81,18 @@ fun Facturas(
                         .wrapContentWidth(align = Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        text = stringResource(
-                            id = R.string.factura_init,
-                            appViewModel.facturaActual
-                        )
+                        text = stringResource( id = R.string.factura_init, appViewModel.escribirFecha(fecha)),
+                        modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     )
                     Text(
                         text = factura,
                         Modifier
-                            .padding(16.dp)
+                            .padding(start=16.dp, end=16.dp)
                             .background(color = Color.Transparent),
                         color = Color.DarkGray
                     )
-                    Text(
-                        text = stringResource(
-                            id = R.string.factura_total,
-                            appViewModel.totalGasto
-                        )
+                    Text(text = stringResource(id = R.string.factura_total, totalGastos),
+                        modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                     )
                 }
             }else->{

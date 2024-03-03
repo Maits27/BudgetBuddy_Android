@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
@@ -40,8 +42,10 @@ import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -54,15 +58,26 @@ fun Home(
 ){
 
     var showCalendar by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
 
-    val gastos by appViewModel.listadoGastosFecha.collectAsState(emptyList())
+    val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
+
+    Log.d("A VER LA FECHA", "FECHA APPVM: ${fecha}!!!!!!!!!!!!!!!!!!!!!!")
+    gastos.forEach{
+        Log.d("A VER LA FECHA", "FECHA APPVM: ${gastos.first().fecha}!!!!!!!!!!!!!!!!!!!!!!")
+    }
+    val onCalendarConfirm: (LocalDate) -> Unit = {
+        showCalendar = false
+        appViewModel.cambiarFecha(it)
+    }
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
         Text(
-            text = stringResource(id = R.string.list_explain, appViewModel.escribirFecha()),
+            text = stringResource(id = R.string.list_explain, appViewModel.escribirFecha(fecha)),
             Modifier.padding(top = 16.dp)
         )
         Button(
@@ -71,10 +86,7 @@ fun Home(
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
-        Calendario(show = showCalendar, ) {
-            showCalendar = false
-            appViewModel.fecha = it //TODO lo de iker
-        }
+        Calendario(show = showCalendar, onCalendarConfirm)
         Divider()
         when {
             gastos.isNotEmpty() -> {
@@ -110,7 +122,7 @@ fun Home(
                                         containerColor = Color.Transparent
                                     ),
                                     onClick = {
-                                        onEdit(it)
+                                        coroutineScope.launch(Dispatchers.IO) { onEdit(it) }
                                         navController.navigate(AppScreens.Edit.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -131,7 +143,9 @@ fun Home(
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color.Transparent
                                     ),
-                                    onClick = { appViewModel.borrarGasto(it) }
+                                    onClick = {
+                                        coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
+                                    }
                                 ) {
                                     Icon(
                                         Icons.Filled.Delete,

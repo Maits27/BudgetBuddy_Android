@@ -23,6 +23,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -34,12 +36,12 @@ class MainActivity : ComponentActivity() {
         const val CHANNEL_ID = "BudgetBuddy"
     }
 
+
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("BudgetBuddy", "Init")
         super.onCreate(savedInstanceState)
         Log.d("BudgetBuddy", "Notificaciones")
-
 
 
         setContent {
@@ -49,10 +51,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val coroutineScope = rememberCoroutineScope()
                     MainView(
                         appViewModel = appViewModel,
                         modifier = Modifier,
-                    ){code: String -> cambiarIdioma(code)}
+                    ){code: String -> cambiarIdioma(code)
+                        coroutineScope.launch(Dispatchers.IO) {
+//                            appViewModel.gastosPrueba()
+                        }
+                    }
                 }
             }
         }

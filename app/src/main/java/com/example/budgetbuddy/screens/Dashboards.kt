@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
+import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.github.tehras.charts.bar.BarChart
 import com.github.tehras.charts.bar.BarChartData
@@ -41,7 +44,9 @@ import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun Dashboards(appViewModel: AppViewModel, navController: NavController){
@@ -55,13 +60,18 @@ fun Dashboards(appViewModel: AppViewModel, navController: NavController){
         Color(0xffFDC4E9),
         Color(0xffFDF4C4),
     )
+    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    val onCalendarConfirm: (LocalDate) -> Unit = {
+        showCalendar = false
+        appViewModel.cambiarFecha(it)
+    }
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(id = R.string.gasto_dia, appViewModel.escribirMesyAño()),
+            text = stringResource(id = R.string.gasto_dia, appViewModel.escribirMesyAño(fecha)),
             Modifier.padding(16.dp))
         Button(
             onClick = { showCalendar = true },
@@ -69,150 +79,149 @@ fun Dashboards(appViewModel: AppViewModel, navController: NavController){
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
-        Calendario(show = showCalendar) {
-            showCalendar = false
-            appViewModel.fecha = it //TODO lo de iker
-        }
-        Barras(appViewModel)
+        Calendario(show = showCalendar, onCalendarConfirm)
+
+        Barras(fecha, appViewModel)
 
         Divider()
 
         Text(
             text = stringResource(id = R.string.gasto_tipo),
-            Modifier.padding(top=16.dp))
-        val datosTipo = appViewModel.sacarDatosPorTipo()
-        LeyendaColores(colors, datosTipo)
-        Pastel(appViewModel, datosTipo, colors)
+            Modifier.padding(top=16.dp)
+        )
+        val datosTipo by appViewModel.listadoGastosTipo(fecha).collectAsState(emptyList())
+        LeyendaColores(fecha, colors, datosTipo, appViewModel)
+        Pastel(fecha, datosTipo, colors)
     }
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Barras(
+    fecha: LocalDate,
     appViewModel: AppViewModel
 ){
-    val coroutineScope = rememberCoroutineScope()
-    var datos: MutableList<GastoDia> = mutableListOf()
-
-    coroutineScope.launch(Dispatchers.IO) {
-        datos = appViewModel.sacarDatosMes()
-    }
-
-    val datosMes = datos.sortedBy { it.fecha.dayOfMonth }
+    val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
     var barras = ArrayList<BarChartData.Bar>()
 
-    if(datosMes.isEmpty()){
-        Column (
-            modifier = Modifier
-                .padding(vertical = 30.dp, horizontal = 10.dp)
-                .height(100.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ){
-            Text(text = stringResource(id = R.string.no_data))
-        }
-    }else{
-        datosMes.mapIndexed{ index, gasto ->
-            barras.add(
-                BarChartData.Bar(
-                    label = gasto.fecha.dayOfMonth.toString(),
-                    value = gasto.cantidad.toFloat(),
-                    color = MaterialTheme.colorScheme.primaryContainer
+    when{
+        datosMes.isEmpty() -> {
+            Column (
+                modifier = Modifier
+                    .padding(vertical = 30.dp, horizontal = 10.dp)
+                    .height(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(text = stringResource(id = R.string.no_data))
+            }
+        }else ->{
+            datosMes.mapIndexed{ index, gasto ->
+                barras.add(
+                    BarChartData.Bar(
+                        label = gasto.fecha.dayOfMonth.toString(),
+                        value = gasto.cantidad.toFloat(),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    )
+                )
+            }
+            BarChart(
+                barChartData = BarChartData(barras),
+                modifier = Modifier
+                    .padding(vertical = 30.dp, horizontal = 10.dp)
+                    .height(300.dp),
+                labelDrawer = SimpleValueDrawer(
+                    drawLocation = SimpleValueDrawer.DrawLocation.XAxis
                 )
             )
         }
-        BarChart(
-            barChartData = BarChartData(barras),
-            modifier = Modifier
-                .padding(vertical = 30.dp, horizontal = 10.dp)
-                .height(300.dp),
-            labelDrawer = SimpleValueDrawer(
-                drawLocation = SimpleValueDrawer.DrawLocation.XAxis
-            )
-        )
     }
 }
 
 @Composable
-fun Pastel(appViewModel: AppViewModel, datosTipo: MutableList<GastoTipo>, colors: List<Color>){
+fun Pastel(fecha: LocalDate, datosTipo: List<GastoTipo>, colors: List<Color>){
     var slices = ArrayList<PieChartData.Slice>()
-    if(datosTipo.isEmpty()){
-        Column (
-            modifier = Modifier
-                .padding(vertical = 30.dp, horizontal = 10.dp)
-                .height(100.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ){
-            Text(text = stringResource(id = R.string.no_data))
-        }
-    }else {
-        datosTipo.mapIndexed { index, gasto ->
-            slices.add(
-                PieChartData.Slice(
-                    value = gasto.cantidad.toFloat(),
-                    color = colors.get(index)
+    when{
+        datosTipo.isEmpty() -> {
+            Column (
+                modifier = Modifier
+                    .padding(vertical = 30.dp, horizontal = 10.dp)
+                    .height(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(text = stringResource(id = R.string.no_data))
+            }
+        }else -> {
+            datosTipo.mapIndexed { index, gasto ->
+                slices.add(
+                    PieChartData.Slice(
+                        value = gasto.cantidad.toFloat(),
+                        color = colors.get(index)
+                    )
+                )
+            }
+            PieChart(
+                pieChartData = PieChartData(
+                    slices = slices
+                ),
+                modifier = Modifier
+                    .padding(horizontal = 30.dp, vertical = 10.dp)
+                    .height(250.dp),
+                sliceDrawer = SimpleSliceDrawer(
+                    sliceThickness = 50f
                 )
             )
         }
-        PieChart(
-            pieChartData = PieChartData(
-                slices = slices
-            ),
-            modifier = Modifier
-                .padding(horizontal = 30.dp, vertical = 10.dp)
-                .height(250.dp),
-            sliceDrawer = SimpleSliceDrawer(
-                sliceThickness = 50f
-            )
-        )
     }
 }
 
 @Composable
-fun LeyendaColores(colors: List<Color>, datosTipo: MutableList<GastoTipo>) {
-    if (!datosTipo.isEmpty()){
-        Column(
-            modifier = Modifier
-                .padding(16.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ) {
-            datosTipo.mapIndexed{index, gasto ->
-                if (index%2 == 0){
-                    Row (horizontalArrangement = Arrangement.Center) {
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .width(150.dp)
-                        ) {
-                            // Cuadrado de color
-                            Box(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .background(colors[index])
-                            )
-                            // Etiqueta
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = gasto.tipo.tipo)
-                        }
-                        if (index+1<datosTipo.size){
+fun LeyendaColores(fecha: LocalDate, colors: List<Color>, datosTipo: List<GastoTipo>, appViewModel: AppViewModel) {
+    when{
+        datosTipo.isNotEmpty() -> {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
+            ) {
+                datosTipo.mapIndexed{index, gasto ->
+                    if (index%2 == 0){
+                        Row (horizontalArrangement = Arrangement.Center) {
                             Row(
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(4.dp)
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .width(150.dp)
                             ) {
                                 // Cuadrado de color
                                 Box(
                                     modifier = Modifier
                                         .size(20.dp)
-                                        .background(colors[index + 1])
+                                        .background(colors[index])
                                 )
                                 // Etiqueta
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = datosTipo[index+1].tipo.tipo)
+                                Text(text = obtenerTipoEnIdioma(gasto.tipo, appViewModel.idioma.code))
+                            }
+                            if (index+1<datosTipo.size){
+                                Row(
+                                    verticalAlignment = Alignment.Top,
+                                    horizontalArrangement = Arrangement.Start,
+                                    modifier = Modifier.padding(4.dp)
+                                ) {
+                                    // Cuadrado de color
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .background(colors[index + 1])
+                                    )
+                                    // Etiqueta
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = datosTipo[index+1].tipo.tipo)
+                                }
                             }
                         }
                     }
