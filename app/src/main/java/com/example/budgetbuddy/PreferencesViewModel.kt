@@ -39,10 +39,10 @@ class PreferencesViewModel @Inject constructor(
 
     // Change language preference, adjust the locale and reload de interface
     fun changeLang(idioma: AppLanguage, context: Context) {
-        languageManager.changeLang(idioma, context)
+        languageManager.changeLang(idioma)
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setLanguage(idioma.code) }
     }
 
-    fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang, context, false)
+//    fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang)
 
 }

@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         Log.d("BudgetBuddy", "Notificaciones")
 
         setContent {
-            preferencesViewModel.reloadLang(preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang).value, this)
             BudgetBuddyTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(

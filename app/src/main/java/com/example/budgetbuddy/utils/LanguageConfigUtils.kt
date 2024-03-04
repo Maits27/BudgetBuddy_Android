@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,7 +58,8 @@ enum class AppLanguage(val language: String, val code: String) {
         fun getFromCode(code: String) = when (code) {
             EU.code -> EU
             EN.code -> EN
-            else -> ES
+            ES.code -> ES
+            else -> EN
         }
     }
 }
@@ -78,29 +81,8 @@ class LanguageManager @Inject constructor() {
     var currentLang: AppLanguage = AppLanguage.getFromCode(Locale.getDefault().language.lowercase())
 
     // Method to change the App's language setting a new locale
-    fun changeLang(lang: AppLanguage, context: Context, recreate: Boolean = true) {
-
-        // Check if there's any difference in language variables
-        if (lang != currentLang || currentLang.code != Locale.getDefault().language) {
-
-            // With the context create a new Locale and update configuration
-            context.resources.apply {
-                val locale = Locale(lang.code)
-                val config = Configuration(configuration)
-
-                context.createConfigurationContext(configuration)
-                Locale.setDefault(locale)
-                config.setLocale(locale)
-
-                @Suppress("DEPRECATION")
-                context.resources.updateConfiguration(config, displayMetrics)
-            }
-
-            // Update current language
-            currentLang = lang
-
-            // If asked recreate the interface (this does not finish the activity)
-            if (recreate) context.getActivity()?.recreate()
-        }
+    fun changeLang(lang: AppLanguage) {
+        val localeList = LocaleListCompat.forLanguageTags(lang.code)
+        AppCompatDelegate.setApplicationLocales(localeList)
     }
 }

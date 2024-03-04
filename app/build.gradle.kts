@@ -58,7 +58,7 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.paging:paging-compose:1.0.0-alpha14")
+    implementation ("androidx.paging:paging-compose:3.2.1")
 
     // Datastore Dependencies
     implementation("androidx.datastore:datastore:1.0.0")

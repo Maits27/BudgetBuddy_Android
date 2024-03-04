@@ -26,6 +26,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 @Singleton
 class PreferencesRepository @Inject constructor(private val context: Context) : IGeneralPreferences {
     val PREFERENCE_LANGUAGE = stringPreferencesKey("preference_lang")
+    val PREFERENCE_THEME = stringPreferencesKey("preference_theme")
     /*------------------------------------------------
     |               Language preference              |
     ------------------------------------------------*/
@@ -36,6 +37,18 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
     override fun language(): Flow<String> = context.dataStore.data.map { preferences -> preferences[PREFERENCE_LANGUAGE]?: Locale.getDefault().language }
     override suspend fun setLanguage(code: String) {
         context.dataStore.edit { settings ->  settings[PREFERENCE_LANGUAGE]=code}
+    }
+
+    override suspend fun saveThemePreference(theme: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PREFERENCE_THEME] = theme
+        }
+    }
+
+    override fun getThemePreference(): Flow<String?> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PREFERENCE_THEME]
+        }
     }
 
 
