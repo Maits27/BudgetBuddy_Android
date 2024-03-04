@@ -1,7 +1,6 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,17 +32,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -63,10 +57,6 @@ fun Home(
 
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
-    Log.d("A VER LA FECHA", "FECHA APPVM: ${fecha}!!!!!!!!!!!!!!!!!!!!!!")
-    gastos.forEach{
-        Log.d("A VER LA FECHA", "FECHA APPVM: ${gastos.first().fecha}!!!!!!!!!!!!!!!!!!!!!!")
-    }
     val onCalendarConfirm: (LocalDate) -> Unit = {
         showCalendar = false
         appViewModel.cambiarFecha(it)

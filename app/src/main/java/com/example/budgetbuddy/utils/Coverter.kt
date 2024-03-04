@@ -1,4 +1,4 @@
-package com.example.budgetbuddy.ui
+package com.example.budgetbuddy.utils
 
 import androidx.room.TypeConverter
 import java.time.LocalDate

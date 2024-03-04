@@ -30,7 +30,6 @@ class GastoRepository @Inject constructor(
     private val gastoDao: GastoDao
 ) : IGastoRepository {
     override  fun insertGasto(gasto: Gasto) {
-        Log.d("REPOSITORY", "SE VA A AÑADIR UN GASTO")
         return gastoDao.insertGasto(gasto)
     }
 
@@ -47,7 +46,6 @@ class GastoRepository @Inject constructor(
     }
 
     override fun elementosFecha(fecha: LocalDate): Flow<List<Gasto>>{
-        Log.d("ELEMENTOS FECHA", "!!!!!!!!!!!!!!!!!!!!!!!!$fecha!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return gastoDao.elementosFecha(fecha)
     }
 

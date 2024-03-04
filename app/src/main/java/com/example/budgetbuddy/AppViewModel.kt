@@ -1,41 +1,19 @@
 package com.example.budgetbuddy
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.room.TypeConverter
-import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.GastoDia
-import com.example.budgetbuddy.Data.GastoRepository
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
-import com.example.budgetbuddy.Data.Idioma
 import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.navigation.AppScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.reduce
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import java.security.MessageDigest
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
@@ -43,7 +21,6 @@ class AppViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    var idioma by mutableStateOf(Idioma.ES)
 
     private val _fecha = MutableStateFlow(LocalDate.now())
     val fecha: Flow<LocalDate> = _fecha
@@ -89,7 +66,6 @@ class AppViewModel @Inject constructor(
         val gasto = Gasto(nombre, cantidad, fecha, tipo)
         try {
             gastoRepository.insertGasto(gasto)
-            Log.d("VIEW MODEL", "GASTO AÑADIDO CORRECTAMENTE: ${gasto}!!!!!!!!!!!!!!!!!!!!")
         }catch (e: Exception){
             Log.d("BASE DE DATOS!!!!!!!!!!!!!!!!!!!!!!!", e.toString())
         }
@@ -142,9 +118,7 @@ class AppViewModel @Inject constructor(
     /*PRINTEAR ELEMENTOS GRAFICOS*/
 
     fun sacarDatosMes(fecha: LocalDate): Flow<List<GastoDia>>{
-        Log.d("APP VIEW MODEL", "INIT SACAR GASTOS MES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         val gastosFechados = listadoGastos.map{ it.filter { gasto -> gasto.fecha.year == fecha.year } }
-        Log.d("APP VIEW MODEL", "GASTOS FECHADOS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         val gastosAgrupados = gastosFechados.map {
             it.groupBy { gasto -> gasto.fecha }.map { (fecha, gastos) ->
                 GastoDia(
@@ -153,7 +127,6 @@ class AppViewModel @Inject constructor(
                 )
             }
         }
-        Log.d("APP VIEW MODEL", "GASTOS AGRUPADOS END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return gastosAgrupados
     }
 
@@ -170,16 +143,6 @@ class AppViewModel @Inject constructor(
         return gastosAgrupados
     }
 
-
-    /*PREFERENCIAS*/
-
-    fun cambiarIdioma(code:String){
-        for (i in Idioma.entries){
-            if (code == i.code) {
-                idioma = i
-            }
-        }
-    }
 }
 
 

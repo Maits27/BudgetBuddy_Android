@@ -6,6 +6,8 @@ import com.example.budgetbuddy.Data.Database
 import com.example.budgetbuddy.Data.GastoDao
 import com.example.budgetbuddy.Data.GastoRepository
 import com.example.budgetbuddy.Data.IGastoRepository
+import com.example.budgetbuddy.preferences.IGeneralPreferences
+import com.example.budgetbuddy.preferences.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,10 +61,9 @@ object AppModule {
 
     //--   Settings & Preferences Repositories   ---//
 
-
-//    @Singleton
-//    @Provides
-//    fun provideUserPreferences(@ApplicationContext app: Context): IUserPreferences = PreferencesRepository(app)
+    @Singleton
+    @Provides
+    fun provideUserPreferences(@ApplicationContext app: Context): IGeneralPreferences = PreferencesRepository(app)
 
 
 }

@@ -60,6 +60,7 @@ fun Edit(
     gasto: Gasto,
     appViewModel: AppViewModel,
     navController: NavController,
+    idioma: String,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
 
@@ -131,7 +132,7 @@ fun Edit(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = obtenerTipoEnIdioma(selectedOption, appViewModel.idioma.code),
+                        text = obtenerTipoEnIdioma(selectedOption, idioma),
                         modifier = Modifier.padding(16.dp)
                     )
                     Row(
@@ -164,7 +165,7 @@ fun Edit(
                         modifier = Modifier.background(color = MaterialTheme.colors.background)
                     ) {
                         Text(
-                            text = obtenerTipoEnIdioma(option, appViewModel.idioma.code),
+                            text = obtenerTipoEnIdioma(option, idioma),
                             Modifier.background(color = MaterialTheme.colors.background)
                         )
                     }

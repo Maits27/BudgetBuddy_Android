@@ -1,6 +1,7 @@
 package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Environment
 import android.util.Log
@@ -34,7 +35,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -56,6 +57,7 @@ import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.PreferencesViewModel
 import com.example.budgetbuddy.screens.Idiomas
 import com.example.budgetbuddy.screens.Informacion
 import com.example.budgetbuddy.R
@@ -64,8 +66,7 @@ import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
 import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.budgetbuddy.utils.AppLanguage
 import java.io.File
 import java.io.FileWriter
 import java.time.LocalDate
@@ -75,10 +76,14 @@ import java.time.LocalDate
 @Composable
 fun MainView(
     appViewModel: AppViewModel,
-    modifier: Modifier,
-    cambiarIdioma:(String) -> Unit
+    preferencesViewModel: PreferencesViewModel
 ){
-    cambiarIdioma(appViewModel.idioma.code)
+    val context = LocalContext.current
+    val idioma by preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang)
+    val onLanguageChange:(AppLanguage)-> Unit = {
+        preferencesViewModel.changeLang(it, context)
+    }
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
@@ -144,7 +149,7 @@ fun MainView(
                     }
                     IconButton( onClick = { showLang = true } ){
                         Icon(
-                            Icons.Filled.Settings,
+                            painterResource(id = R.drawable.baseline_translate_24),//Icons.Filled.Settings,
                             contentDescription = stringResource(id = R.string.infor),
                             tint = Color.White
                         )
@@ -153,7 +158,7 @@ fun MainView(
                 },
             )
             Informacion(showInfo) { showInfo = false }
-            Idiomas(showLang, appViewModel){ showLang = false }
+            Idiomas(showLang, onLanguageChange){ showLang = false }
         },
         bottomBar = {
             if(isVertical){
@@ -198,7 +203,7 @@ fun MainView(
         }
     ){ innerPadding ->
         if (!isVertical){
-            NavHorizontal(gastoEditable, innerPadding, navController, appViewModel)
+            NavHorizontal(idioma.code, gastoEditable, innerPadding, navController, appViewModel)
 
         }else{
             NavHost(
@@ -207,10 +212,10 @@ fun MainView(
                 startDestination = AppScreens.Home.route
             ) {
                 composable(AppScreens.Home.route) { Home(appViewModel, navController){gastoEditable = it} }
-                composable(AppScreens.Add.route){ Add(appViewModel, navController)}
-                composable(AppScreens.Edit.route){ Edit(gastoEditable, appViewModel, navController)}
-                composable( AppScreens.Facturas.route) { Facturas(appViewModel, navController) }
-                composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, navController) }
+                composable(AppScreens.Add.route){ Add(appViewModel, navController, idioma.code)}
+                composable(AppScreens.Edit.route){ Edit(gastoEditable, appViewModel, navController, idioma.code)}
+                composable( AppScreens.Facturas.route) { Facturas(appViewModel) }
+                composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code) }
             }
         }
         
@@ -230,7 +235,7 @@ fun FloatButton(icon: Painter, onClick: () -> Unit) {
 }
 
 @Composable
-fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+fun NavHorizontal(idioma: String, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
     var gastoEditable = gasto
     Row {
         Column(
@@ -273,10 +278,10 @@ fun NavHorizontal(gasto:Gasto, innerPadding: PaddingValues, navController:NavHos
             startDestination = AppScreens.Home.route
         ) {
             composable(AppScreens.Home.route) { Home(appViewModel, navController){gastoEditable = it} }
-            composable(AppScreens.Add.route) { Add(appViewModel, navController) }
-            composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController) }
-            composable(AppScreens.Facturas.route) { Facturas(appViewModel, navController) }
-            composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, navController) }
+            composable(AppScreens.Add.route) { Add(appViewModel, navController, idioma) }
+            composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController, idioma) }
+            composable(AppScreens.Facturas.route) { Facturas(appViewModel) }
+            composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma) }
         }
     }
 }

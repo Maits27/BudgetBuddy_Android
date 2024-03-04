@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun Dashboards(appViewModel: AppViewModel, navController: NavController){
+fun Dashboards(appViewModel: AppViewModel, idioma: String){
 
     var showCalendar by remember { mutableStateOf(false) }
     var colors = mutableListOf(
@@ -90,7 +90,7 @@ fun Dashboards(appViewModel: AppViewModel, navController: NavController){
             Modifier.padding(top=16.dp)
         )
         val datosTipo by appViewModel.listadoGastosTipo(fecha).collectAsState(emptyList())
-        LeyendaColores(fecha, colors, datosTipo, appViewModel)
+        LeyendaColores(idioma, colors, datosTipo)
         Pastel(fecha, datosTipo, colors)
     }
 }
@@ -177,7 +177,7 @@ fun Pastel(fecha: LocalDate, datosTipo: List<GastoTipo>, colors: List<Color>){
 }
 
 @Composable
-fun LeyendaColores(fecha: LocalDate, colors: List<Color>, datosTipo: List<GastoTipo>, appViewModel: AppViewModel) {
+fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTipo>) {
     when{
         datosTipo.isNotEmpty() -> {
             Column(
@@ -204,7 +204,7 @@ fun LeyendaColores(fecha: LocalDate, colors: List<Color>, datosTipo: List<GastoT
                                 )
                                 // Etiqueta
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = obtenerTipoEnIdioma(gasto.tipo, appViewModel.idioma.code))
+                                Text(text = obtenerTipoEnIdioma(gasto.tipo, idioma))
                             }
                             if (index+1<datosTipo.size){
                                 Row(

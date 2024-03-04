@@ -3,7 +3,7 @@ package com.example.budgetbuddy.Data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.budgetbuddy.ui.Converters
+import com.example.budgetbuddy.utils.Converters
 
 @Database(entities = [Gasto::class], version = 2)
 @TypeConverters(Converters::class)

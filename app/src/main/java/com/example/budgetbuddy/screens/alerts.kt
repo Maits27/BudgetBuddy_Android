@@ -26,7 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Idioma
+import com.example.budgetbuddy.PreferencesViewModel
 import com.example.budgetbuddy.R
+import com.example.budgetbuddy.utils.AppLanguage
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -49,7 +51,11 @@ fun Informacion(show: Boolean, onConfirm: () -> Unit) {
 }
 
 @Composable
-fun Idiomas(show: Boolean, appViewModel: AppViewModel, onConfirm: () -> Unit) {
+fun Idiomas(
+    show: Boolean,
+    onLanguageChange:(AppLanguage)->Unit,
+    onConfirm: () -> Unit
+) {
     if(show){
         AlertDialog(
             onDismissRequest = {},
@@ -70,7 +76,7 @@ fun Idiomas(show: Boolean, appViewModel: AppViewModel, onConfirm: () -> Unit) {
                         Button(
                             onClick = {
                                 onConfirm()
-                                appViewModel.cambiarIdioma(idioma.code)},
+                                onLanguageChange(AppLanguage.getFromCode(idioma.code))},
                             Modifier.fillMaxWidth()
                         ) {
                             Text(text = idioma.language)

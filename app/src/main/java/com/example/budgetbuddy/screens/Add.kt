@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,8 +58,10 @@ import java.time.format.DateTimeParseException
 fun Add(
     appViewModel: AppViewModel,
     navController: NavController,
+    idioma: String,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
+
     var nombre by rememberSaveable { mutableStateOf("") }
     var euros by rememberSaveable { mutableStateOf("") }
     var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
@@ -130,7 +133,7 @@ fun Add(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = obtenerTipoEnIdioma(selectedOption, appViewModel.idioma.code),
+                        text = obtenerTipoEnIdioma(selectedOption, idioma),
                         modifier = Modifier.padding(16.dp)
                     )
                     Row(
@@ -150,7 +153,8 @@ fun Add(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight().background(color = MaterialTheme.colors.background),
+                    .wrapContentHeight()
+                    .background(color = MaterialTheme.colors.background),
                 // Set maxHeight to ContentHeight.Intrinsic to adjust height dynamically
             ) {
                 TipoGasto.entries.forEach { option ->
@@ -162,7 +166,7 @@ fun Add(
                         modifier = Modifier.background(color = MaterialTheme.colors.background)
                     ) {
                         Text(
-                            text = obtenerTipoEnIdioma(option, appViewModel.idioma.code),
+                            text = obtenerTipoEnIdioma(option, idioma),
                             Modifier.background(color = MaterialTheme.colors.background)
                         )
                     }

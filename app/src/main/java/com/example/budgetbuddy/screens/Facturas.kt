@@ -43,7 +43,6 @@ import java.time.LocalDate
 @Composable
 fun Facturas(
     appViewModel: AppViewModel,
-    navController: NavController,
     modifier: Modifier = Modifier
 ){
 
