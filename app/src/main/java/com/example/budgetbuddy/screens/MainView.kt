@@ -179,7 +179,6 @@ fun MainView(
                     val items = listOf(
                         Diseño(AppScreens.Facturas, "Factura", painterResource(id = R.drawable.bill)),
                         Diseño(AppScreens.Home, "Home", painterResource(id = R.drawable.home)),
-                        Diseño(AppScreens.Add, "Add", painterResource(id = R.drawable.add)),
                         Diseño(AppScreens.Dashboards, "Metrics", painterResource(id = R.drawable.dashboard)),
                     )
 
@@ -189,20 +188,13 @@ fun MainView(
                         BottomNavigationItem(
                             selectedContentColor = MaterialTheme.colorScheme.background,
                             icon = { Icon(screen.icono, contentDescription = null, tint = Color.White) },
-//                            label = { Text(screen.nombre, color = Color.White) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.pantalla.route } == true,
                             onClick = {
                                 navController.navigate(screen.pantalla.route) {
-                                    // Pop up to the start destination of the graph to
-                                    // avoid building up a large stack of destinations
-                                    // on the back stack as users select items
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
-                                    // Avoid multiple copies of the same destination when
-                                    // reselecting the same item
                                     launchSingleTop = true
-                                    // Restore state when reselecting a previously selected item
                                     restoreState = true
                                 }
                             }

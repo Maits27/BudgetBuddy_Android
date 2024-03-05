@@ -69,11 +69,10 @@ fun Home(
     ){
         Text(
             text = stringResource(id = R.string.list_explain, appViewModel.escribirFecha(fecha)),
-            Modifier.padding(top = 16.dp)
+            Modifier.padding(top=16.dp, bottom = 10.dp)
         )
         Button(
-            onClick = { showCalendar = true },
-            Modifier.padding(10.dp)
+            onClick = { showCalendar = true }
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }

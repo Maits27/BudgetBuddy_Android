@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -124,3 +125,15 @@ fun Calendario(show: Boolean, onConfirm: (LocalDate) -> Unit){
     }
 }
 
+@Composable
+fun NoData(){
+    Column (
+        modifier = Modifier
+            .padding(vertical = 30.dp, horizontal = 10.dp)
+            .height(100.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text(text = stringResource(id = R.string.no_data))
+    }
+}

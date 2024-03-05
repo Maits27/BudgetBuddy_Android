@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,33 +26,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.util.toRange
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.notifications.Calendario
+import com.example.budgetbuddy.notifications.NoData
 import com.github.tehras.charts.bar.BarChart
 import com.github.tehras.charts.bar.BarChartData
 import com.github.tehras.charts.bar.renderer.label.SimpleValueDrawer
+import com.github.tehras.charts.bar.renderer.xaxis.XAxisDrawer
 import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import java.time.LocalDate
+import kotlin.ranges.rangeTo
 
 @Composable
 fun Dashboards(appViewModel: AppViewModel, idioma: String){
 
     var showCalendar by remember { mutableStateOf(false) }
     var colors = mutableListOf(
-        Color(0xffC4FDD2),
-        Color(0xffC4FAFD),
-        Color(0xffC4D3FD),
+        Color(0xff9AE3AC),
+        Color(0xff75ECDC),
+        Color(0xffACC2FF),
         Color(0xffDAC4FD),
-        Color(0xffFDC4E9),
-        Color(0xffFDF4C4),
+        Color(0xffBA9AEE),
+        Color(0xffFAE990),
     )
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val onCalendarConfirm: (LocalDate) -> Unit = {
@@ -65,15 +71,14 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
     ) {
         Text(
             text = stringResource(id = R.string.gasto_dia, appViewModel.escribirMesyAño(fecha)),
-            Modifier.padding(16.dp))
+            Modifier.padding(top=16.dp, bottom = 10.dp))
         Button(
-            onClick = { showCalendar = true },
-            Modifier.padding(10.dp)
+            onClick = { showCalendar = true }
         ) {
             Text(text = stringResource(id = R.string.date_pick))
         }
         Calendario(show = showCalendar, onCalendarConfirm)
-
+        Divider()
         Barras(fecha, appViewModel)
 
         Divider()
@@ -95,40 +100,85 @@ fun Barras(
     appViewModel: AppViewModel
 ){
     val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
+    val diasEnMes = obtenerDiasEnMes(fecha)
     var barras = ArrayList<BarChartData.Bar>()
-
-    when{
-        datosMes.isEmpty() -> {
-            Column (
-                modifier = Modifier
-                    .padding(vertical = 30.dp, horizontal = 10.dp)
-                    .height(100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                Text(text = stringResource(id = R.string.no_data))
-            }
-        }else ->{
-            datosMes.mapIndexed{ index, gasto ->
-                barras.add(
-                    BarChartData.Bar(
-                        label = gasto.fecha.dayOfMonth.toString(),
-                        value = gasto.cantidad.toFloat(),
-                        color = MaterialTheme.colorScheme.primaryContainer
-                    )
-                )
-            }
-            BarChart(
-                barChartData = BarChartData(barras),
-                modifier = Modifier
-                    .padding(vertical = 30.dp, horizontal = 10.dp)
-                    .height(300.dp),
-                labelDrawer = SimpleValueDrawer(
-                    drawLocation = SimpleValueDrawer.DrawLocation.XAxis
-                )
-            )
+    var kont = 0
+    if (datosMes.isEmpty()) {
+        NoData()
+    } else {
+        val diasSinDatos = diasEnMes.filter { dia ->
+            datosMes.none { it.fecha.dayOfMonth == dia.dayOfMonth }
         }
+        diasEnMes.mapIndexed {index, dia ->
+            if (dia in diasSinDatos) {
+                Log.d("DASHBOARDS", "INDEX: ${diasSinDatos[index-kont].dayOfMonth} !!!!!!!!!!!")
+                if ((diasSinDatos[index-kont].dayOfMonth)%2!=0){
+                    barras.add(
+                        BarChartData.Bar(
+                            label = diasSinDatos[index-kont].dayOfMonth.toString(),
+                            value = 0f,
+                            color = Color.Gray // Puedes ajustar el color según tus preferencias
+                        )
+                    )
+                }else{
+                    barras.add(
+                        BarChartData.Bar(
+                            label = "",
+                            value = 0f,
+                            color = Color.Gray // Puedes ajustar el color según tus preferencias
+                        )
+                    )
+                }
+            }else{
+                Log.d("DASHBOARDS", "INDEX: ${datosMes[kont].fecha.dayOfMonth} !!!!!!!!!!!")
+                if ((datosMes[kont].fecha.dayOfMonth)%2!=0){
+                    barras.add(
+                        BarChartData.Bar(
+                            label = datosMes[kont].fecha.dayOfMonth.toString(),
+                            value = datosMes[kont].cantidad.toFloat(),
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                }else{
+                    barras.add(
+                        BarChartData.Bar(
+                            label = "",
+                            value = datosMes[kont].cantidad.toFloat(),
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                }
+                kont += 1
+            }
+        }
+
+        BarChart(
+            barChartData = BarChartData(barras),
+            modifier = Modifier
+                .padding(vertical = 30.dp, horizontal = 10.dp)
+                .height(300.dp)
+                .scale(0.9f),
+            labelDrawer = SimpleValueDrawer(
+                drawLocation = SimpleValueDrawer.DrawLocation.XAxis
+            )
+        )
     }
+}
+
+// Función para obtener todos los días en el mes
+fun obtenerDiasEnMes(fecha: LocalDate): List<LocalDate> {
+    val primerDia = fecha.withDayOfMonth(1)
+    val ultimoDia = fecha.withDayOfMonth(fecha.month.length(fecha.isLeapYear))
+
+    val listaDias = mutableListOf<LocalDate>()
+    var diaActual = primerDia
+
+    while (diaActual.isBefore(ultimoDia) || diaActual.isEqual(ultimoDia)) {
+        listaDias.add(diaActual)
+        diaActual = diaActual.plusDays(1)
+    }
+
+    return listaDias
 }
 
 @Composable
