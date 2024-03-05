@@ -41,7 +41,9 @@ object AppModule {
     @Singleton
     @Provides
     fun providesBudgetBuddyDatabase(@ApplicationContext app: Context) =
-        Room.databaseBuilder(app, Database::class.java, "database").build()
+        Room.databaseBuilder(app, Database::class.java, "database")
+//            .createFromAsset("database/budgetbuddy_database.db")
+            .build()
 
     //------------------   DAOs   ------------------//
     @Singleton

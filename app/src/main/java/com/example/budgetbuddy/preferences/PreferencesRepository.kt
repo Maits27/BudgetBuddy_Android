@@ -29,6 +29,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PreferencesRepository @Inject constructor(private val context: Context) : IGeneralPreferences {
     val PREFERENCE_LANGUAGE = stringPreferencesKey("preference_lang")
     val PREFERENCE_THEME_DARK = intPreferencesKey("preference_theme")
+    val PRIMERO = booleanPreferencesKey("primero")
     /*------------------------------------------------
     |               Language preference              |
     ------------------------------------------------*/
@@ -51,6 +52,15 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
 
     override fun getThemePreference(): Flow<Int> = context.dataStore.data.map {
         preferences -> preferences[PREFERENCE_THEME_DARK]?: 0
+    }
+
+    override fun getPrimero(): Flow<Boolean> = context.dataStore.data.map {
+            preferences -> preferences[PRIMERO]?: true
+    }
+    override suspend fun primero() {
+        context.dataStore.edit { preferences ->
+            preferences[PRIMERO] = false
+        }
     }
 
 }

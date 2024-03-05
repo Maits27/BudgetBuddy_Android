@@ -3,6 +3,9 @@ package com.example.budgetbuddy
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +36,8 @@ class PreferencesViewModel @Inject constructor(
 
     val theme = preferencesRepository.getThemePreference()
 
+    var primero = preferencesRepository.getPrimero()
+
     /*************************************************
      **                    Events                   **
      *************************************************/
@@ -48,6 +53,10 @@ class PreferencesViewModel @Inject constructor(
 
     fun changeTheme(color: Int){
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(color) }
+    }
+
+    fun primero(){
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.primero() }
     }
 
 //    fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang)

@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     NotificationPermission()
                     MainView(
                         appViewModel = appViewModel,

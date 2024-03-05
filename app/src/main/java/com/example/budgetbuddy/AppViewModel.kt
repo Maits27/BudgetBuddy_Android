@@ -56,10 +56,11 @@ class AppViewModel @Inject constructor(
 
     fun gastosPrueba(){
         for (cantidad in 1 until 10){
-            añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad), TipoGasto.Comida)
-            añadirGasto("Gasto Inicial 1$cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
-            añadirGasto( "Gasto Inicial 2$cantidad", 1.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
-            añadirGasto( "Gasto Inicial 3$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
+            añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+20), TipoGasto.Comida)
+            añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
+            añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.Hogar)
+            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.Ropa)
+            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
         }
     }
 
@@ -155,17 +156,23 @@ class AppViewModel @Inject constructor(
     fun guardarDatosEnArchivo(fecha: LocalDate, datos: String): Boolean {
         val nombre = fecha_txt(fecha)
         val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
+
         if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
             val directorioDescargas =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val archivo = File(directorioDescargas, "${nombre}.txt")
-            FileWriter(archivo).use { writer ->
+            val archivo = File(directorioDescargas, "Factura_${nombre}.txt")
+
+            // Utiliza el constructor FileWriter con el segundo parámetro para sobrescribir
+            FileWriter(archivo, false).use { writer ->
                 with(writer) {
                     append(datos)
                 }
             }
+
+            return true
         }
-        return true
+
+        return false
     }
 }
 

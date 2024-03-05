@@ -3,6 +3,7 @@ package com.example.budgetbuddy2.screens
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -69,6 +71,8 @@ import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
 import com.example.budgetbuddy.utils.AppLanguage
 import com.example.budgetbuddy.utils.toLong
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -78,6 +82,12 @@ fun MainView(
     appViewModel: AppViewModel,
     preferencesViewModel: PreferencesViewModel
 ){
+    val primero by preferencesViewModel.primero.collectAsState(initial = false)
+    if(primero){
+        val coroutineScope = rememberCoroutineScope()
+        coroutineScope.launch(Dispatchers.IO) {appViewModel.gastosPrueba()}
+        preferencesViewModel.primero()
+    }
     val context = LocalContext.current
     val navController = rememberNavController()
 
@@ -173,7 +183,7 @@ fun MainView(
                     }
                     IconButton( onClick = { showTheme = true } ){
                         Icon(
-                            painterResource(id = R.drawable.paint),//Icons.Filled.Settings,
+                            painterResource(id = R.drawable.palette),//Icons.Filled.Settings,
                             contentDescription = stringResource(id = R.string.infor),
                             tint = Color.White
                         )

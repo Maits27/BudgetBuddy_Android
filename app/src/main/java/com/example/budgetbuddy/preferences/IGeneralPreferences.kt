@@ -9,6 +9,9 @@ interface IGeneralPreferences {
     fun getThemePreference(): Flow<Int>
 
     suspend fun saveThemePreference(theme: Int)
+
+    suspend fun primero()
+    fun getPrimero(): Flow<Boolean>
 //
 //    fun themeChoice(): Flow<String>
 //    suspend fun setThemeChoice(theme: String)
