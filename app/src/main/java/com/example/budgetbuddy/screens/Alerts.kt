@@ -24,9 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Idioma
-import com.example.budgetbuddy.PreferencesViewModel
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.utils.AppLanguage
 import java.time.Instant

@@ -1,5 +1,6 @@
 package com.example.budgetbuddy
 
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import java.io.File
+import java.io.FileWriter
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -143,6 +146,21 @@ class AppViewModel @Inject constructor(
         return gastosAgrupados
     }
 
+    fun guardarDatosEnArchivo(fecha: LocalDate, datos: String): Boolean {
+        val nombre = fecha_txt(fecha)
+        val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
+        if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
+            val directorioDescargas =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val archivo = File(directorioDescargas, "${nombre}.txt")
+            FileWriter(archivo).use { writer ->
+                with(writer) {
+                    append(datos)
+                }
+            }
+        }
+        return true
+    }
 }
 
 

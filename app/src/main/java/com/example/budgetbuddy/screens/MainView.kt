@@ -69,6 +69,7 @@ import com.example.budgetbuddy.screens.Home
 import com.example.budgetbuddy.utils.AppLanguage
 import java.io.File
 import java.io.FileWriter
+import java.io.IOException
 import java.time.LocalDate
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -105,7 +106,7 @@ fun MainView(
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 if (factura!=""){
                     FloatButton( painterResource(id = R.drawable.download)) {
-                        showDownloadOk = guardarDatosEnArchivo(factura, appViewModel.fecha_txt(fecha))
+                        showDownloadOk = appViewModel.guardarDatosEnArchivo(fecha, factura)
                         showDownloadError = !showDownloadOk
                     }
                 }
@@ -284,18 +285,4 @@ fun NavHorizontal(idioma: String, gasto:Gasto, innerPadding: PaddingValues, navC
             composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma) }
         }
     }
-}
-private fun guardarDatosEnArchivo(datos: String, nombre: String): Boolean {
-    val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
-    if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
-        val directorioDescargas = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val archivo = File(directorioDescargas, "Factura${nombre}.txt")
-
-
-        FileWriter(archivo).use { writer ->
-            writer.append(datos)
-        }
-        Log.d("Download","Download")
-    }
-    return true
 }
