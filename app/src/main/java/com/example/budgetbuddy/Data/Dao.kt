@@ -34,22 +34,22 @@ interface GastoDao {
     @Query("SELECT * FROM Gasto WHERE tipo=:tipo")
     fun elementosTipo(tipo: TipoGasto): List<Gasto>
     @Transaction
-    @Query("SELECT SUM(cantidad) FROM Gasto")
+    @Query("SELECT IFNULL(SUM(cantidad), 0.0) FROM Gasto")
     fun gastoTotal(): Flow<Double>
     @Transaction
-    @Query("SELECT SUM(cantidad) FROM Gasto WHERE fecha=:fecha")
+    @Query("SELECT IFNULL(SUM(cantidad), 0.0) FROM Gasto WHERE fecha=:fecha")
     fun gastoTotalDia(fecha: LocalDate): Flow<Double>
     @Transaction
-    @Query("SELECT SUM(cantidad) FROM Gasto WHERE tipo=:tipo")
+    @Query("SELECT IFNULL(SUM(cantidad), 0.0) FROM Gasto WHERE tipo=:tipo")
     fun gastoTotalTipo(tipo: TipoGasto): Flow<Double>
     @Transaction
-    @Query("SELECT COUNT(*) FROM Gasto")
+    @Query("SELECT IFNULL(COUNT(*), 0) FROM Gasto")
     fun cuantosGastos(): Int
     @Transaction
-    @Query("SELECT COUNT(*) FROM Gasto WHERE fecha=:fecha")
+    @Query("SELECT IFNULL(COUNT(*), 0) FROM Gasto WHERE fecha=:fecha")
     fun cuantosDeDia(fecha: LocalDate): Int
     @Transaction
-    @Query("SELECT COUNT(*) FROM Gasto WHERE tipo=:tipo")
+    @Query("SELECT IFNULL(COUNT(*), 0) FROM Gasto WHERE tipo=:tipo")
     fun cuantosDeTipo(tipo: TipoGasto): Int
 
     @Update

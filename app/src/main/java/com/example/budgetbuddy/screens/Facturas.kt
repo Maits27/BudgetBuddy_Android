@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.notifications.Calendario
 import com.example.budgetbuddy.R
+import com.example.budgetbuddy.notifications.NoData
 import java.time.LocalDate
 
 
@@ -101,15 +102,7 @@ fun Facturas(
                     )
                 }
             }else->{
-                Column (
-                    modifier = Modifier
-                        .padding(vertical = 30.dp, horizontal = 10.dp)
-                        .height(100.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
-                    Text(text = stringResource(id = R.string.no_data))
-                }
+                NoData()
             }
         }
     }

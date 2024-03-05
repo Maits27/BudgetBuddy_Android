@@ -121,7 +121,10 @@ class AppViewModel @Inject constructor(
     /*PRINTEAR ELEMENTOS GRAFICOS*/
 
     fun sacarDatosMes(fecha: LocalDate): Flow<List<GastoDia>>{
-        val gastosFechados = listadoGastos.map{ it.filter { gasto -> gasto.fecha.year == fecha.year } }
+        val gastosFechados = listadoGastos.map{
+            it.filter { gasto -> gasto.fecha.year == fecha.year }
+                .filter { gasto ->  gasto.fecha.monthValue == fecha.monthValue }
+        }
         val gastosAgrupados = gastosFechados.map {
             it.groupBy { gasto -> gasto.fecha }.map { (fecha, gastos) ->
                 GastoDia(
@@ -134,7 +137,10 @@ class AppViewModel @Inject constructor(
     }
 
     fun sacarDatosPorTipo(fecha: LocalDate): Flow<List<GastoTipo>>{
-        val gastosFechados = listadoGastos.map{ it.filter { gasto -> gasto.fecha.year == fecha.year } }
+        val gastosFechados = listadoGastos.map{
+            it.filter { gasto -> gasto.fecha.year == fecha.year }
+            .filter { gasto ->  gasto.fecha.monthValue == fecha.monthValue }
+        }
         val gastosAgrupados = gastosFechados.map {
             it.groupBy { gasto -> gasto.tipo }.map { (tipo, gastos) ->
                 GastoTipo(

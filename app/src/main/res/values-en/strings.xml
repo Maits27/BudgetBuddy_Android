@@ -29,7 +29,7 @@
     <string name="edit_element">Edit element:</string>
 
     <string name="gasto_dia">Total expense of the month (%s)</string>
-    <string name="gasto_tipo">Total expenses for each type</string>
+    <string name="gasto_tipo">Expenses for each type of the month (%s)</string>
     <string name="no_data">No data</string>
 
     <string name="change_lang">Change language to:</string>

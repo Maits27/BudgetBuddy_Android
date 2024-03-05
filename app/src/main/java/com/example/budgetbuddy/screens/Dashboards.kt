@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.util.toRange
 import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
@@ -60,6 +61,7 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
         Color(0xffFAE990),
     )
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
     val onCalendarConfirm: (LocalDate) -> Unit = {
         showCalendar = false
         appViewModel.cambiarFecha(it)
@@ -69,8 +71,9 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val textoMes = appViewModel.escribirMesyAño(fecha)
         Text(
-            text = stringResource(id = R.string.gasto_dia, appViewModel.escribirMesyAño(fecha)),
+            text = stringResource(id = R.string.gasto_dia, textoMes),
             Modifier.padding(top=16.dp, bottom = 10.dp))
         Button(
             onClick = { showCalendar = true }
@@ -79,17 +82,17 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
         }
         Calendario(show = showCalendar, onCalendarConfirm)
         Divider()
-        Barras(fecha, appViewModel)
+        Barras(fecha, datosMes)
 
         Divider()
 
         Text(
-            text = stringResource(id = R.string.gasto_tipo),
+            text = stringResource(id = R.string.gasto_tipo, textoMes),
             Modifier.padding(top=16.dp)
         )
         val datosTipo by appViewModel.listadoGastosTipo(fecha).collectAsState(emptyList())
         LeyendaColores(idioma, colors, datosTipo)
-        Pastel(fecha, datosTipo, colors)
+        Pastel(datosTipo, colors)
     }
 }
 
@@ -97,9 +100,11 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
 @Composable
 fun Barras(
     fecha: LocalDate,
-    appViewModel: AppViewModel
+    datosMes: List<GastoDia>
 ){
-    val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
+    Log.d("BARRAS", "FECHA A LA QUE APUNTA: $fecha")
+
+    Log.d("BARRAS", "DATOS MES: $datosMes")
     val diasEnMes = obtenerDiasEnMes(fecha)
     var barras = ArrayList<BarChartData.Bar>()
     var kont = 0
@@ -111,7 +116,6 @@ fun Barras(
         }
         diasEnMes.mapIndexed {index, dia ->
             if (dia in diasSinDatos) {
-                Log.d("DASHBOARDS", "INDEX: ${diasSinDatos[index-kont].dayOfMonth} !!!!!!!!!!!")
                 if ((diasSinDatos[index-kont].dayOfMonth)%2!=0){
                     barras.add(
                         BarChartData.Bar(
@@ -130,7 +134,6 @@ fun Barras(
                     )
                 }
             }else{
-                Log.d("DASHBOARDS", "INDEX: ${datosMes[kont].fecha.dayOfMonth} !!!!!!!!!!!")
                 if ((datosMes[kont].fecha.dayOfMonth)%2!=0){
                     barras.add(
                         BarChartData.Bar(
@@ -182,19 +185,11 @@ fun obtenerDiasEnMes(fecha: LocalDate): List<LocalDate> {
 }
 
 @Composable
-fun Pastel(fecha: LocalDate, datosTipo: List<GastoTipo>, colors: List<Color>){
+fun Pastel(datosTipo: List<GastoTipo>, colors: List<Color>){
     var slices = ArrayList<PieChartData.Slice>()
     when{
         datosTipo.isEmpty() -> {
-            Column (
-                modifier = Modifier
-                    .padding(vertical = 30.dp, horizontal = 10.dp)
-                    .height(100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                Text(text = stringResource(id = R.string.no_data))
-            }
+            NoData()
         }else -> {
             datosTipo.mapIndexed { index, gasto ->
                 slices.add(

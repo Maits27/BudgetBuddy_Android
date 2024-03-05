@@ -38,6 +38,7 @@ import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.notifications.Calendario
+import com.example.budgetbuddy.notifications.NoData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -150,15 +151,7 @@ fun Home(
             }
 
             else -> {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 30.dp, horizontal = 10.dp)
-                        .height(100.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(text = stringResource(id = R.string.no_data))
-                }
+                NoData()
             }
         }
     }
