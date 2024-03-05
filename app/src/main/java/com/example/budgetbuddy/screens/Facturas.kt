@@ -94,8 +94,7 @@ fun Facturas(
                         text = factura,
                         Modifier
                             .padding(start = 16.dp, end = 16.dp)
-                            .background(color = Color.Transparent),
-                        color = Color.DarkGray
+                            .background(color = Color.Transparent)
                     )
                     Text(text = stringResource(id = R.string.factura_total, totalGastos),
                         modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp)

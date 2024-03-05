@@ -33,6 +33,7 @@
     <string name="no_data">No data</string>
 
     <string name="change_lang">Change language to:</string>
+    <string name="change_theme">Change theme to:</string>
     <string name="error_insert">Write on every field</string>
     <string name="error_double">Write the value using: "."</string>
 

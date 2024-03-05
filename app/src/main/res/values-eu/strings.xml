@@ -33,6 +33,7 @@
     <string name="no_data">Ez dago daturik</string>
 
     <string name="change_lang">Aldatu hizkuntza:</string>
+    <string name="change_theme">Aldatu koloreak:</string>
     <string name="error_insert">Gehitu datu guztiak</string>
     <string name="error_double">Sar ezazu balioa puntuazio egokia erabiliz: "."</string>
 

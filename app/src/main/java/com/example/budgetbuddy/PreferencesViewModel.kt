@@ -2,6 +2,7 @@ package com.example.budgetbuddy
 
 import android.content.Context
 import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +31,8 @@ class PreferencesViewModel @Inject constructor(
     val currentSetLang by languageManager::currentLang
     val idioma = preferencesRepository.language().map { AppLanguage.getFromCode(it) }
 
+    val theme = preferencesRepository.getThemePreference()
+
     /*************************************************
      **                    Events                   **
      *************************************************/
@@ -38,11 +41,17 @@ class PreferencesViewModel @Inject constructor(
     //------------   Language Related   ------------//
 
     // Change language preference, adjust the locale and reload de interface
-    fun changeLang(idioma: AppLanguage, context: Context) {
+    fun changeLang(idioma: AppLanguage) {
         languageManager.changeLang(idioma)
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setLanguage(idioma.code) }
     }
 
+    fun changeTheme(color: Int){
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(color) }
+    }
+
 //    fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang)
+
+    //------------   Theme Related   ------------//
 
 }

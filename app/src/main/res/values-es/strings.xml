@@ -33,6 +33,7 @@
     <string name="price_element">Cantidad en euros (1.2€)</string>
 
     <string name="change_lang">Cambia el idioma a:</string>
+    <string name="change_theme">Cambia el tema a:</string>
     <string name="error_insert">Escribe en todos los campos</string>
     <string name="error_double">Añade el valor con la puntuación correcta: "."</string>
 

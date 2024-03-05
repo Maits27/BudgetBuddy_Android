@@ -32,6 +32,7 @@
     <string name="no_data">No hay datos</string>
 
     <string name="change_lang">Cambia el idioma a:</string>
+    <string name="change_theme">Cambia el tema a:</string>
     <string name="error_insert">Escribe en todos los campos</string>
     <string name="error_double">Añade el valor con la puntuación correcta: "."</string>
 

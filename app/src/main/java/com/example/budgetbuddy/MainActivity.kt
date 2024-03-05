@@ -10,12 +10,14 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
 
         setContent {
-            BudgetBuddyTheme {
+            BudgetBuddyTheme(preferencesViewModel = preferencesViewModel) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

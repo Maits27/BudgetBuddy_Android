@@ -3,6 +3,7 @@ package com.example.budgetbuddy.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,12 +54,12 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
 
     var showCalendar by remember { mutableStateOf(false) }
     var colors = mutableListOf(
-        Color(0xff9AE3AC),
-        Color(0xff75ECDC),
-        Color(0xffACC2FF),
-        Color(0xffDAC4FD),
-        Color(0xffBA9AEE),
-        Color(0xffFAE990),
+        Color(0xffB48EF0),
+        Color(0xff8EBEF0),
+        Color(0xff2760CE),
+        Color(0xff3EBE52),
+        Color(0xffF0CA8E),
+        Color(0xffF08E8E),
     )
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
@@ -239,6 +240,7 @@ fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTi
                                     modifier = Modifier
                                         .size(20.dp)
                                         .background(colors[index])
+                                        .border(1.dp, color = Color.DarkGray)
                                 )
                                 // Etiqueta
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -255,6 +257,7 @@ fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTi
                                         modifier = Modifier
                                             .size(20.dp)
                                             .background(colors[index + 1])
+                                            .border(1.dp, color = Color.DarkGray)
                                     )
                                     // Etiqueta
                                     Spacer(modifier = Modifier.width(8.dp))

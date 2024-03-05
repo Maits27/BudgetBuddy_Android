@@ -126,7 +126,7 @@ fun Home(
                                     Icon(
                                         Icons.Filled.Create,
                                         stringResource(id = R.string.edit),
-                                        tint = Color.Black
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 }
                                 Button(
@@ -141,7 +141,7 @@ fun Home(
                                     Icon(
                                         Icons.Filled.Delete,
                                         stringResource(id = R.string.add),
-                                        tint = Color.Black
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 }
                             }

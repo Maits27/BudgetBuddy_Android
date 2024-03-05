@@ -1,6 +1,7 @@
 package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -52,12 +54,14 @@ import com.example.budgetbuddy.AppViewModel
 import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.MainActivity
 import com.example.budgetbuddy.PreferencesViewModel
 import com.example.budgetbuddy.notifications.Idiomas
 import com.example.budgetbuddy.notifications.Informacion
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.notifications.ErrorAlert
+import com.example.budgetbuddy.notifications.Temas
 import com.example.budgetbuddy.notifications.downloadNotification
 import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
@@ -75,17 +79,22 @@ fun MainView(
     preferencesViewModel: PreferencesViewModel
 ){
     val context = LocalContext.current
+    val navController = rememberNavController()
+
     val idioma by preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang)
     val onLanguageChange:(AppLanguage)-> Unit = {
-        preferencesViewModel.changeLang(it, context)
+        preferencesViewModel.changeLang(it)
+    }
+    val onThemeChange:(Int)-> Unit = {
+        preferencesViewModel.changeTheme(it)
     }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
+    var showTheme by rememberSaveable { mutableStateOf(false) }
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
 
-    val navController = rememberNavController()
     val fecha  by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val factura by appViewModel.facturaActual(fecha).collectAsState(initial = "")
     val total  by appViewModel.totalGasto(fecha).collectAsState(initial = 0.0)
@@ -162,11 +171,18 @@ fun MainView(
                             tint = Color.White
                         )
                     }
-
+                    IconButton( onClick = { showTheme = true } ){
+                        Icon(
+                            painterResource(id = R.drawable.paint),//Icons.Filled.Settings,
+                            contentDescription = stringResource(id = R.string.infor),
+                            tint = Color.White
+                        )
+                    }
                 },
             )
             Informacion(showInfo) { showInfo = false }
             Idiomas(showLang, onLanguageChange){ showLang = false }
+            Temas(showTheme, idioma.code ,onThemeChange){ showTheme = false }
             ErrorAlert(show = showDownloadError, mensaje = stringResource(id = R.string.download_error)) {
                 showDownloadError = false
             }
