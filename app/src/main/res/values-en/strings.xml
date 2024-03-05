@@ -13,10 +13,14 @@
     <string name="cantidad"> Quantity: %s€</string>
     <string name="tipo"> Type: %s</string>
 
-    <string name="factura_init">The %s bill:\n\n</string>
+    <string name="factura_init">The %s bill:\n</string>
     <string name="factura_total">Total: %s€</string>
     <string name="date_pick">Choose a date</string>
     <string name="date">Current date: %s</string>
+    <string name="factura_download">A bill was downloaded.</string>
+    <string name="download_description"> To see the bill of %s, go to your Android download folder.</string>
+    <string name="download_error"> Error downloading.\n\nTry again later.\n
+        If the problem does not get solved, please try to erase the download folder and check the permissions of the app.</string>
 
     <string name="add_element">Add a new element:</string>
     <string name="name_element">Name</string>

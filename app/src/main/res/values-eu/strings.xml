@@ -13,10 +13,14 @@
     <string name="cantidad"> Zenbatekoa: %s€</string>
     <string name="tipo"> Mota: %s</string>
 
-    <string name="factura_init">%s faktura hurrengoa da:\n\n</string>
+    <string name="factura_init">%s faktura hurrengoa da:\n</string>
     <string name="factura_total">Totala: %s€</string>
     <string name="date_pick">Aukeratu data bat</string>
     <string name="date">Oraingo data: %s</string>
+    <string name="factura_download">Faktura bat deskargatu da.</string>
+    <string name="download_description"> %s faktura ikusteko, jo zure Android mugikorraren deskarga karpetara.</string>
+    <string name="download_error"> Errore bat egon da deskargatzerakoan.\n\nSaiatu zaitez beste behin.\n
+        Ez bada arazoa konpontzen, mesedez garbitu zure deskarga karpeta eta konprobatu aplikazioaren permisoak ondo daudela.</string>
 
     <string name="add_element">Gehitu elementu bat:</string>
     <string name="name_element">Gastuaren izena</string>

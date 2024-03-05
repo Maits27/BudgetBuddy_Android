@@ -1,10 +1,7 @@
 package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Configuration
-import android.os.Environment
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +14,6 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +41,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -58,18 +53,18 @@ import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.PreferencesViewModel
-import com.example.budgetbuddy.screens.Idiomas
-import com.example.budgetbuddy.screens.Informacion
+import com.example.budgetbuddy.notifications.Idiomas
+import com.example.budgetbuddy.notifications.Informacion
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
+import com.example.budgetbuddy.notifications.ErrorAlert
+import com.example.budgetbuddy.notifications.downloadNotification
 import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
 import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
 import com.example.budgetbuddy.utils.AppLanguage
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import com.example.budgetbuddy.utils.toLong
 import java.time.LocalDate
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -89,11 +84,15 @@ fun MainView(
     var showInfo by rememberSaveable { mutableStateOf(false) }
     var showLang by rememberSaveable { mutableStateOf(false) }
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
-    var showDownloadOk by rememberSaveable { mutableStateOf(false) }
 
     val navController = rememberNavController()
     val fecha  by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val factura by appViewModel.facturaActual(fecha).collectAsState(initial = "")
+    val total  by appViewModel.totalGasto(fecha).collectAsState(initial = 0.0)
+    val factura_init = stringResource(id = R.string.factura_init, fecha.toString())
+    val factura_end = stringResource(id = R.string.factura_total, total.toString())
+    val tit_notificacion = stringResource(id = R.string.factura_download)
+    val desk_notificacion = stringResource(id = R.string.download_description, fecha.toString())
 
     var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, fecha, TipoGasto.Otros)) }
 
@@ -106,8 +105,16 @@ fun MainView(
             if (navBackStackEntry?.destination?.route == AppScreens.Facturas.route) {
                 if (factura!=""){
                     FloatButton( painterResource(id = R.drawable.download)) {
-                        showDownloadOk = appViewModel.guardarDatosEnArchivo(fecha, factura)
-                        showDownloadError = !showDownloadOk
+                        val texto_factura = "$factura_init$factura\n$factura_end"
+                        showDownloadError = !appViewModel.guardarDatosEnArchivo(fecha, texto_factura)
+                        if (!showDownloadError){
+                            downloadNotification(
+                                context = context,
+                                titulo = tit_notificacion,
+                                description = desk_notificacion,
+                                id = fecha.toLong().toInt()
+                            )
+                        }
                     }
                 }
             } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
@@ -160,6 +167,9 @@ fun MainView(
             )
             Informacion(showInfo) { showInfo = false }
             Idiomas(showLang, onLanguageChange){ showLang = false }
+            ErrorAlert(show = showDownloadError, mensaje = stringResource(id = R.string.download_error)) {
+                showDownloadError = false
+            }
         },
         bottomBar = {
             if(isVertical){

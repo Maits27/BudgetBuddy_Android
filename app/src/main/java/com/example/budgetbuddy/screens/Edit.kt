@@ -48,6 +48,8 @@ import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
+import com.example.budgetbuddy.notifications.Calendario
+import com.example.budgetbuddy.notifications.ErrorAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -261,6 +263,6 @@ fun Edit(
             Text(text = stringResource(id = R.string.edit))
         }
 
-        ErrorDeInsert(show = showError, mensaje = error_message) { showError = false }
+        ErrorAlert(show = showError, mensaje = error_message) { showError = false }
     }
 }

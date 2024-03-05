@@ -1,6 +1,7 @@
 package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
+import android.widget.ScrollView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,22 +23,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.screens.Calendario
+import com.example.budgetbuddy.notifications.Calendario
 import com.example.budgetbuddy.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
@@ -57,15 +53,22 @@ fun Facturas(
         appViewModel.cambiarFecha(it)
     }
 
-
-
     Column (
-        modifier.fillMaxWidth(),
+        modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
-            modifier = Modifier.padding(16.dp))
+            modifier = Modifier.padding(top=16.dp, bottom = 10.dp))
+        Button(
+            onClick = { showCalendar = true }
+        ) {
+            Text(text = stringResource(id = R.string.date_pick))
+        }
+        Calendario(show = showCalendar, onCalendarConfirm)
+        Divider()
         when {
             gastos.isNotEmpty() -> {
                 Card(
@@ -77,16 +80,19 @@ fun Facturas(
                     border = BorderStroke(width = 2.dp, color = Color.DarkGray),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(10.dp)
                         .wrapContentWidth(align = Alignment.CenterHorizontally)
                 ) {
                     Text(
                         text = stringResource( id = R.string.factura_init, appViewModel.escribirFecha(fecha)),
-                        modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                        modifier
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                            .fillMaxWidth()
                     )
                     Text(
                         text = factura,
                         Modifier
-                            .padding(start=16.dp, end=16.dp)
+                            .padding(start = 16.dp, end = 16.dp)
                             .background(color = Color.Transparent),
                         color = Color.DarkGray
                     )
@@ -106,13 +112,6 @@ fun Facturas(
                 }
             }
         }
-        Button(
-            onClick = { showCalendar = true },
-            Modifier.padding(16.dp)
-        ) {
-            Text(text = stringResource(id = R.string.date_pick))
-        }
-        Calendario(show = showCalendar, onCalendarConfirm)
     }
 }
 

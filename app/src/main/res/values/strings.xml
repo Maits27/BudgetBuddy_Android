@@ -12,14 +12,18 @@
     <string name="cantidad"> Cantidad: %s€</string>
     <string name="tipo"> Tipo: %s</string>
 
-    <string name="factura_init">La factura de %s es la siguiente:\n\n</string>
+    <string name="factura_init">La factura de %s es la siguiente:\n</string>
     <string name="factura_total">Total: %s€</string>
     <string name="date_pick">Elige una fecha</string>
     <string name="date">Fecha actual: %s</string>
+    <string name="factura_download">Se ha descargado una factura.</string>
+    <string name="download_description"> Para ver la factura del día %s, acceda a la carpeta de descargas de su dispositivo Android.</string>
+    <string name="download_error"> Error al descargar.\n\nPruebe de nuevo en otra ocasión.\n
+        Si no se soluciona, pruebe a vaciar la carpeta de descargas o los permisos de la aplicación.</string>
 
     <string name="add_element">Añade un nuevo elemento:</string>
     <string name="name_element">Nombre del gasto</string>
-    <string name="price_element">Cuantía en euros (1.2€)</string>
+    <string name="price_element">Cantidad en euros (1.2€)</string>
 
     <string name="edit_element">Editar elemento:</string>
 

@@ -1,4 +1,4 @@
-package com.example.budgetbuddy.screens
+package com.example.budgetbuddy.notifications
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.budgetbuddy.Data.Idioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.utils.AppLanguage
 import java.time.Instant
@@ -70,7 +69,7 @@ fun Idiomas(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ){
-                    for (idioma in Idioma.entries){
+                    for (idioma in AppLanguage.entries){
                         Button(
                             onClick = {
                                 onConfirm()
@@ -87,7 +86,7 @@ fun Idiomas(
 }
 
 @Composable
-fun ErrorDeInsert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
+fun ErrorAlert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
     if(show){
         AlertDialog(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -124,3 +123,4 @@ fun Calendario(show: Boolean, onConfirm: (LocalDate) -> Unit){
         }
     }
 }
+
