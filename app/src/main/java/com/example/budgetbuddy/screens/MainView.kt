@@ -231,12 +231,15 @@ fun TopBarMainView(
             titleContentColor = MaterialTheme.colorScheme.onSecondary
         ),
         navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.back),
-                    tint = Color.White
-                )
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            if (navBackStackEntry?.destination?.route != AppScreens.Home.route) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.back),
+                        tint = Color.White
+                    )
+                }
             }
         },
         actions = {

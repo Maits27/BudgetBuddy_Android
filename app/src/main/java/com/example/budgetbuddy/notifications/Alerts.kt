@@ -3,13 +3,17 @@ package com.example.budgetbuddy.notifications
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -134,7 +138,14 @@ fun Temas(
                             onThemeChange(0)
                             onConfirm()
                             },
-                        Modifier.fillMaxWidth()
+                        Modifier
+                            .fillMaxWidth(),
+                        colors = ButtonColors(
+                            containerColor = Color(0xffCFFFDB),
+                            disabledContainerColor = Color(0xffCFFFDB),
+                            contentColor = Color(0xff082e20),
+                            disabledContentColor = Color(0xff082e20)
+                        )
                     ) {
                         Text(text = obtenerTema(Tema.Verde, idioma))
                     }
@@ -143,7 +154,14 @@ fun Temas(
                             onThemeChange(1)
                             onConfirm()
                             },
-                        Modifier.fillMaxWidth()
+                        Modifier
+                            .fillMaxWidth(),
+                        colors = ButtonColors(
+                            containerColor = Color(0xffCFE4FF),
+                            disabledContainerColor = Color(0xffCFE4FF),
+                            contentColor = Color(0xff0E2D68),
+                            disabledContentColor = Color(0xff0E2D68)
+                        )
                     ) {
                         Text(text = obtenerTema(Tema.Azul, idioma))
                     }
@@ -152,7 +170,14 @@ fun Temas(
                             onThemeChange(2)
                             onConfirm()
                         },
-                        Modifier.fillMaxWidth()
+                        Modifier
+                            .fillMaxWidth(),
+                        colors = ButtonColors(
+                            containerColor = Color(0xffEBCFFF),
+                            disabledContainerColor = Color(0xffEBCFFF),
+                            contentColor = Color(0xff4A126E),
+                            disabledContentColor = Color(0xff4A126E)
+                        )
                     ) {
                         Text(text = obtenerTema(Tema.Morado, idioma))
                     }

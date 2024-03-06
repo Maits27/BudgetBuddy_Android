@@ -24,10 +24,10 @@ private val DarkColorScheme = darkColorScheme(
     onPrimaryContainer = Color(0xffF4F4F4), //Gris claro
     onSecondaryContainer = Color(0xff082e20), //Verde oscuro
     onErrorContainer =  Color(0xffCFFFDB),
-    surface = Color(0xffF4F4F4), //Gris claro
-    onSurface = Color.DarkGray,
-    onSurfaceVariant = Color.DarkGray,
-    inverseOnSurface = Color.DarkGray
+    surface = Color.White,
+    onSurface = Color(0xff082e20), //Verde oscuro
+    onSurfaceVariant = Color(0xff082e20), //Verde oscuro
+    inverseOnSurface = Color(0xff082e20), //Verde oscuro
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -59,10 +59,10 @@ private val CustomColorScheme = darkColorScheme(
     onPrimaryContainer = Color(0xffF4F4F4), // Gris claro
     onSecondaryContainer = Color(0xff4A126E), // Morado oscuro
     onErrorContainer =  Color(0xffFFC0CB),
-    surface = Color(0xffF4F4F4), // Gris claro
-    onSurface = Color.DarkGray,
-    onSurfaceVariant = Color.DarkGray,
-    inverseOnSurface = Color.DarkGray
+    surface = Color.White,
+    onSurface = Color(0xff4A126E),// Morado oscuro
+    onSurfaceVariant = Color(0xff4A126E),// Morado oscuro
+    inverseOnSurface = Color(0xff4A126E)// Morado oscuro
 )
 
 

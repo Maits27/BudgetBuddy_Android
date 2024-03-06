@@ -160,10 +160,10 @@ class AppViewModel @Inject constructor(
             if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
                 val directorioDescargas =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val archivo = File(directorioDescargas, "Factura_${nombre}.txt")
+                val archivo = File(directorioDescargas, "Factura${nombre}.txt")
 
                 // Utiliza el constructor FileWriter con el segundo parámetro para sobrescribir
-                FileWriter(archivo, false).use { writer ->
+                FileWriter(archivo).use { writer ->
                     with(writer) {
                         append(datos)
                     }
