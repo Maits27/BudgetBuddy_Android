@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.budgetbuddy.navigation.AppScreens
+import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate
 import java.util.UUID
 
@@ -22,8 +23,8 @@ data class Gasto(
     var tipo: TipoGasto,
     @PrimaryKey val id: String = UUID.randomUUID().toString()
 ){
-    override fun toString(): String {
-        return "${nombre} (${tipo.tipo}):\t\t${cantidad}€\n"
+    fun toString(idioma: AppLanguage): String {
+        return "${nombre} (${obtenerTipoEnIdioma(tipo, idioma.code)}):\t\t${cantidad}€\n"
     }
 }
 

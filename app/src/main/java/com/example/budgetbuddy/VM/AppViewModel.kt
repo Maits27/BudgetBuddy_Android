@@ -1,4 +1,4 @@
-package com.example.budgetbuddy
+package com.example.budgetbuddy.VM
 
 import android.os.Environment
 import android.util.Log
@@ -9,6 +9,7 @@ import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.utils.AppLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val gastoRepository: IGastoRepository,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
 
@@ -34,9 +34,9 @@ class AppViewModel @Inject constructor(
 
     val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
 
-    var facturaActual: (LocalDate)->  Flow<String> = {
-        listadoGastosFecha(it).map { listaGastos ->
-            listaGastos.fold("") { f, gasto -> f + gasto.toString() }
+    var facturaActual: (LocalDate, AppLanguage)->  Flow<String> = { data, idioma->
+        listadoGastosFecha(data).map { listaGastos ->
+            listaGastos.fold("") { f, gasto -> f + gasto.toString(idioma) }
         }
     }
 
@@ -156,23 +156,24 @@ class AppViewModel @Inject constructor(
     fun guardarDatosEnArchivo(fecha: LocalDate, datos: String): Boolean {
         val nombre = fecha_txt(fecha)
         val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
+        try {
+            if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
+                val directorioDescargas =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val archivo = File(directorioDescargas, "Factura_${nombre}.txt")
 
-        if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
-            val directorioDescargas =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val archivo = File(directorioDescargas, "Factura_${nombre}.txt")
-
-            // Utiliza el constructor FileWriter con el segundo parámetro para sobrescribir
-            FileWriter(archivo, false).use { writer ->
-                with(writer) {
-                    append(datos)
+                // Utiliza el constructor FileWriter con el segundo parámetro para sobrescribir
+                FileWriter(archivo, false).use { writer ->
+                    with(writer) {
+                        append(datos)
+                    }
                 }
             }
-
-            return true
+        }catch (e: Exception){
+            return false
         }
 
-        return false
+        return true
     }
 }
 

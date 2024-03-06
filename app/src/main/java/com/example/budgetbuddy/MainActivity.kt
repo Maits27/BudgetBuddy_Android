@@ -10,16 +10,14 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.example.budgetbuddy.VM.AppViewModel
+import com.example.budgetbuddy.VM.PreferencesViewModel
 import com.example.budgetbuddy.ui.theme.BudgetBuddyTheme
 import com.example.budgetbuddy2.screens.MainView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -92,4 +90,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+}
+fun getAPILevel(): Int {
+    return android.os.Build.VERSION.SDK_INT
 }

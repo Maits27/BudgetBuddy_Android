@@ -44,4 +44,11 @@
     <string name="delete">Borrar</string>
     <string name="edit">Editar</string>
     <string name="add">Añadir</string>
+    <string name="share">Compartir</string>
+    <string name="download">Descargar</string>
+
+    <string name="share_message">Hola!\n\nQuiero invitarte a utilizar BudgetBuddy, una plataforma de gestión de gastos donde
+        ver y supervisar tus gastos de manera eficiente.\n\nContáctales para recibir la APK: budgetbuddy46@gmail.com</string>
+    <string name="asunto">Atención al usuario</string>
+    <string name="contenidoEmail">Buenas!\n\nQuerría saber más sobre vuestra APP.\n\n(Escriba aquí sus preguntas)</string>
 </resources>

@@ -31,23 +31,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.util.toRange
-import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.notifications.Calendario
-import com.example.budgetbuddy.notifications.NoData
 import com.github.tehras.charts.bar.BarChart
 import com.github.tehras.charts.bar.BarChartData
 import com.github.tehras.charts.bar.renderer.label.SimpleValueDrawer
-import com.github.tehras.charts.bar.renderer.xaxis.XAxisDrawer
 import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import java.time.LocalDate
-import kotlin.ranges.rangeTo
 
 @Composable
 fun Dashboards(appViewModel: AppViewModel, idioma: String){
@@ -73,16 +68,11 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
         verticalArrangement = Arrangement.Center
     ) {
         val textoMes = appViewModel.escribirMesyAño(fecha)
-        Text(
-            text = stringResource(id = R.string.gasto_dia, textoMes),
-            Modifier.padding(top=16.dp, bottom = 10.dp))
-        Button(
-            onClick = { showCalendar = true }
-        ) {
-            Text(text = stringResource(id = R.string.date_pick))
-        }
-        Calendario(show = showCalendar, onCalendarConfirm)
-        Divider()
+        Header(
+            titulo = stringResource(id = R.string.gasto_dia, textoMes),
+            appViewModel = appViewModel
+        )
+
         Barras(fecha, datosMes)
 
         Divider()
@@ -103,9 +93,6 @@ fun Barras(
     fecha: LocalDate,
     datosMes: List<GastoDia>
 ){
-    Log.d("BARRAS", "FECHA A LA QUE APUNTA: $fecha")
-
-    Log.d("BARRAS", "DATOS MES: $datosMes")
     val diasEnMes = obtenerDiasEnMes(fecha)
     var barras = ArrayList<BarChartData.Bar>()
     var kont = 0

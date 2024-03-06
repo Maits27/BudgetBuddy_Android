@@ -1,4 +1,4 @@
-package com.example.budgetbuddy
+package com.example.budgetbuddy.VM
 
 import android.content.Context
 import android.content.res.Configuration

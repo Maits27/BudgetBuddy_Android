@@ -45,4 +45,11 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="add">Add</string>
+    <string name="share">Share</string>
+    <string name="download">Download</string>
+
+    <string name="share_message">Hello!\n\nI want to invite you to use BudgetBuddy, an expense management platform where
+        view and monitor your expenses efficiently.\n\nContact them to receive the APK: budgetbuddy46@gmail.com</string>
+    <string name="asunto">User Support</string>
+    <string name="contenidoEmail">Hello!\n\nI would like to know more about your APP.\n\n(Write your questions here)</string>
 </resources>

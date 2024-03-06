@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,13 +31,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
+import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
-import com.example.budgetbuddy.notifications.Calendario
-import com.example.budgetbuddy.notifications.NoData
+import com.example.budgetbuddy.utils.AppLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -48,37 +48,27 @@ import java.time.LocalDate
 @Composable
 fun Home(
     appViewModel: AppViewModel,
+    idioma: AppLanguage,
     navController: NavController,
     modifier: Modifier = Modifier,
     onEdit:(Gasto)->Unit,
 ){
 
-    var showCalendar by remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
-
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
-    val onCalendarConfirm: (LocalDate) -> Unit = {
-        showCalendar = false
-        appViewModel.cambiarFecha(it)
-    }
+
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Text(
-            text = stringResource(id = R.string.list_explain, appViewModel.escribirFecha(fecha)),
-            Modifier.padding(top=16.dp, bottom = 10.dp)
+        Header(
+            titulo = stringResource(id = R.string.list_explain, appViewModel.escribirFecha(fecha)),
+            appViewModel = appViewModel
         )
-        Button(
-            onClick = { showCalendar = true }
-        ) {
-            Text(text = stringResource(id = R.string.date_pick))
-        }
-        Calendario(show = showCalendar, onCalendarConfirm)
-        Divider()
         when {
             gastos.isNotEmpty() -> {
                 LazyColumn(
@@ -103,9 +93,9 @@ fun Home(
                                         .padding(16.dp)
                                         .weight(3f)
                                 ) {
-                                    Text(text = it.nombre)
+                                    Text(text = it.nombre, fontWeight = FontWeight.Bold)
                                     Text(text = stringResource(id = R.string.cantidad, it.cantidad))
-                                    Text(text = stringResource(id = R.string.tipo, it.tipo.tipo))
+                                    Text(text = stringResource(id = R.string.tipo, obtenerTipoEnIdioma(it.tipo, idioma.code)))
                                 }
                                 Button(
                                     modifier = Modifier.weight(1f),

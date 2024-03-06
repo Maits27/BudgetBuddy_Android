@@ -42,11 +42,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.budgetbuddy.AppViewModel
+import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.notifications.Calendario
 import com.example.budgetbuddy.notifications.ErrorAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

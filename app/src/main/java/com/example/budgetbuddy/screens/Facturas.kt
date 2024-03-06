@@ -1,13 +1,11 @@
 package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
-import android.widget.ScrollView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -29,10 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.budgetbuddy.AppViewModel
-import com.example.budgetbuddy.notifications.Calendario
+import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.notifications.NoData
+import com.example.budgetbuddy.VM.PreferencesViewModel
+import com.example.budgetbuddy.screens.Header
+import com.example.budgetbuddy.screens.NoData
+import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate
 
 
@@ -40,19 +40,15 @@ import java.time.LocalDate
 @Composable
 fun Facturas(
     appViewModel: AppViewModel,
+    idioma: AppLanguage,
     modifier: Modifier = Modifier
 ){
 
-    var showCalendar by remember { mutableStateOf(false) }
 
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
-    val factura by appViewModel.facturaActual(fecha).collectAsState(initial = "")
+    val factura by appViewModel.facturaActual(fecha, idioma).collectAsState(initial = "")
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
     val totalGastos by appViewModel.totalGasto(fecha).collectAsState(0.0)
-    val onCalendarConfirm: (LocalDate) -> Unit = {
-        showCalendar = false
-        appViewModel.cambiarFecha(it)
-    }
 
     Column (
         modifier
@@ -61,15 +57,10 @@ fun Facturas(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        Text(text = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
-            modifier = Modifier.padding(top=16.dp, bottom = 10.dp))
-        Button(
-            onClick = { showCalendar = true }
-        ) {
-            Text(text = stringResource(id = R.string.date_pick))
-        }
-        Calendario(show = showCalendar, onCalendarConfirm)
-        Divider()
+        Header(
+            titulo = stringResource(id = R.string.date, appViewModel.escribirFecha(fecha)),
+            appViewModel = appViewModel
+        )
         when {
             gastos.isNotEmpty() -> {
                 Card(

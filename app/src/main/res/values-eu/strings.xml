@@ -45,4 +45,11 @@
     <string name="delete">Ezabatu</string>
     <string name="edit">Editatu</string>
     <string name="add">Gehitu</string>
+    <string name="share">Partekatu</string>
+    <string name="download">Deskargatu</string>
+
+    <string name="share_message">Kaixo!\n\nBudgetBuddy erabiltzera gonbidatu nahiko nizuke. Hau, zure gastuak kudeatzeko plataforma bat da, hauek
+        modu eraginkorrean ikusiz eta kontrolatuz.\n\nInteresarik izatekotan, jar zaitez haiekin harremanetan APK jasotzeko: budgetbuddy46@gmail.com</string>
+    <string name="asunto">Erabiltzailearekiko arreta</string>
+    <string name="contenidoEmail">Kaixo!\n\nZure APP-ari buruz gehiago jakin nahiko nuke.\n\n(Idatz itzazu hemen zure galderak)</string>
 </resources>

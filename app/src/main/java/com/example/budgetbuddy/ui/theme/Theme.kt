@@ -1,25 +1,14 @@
 package com.example.budgetbuddy.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.colorResource
-import androidx.core.view.WindowCompat
-import com.example.budgetbuddy.PreferencesViewModel
-import com.example.budgetbuddy.R
+import com.example.budgetbuddy.VM.PreferencesViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xff082e20), //Verde oscuro
@@ -42,33 +31,33 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xff08152E), //Azul oscuro
-    secondary = Color(0xff08152E), //Azul oscuro
+    primary = Color(0xff0E2D68), //Azul oscuro
+    secondary = Color(0xff0E2D68), //Azul oscuro
     tertiary = Color(0xffCFE4FF), //Azul claro
     background = Color(0xffF4F4F4), //Gris claro
     onPrimary = Color(0xffF4F4F4), //Gris claro
     onSecondary = Color(0xffF4F4F4), //Gris claro
-    onTertiary = Color(0xff08152E), //Azul oscuro
-    primaryContainer = Color(0xff08152E), //Azul oscuro
+    onTertiary = Color(0xff0E347D), //Azul oscuro
+    primaryContainer = Color(0xff0E2D68), //Azul oscuro
     onError = Color(0xff980722),
     onBackground = Color.DarkGray,
     onPrimaryContainer = Color(0xffF4F4F4), //Gris claro
-    onSecondaryContainer = Color(0xff08152E), //Azul oscuro
+    onSecondaryContainer = Color(0xff0E2D68), //Azul oscuro
 )
 
 private val CustomColorScheme = darkColorScheme(
-    primary = Color(0xff1F082E), // Morado oscuro
-    secondary = Color(0xff1F082E), // Morado oscuro
+    primary = Color(0xff4A126E), // Morado oscuro
+    secondary = Color(0xff4A126E), // Morado oscuro
     tertiary = Color(0xffEBCFFF), // Rosa claro
     background = Color(0xffF4F4F4), // Gris claro
     onPrimary = Color(0xffF4F4F4), // Gris claro
     onSecondary = Color(0xffF4F4F4), // Gris claro
-    onTertiary = Color(0xff1F082E), // Morado oscuro
-    primaryContainer = Color(0xff1F082E), // Morado oscuro
+    onTertiary = Color(0xff4A126E), // Morado oscuro
+    primaryContainer = Color(0xff4A126E), // Morado oscuro
     onError = Color(0xff980722),
     onBackground = Color.DarkGray,
     onPrimaryContainer = Color(0xffF4F4F4), // Gris claro
-    onSecondaryContainer = Color(0xff1F082E), // Morado oscuro
+    onSecondaryContainer = Color(0xff4A126E), // Morado oscuro
     onErrorContainer =  Color(0xffFFC0CB),
     surface = Color(0xffF4F4F4), // Gris claro
     onSurface = Color.DarkGray,
