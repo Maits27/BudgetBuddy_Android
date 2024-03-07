@@ -69,3 +69,4 @@ fun compartirContenido(
 //    }
 //    context.startActivity(Intent.createChooser(intent, null))
 //}
+

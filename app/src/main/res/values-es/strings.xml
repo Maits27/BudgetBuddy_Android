@@ -27,6 +27,8 @@
     <string name="no_data">No hay datos</string>
 
     <string name="edit_element">Editar elemento:</string>
+    <string name="edit_complete">Se ha editado el elemento %s.</string>
+    <string name="delete_complete">Se ha borrado el elemento %s.</string>
 
     <string name="add_element">Añade un nuevo elemento:</string>
     <string name="name_element">Nombre del gasto</string>

@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.VM
 
+import android.Manifest
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
@@ -28,9 +29,13 @@ class AppViewModel @Inject constructor(
     private val _fecha = MutableStateFlow(LocalDate.now())
     val fecha: Flow<LocalDate> = _fecha
 
+    val listadoGastos = gastoRepository.todosLosGastos()
+
     val listadoGastosFecha: (LocalDate)-> Flow<List<Gasto>> = { gastoRepository.elementosFecha(it) }
 
-    val listadoGastos = gastoRepository.todosLosGastos()
+    val listadoGastosMes: (LocalDate)-> Flow<List<GastoDia>> = { sacarDatosMes(it) }
+
+    val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
 
     val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
 
@@ -38,20 +43,6 @@ class AppViewModel @Inject constructor(
         listadoGastosFecha(data).map { listaGastos ->
             listaGastos.fold("") { f, gasto -> f + gasto.toString(idioma) }
         }
-    }
-
-    val listadoGastosMes: (LocalDate)-> Flow<List<GastoDia>> = { sacarDatosMes(it) }
-
-    val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
-
-//    init {
-//        Log.d("VIEW MODEL", "INICIALIZANDO DATOS")
-//        gastosPrueba()
-//        Log.d("VIEW MODEL", "DATOS INICIALIZADOS")
-//    }
-
-    fun cambiarFecha(nuevoValor: LocalDate) {
-        _fecha.value = nuevoValor
     }
 
     fun gastosPrueba(){
@@ -71,7 +62,7 @@ class AppViewModel @Inject constructor(
         try {
             gastoRepository.insertGasto(gasto)
         }catch (e: Exception){
-            Log.d("BASE DE DATOS!!!!!!!!!!!!!!!!!!!!!!!", e.toString())
+            Log.d("BASE DE DATOS!", e.toString())
         }
         return gasto
     }
@@ -80,10 +71,12 @@ class AppViewModel @Inject constructor(
         gastoRepository.deleteGasto(gasto)
     }
 
-
-
     /*EDITAR ELEMENTOS*/
 
+
+    fun cambiarFecha(nuevoValor: LocalDate) {
+        _fecha.value = nuevoValor
+    }
 
 
     fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
@@ -153,28 +146,7 @@ class AppViewModel @Inject constructor(
         return gastosAgrupados
     }
 
-    fun guardarDatosEnArchivo(fecha: LocalDate, datos: String): Boolean {
-        val nombre = fecha_txt(fecha)
-        val estadoAlmacenamientoExterno = Environment.getExternalStorageState()
-        try {
-            if (estadoAlmacenamientoExterno == Environment.MEDIA_MOUNTED) {
-                val directorioDescargas =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val archivo = File(directorioDescargas, "Factura${nombre}.txt")
 
-                // Utiliza el constructor FileWriter con el segundo parámetro para sobrescribir
-                FileWriter(archivo).use { writer ->
-                    with(writer) {
-                        append(datos)
-                    }
-                }
-            }
-        }catch (e: Exception){
-            return false
-        }
-
-        return true
-    }
 }
 
 

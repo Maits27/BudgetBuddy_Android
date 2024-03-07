@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
@@ -59,7 +61,7 @@ fun Home(
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
-
+    var toast by remember { mutableStateOf(0) }
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,6 +106,7 @@ fun Home(
                                     ),
                                     onClick = {
                                         coroutineScope.launch(Dispatchers.IO) { onEdit(it) }
+
                                         navController.navigate(AppScreens.Edit.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -111,6 +114,7 @@ fun Home(
                                             launchSingleTop = true
                                             restoreState = true
                                         }
+                                        toast = 1
                                     }
                                 ) {
                                     Icon(
@@ -126,6 +130,7 @@ fun Home(
                                     ),
                                     onClick = {
                                         coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
+                                        toast = 2
                                     }
                                 ) {
                                     Icon(
@@ -133,6 +138,13 @@ fun Home(
                                         stringResource(id = R.string.add),
                                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
+                                }
+                                if( toast == 1 ){
+                                    ToastMessage(message = stringResource(id = R.string.edit_complete, it.nombre))
+                                    toast = 0
+                                }else if ( toast == 2 ){
+                                    ToastMessage(message = stringResource(id = R.string.delete_complete, it.nombre))
+                                    toast = 0
                                 }
                             }
                         }

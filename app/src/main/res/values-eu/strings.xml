@@ -27,6 +27,8 @@
     <string name="price_element">Zenbatekoa eurotan (1.2€)</string>
 
     <string name="edit_element">Editatu elementua:</string>
+    <string name="edit_complete">%s elementua editatu da.</string>
+    <string name="delete_complete">%s elementua ezabatu da.</string>
 
     <string name="gasto_dia">Hilabeteko gastuak (%s)</string>
     <string name="gasto_tipo">Mota bakoitzeko hilabeteko gastuak (%s)</string>

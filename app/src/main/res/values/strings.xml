@@ -26,6 +26,8 @@
     <string name="price_element">Cantidad en euros (1.2€)</string>
 
     <string name="edit_element">Editar elemento:</string>
+    <string name="edit_complete">Se ha editado el elemento %s.</string>
+    <string name="delete_complete">Se ha borrado el elemento %s.</string>
 
     <string name="gasto_dia">Gastos por día del mes (%s)</string>
     <string name="gasto_tipo">Gasto de cada tipo en el mes (%s)</string>

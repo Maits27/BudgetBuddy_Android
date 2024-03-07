@@ -27,6 +27,8 @@
     <string name="price_element">Prize (1.2€)</string>
 
     <string name="edit_element">Edit element:</string>
+    <string name="edit_complete">%s edit complete.</string>
+    <string name="delete_complete">%s was deleted.</string>
 
     <string name="gasto_dia">Total expense of the month (%s)</string>
     <string name="gasto_tipo">Expenses for each type of the month (%s)</string>

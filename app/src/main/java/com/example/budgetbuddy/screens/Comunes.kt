@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.budgetbuddy.R
@@ -82,4 +84,13 @@ fun NoData(){
     ){
         Text(text = stringResource(id = R.string.no_data))
     }
+}
+
+
+@Composable
+fun ToastMessage(message: String) {
+    var toast = Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT)
+    toast.setMargin(160f, 160f)
+    toast.setGravity(160, 100, 100)
+    toast.show()
 }

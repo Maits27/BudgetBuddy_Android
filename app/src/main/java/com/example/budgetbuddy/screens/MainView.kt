@@ -83,7 +83,8 @@ import java.time.LocalDate
 @Composable
 fun MainView(
     appViewModel: AppViewModel,
-    preferencesViewModel: PreferencesViewModel
+    preferencesViewModel: PreferencesViewModel,
+    guardarFichero: (LocalDate, String)-> Boolean
 ){
     val primero by preferencesViewModel.primero.collectAsState(initial = false)
     if(primero){
@@ -127,7 +128,8 @@ fun MainView(
                     }
                     val texto_factura = "$factura_init$factura\n$factura_end"
                     Expansion(showExpansion, texto_factura, onClose){
-                        showDownloadError = !appViewModel.guardarDatosEnArchivo(fecha, texto_factura)
+//                        showDownloadError = !appViewModel.guardarDatosEnArchivo(fecha, texto_factura)
+                        showDownloadError = guardarFichero(fecha, texto_factura)
                         if (!showDownloadError){
                             downloadNotification(
                                 context = context,
