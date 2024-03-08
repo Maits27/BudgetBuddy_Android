@@ -64,19 +64,30 @@ fun Edit(
     idioma: String,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
+    val coroutineScope = rememberCoroutineScope()
 
+    /*******************************************************************
+     **    Recoger el valor actual de cada flow del AppViewModel      **
+     **                 (valor por defecto: initial)                  **
+     ******************************************************************/
+    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+
+    /*******************************************************************
+     **                     Valores del formulario                    **
+     * (rememberSaveable para no perder datos en caso de interrupción) *
+     ******************************************************************/
     var nombre by rememberSaveable { mutableStateOf(gasto.nombre) }
     var euros by rememberSaveable { mutableStateOf(gasto.cantidad.toString()) }
-    var selectedOption by remember { mutableStateOf(gasto.tipo) }
-    val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
-    val coroutineScope = rememberCoroutineScope()
-    var fechaTemporal by remember {mutableStateOf(fecha)}
+    var selectedOption by rememberSaveable { mutableStateOf(gasto.tipo) }
+    var fechaTemporal by rememberSaveable {mutableStateOf(fecha)}
 
+    /**    Parámetros para el control de los estados de los composables    **/
     var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
 
+    /**    Funciones parámetro para gestionar las acciones del estado   **/
     val onCalendarConfirm: (LocalDate) -> Unit = {
         isTextFieldFocused = -1
         fechaTemporal=it
@@ -230,6 +241,10 @@ fun Edit(
 
         Button(
             onClick = {
+                // Lanzamiento de corrutina:
+                // En caso de bloqueo o congelado de la base de datos, para que no afecte
+                // al uso normal y fluido de la aplicación.
+                // (Necedario en los métodos de tipo insert, delete y update)
                 coroutineScope.launch(Dispatchers.IO) {
                     if (nombre != "" && euros != "") {
                         if (euros.toDoubleOrNull() != null) {
@@ -260,6 +275,9 @@ fun Edit(
                 .padding(8.dp, 16.dp)
         ) {
             Text(text = stringResource(id = R.string.edit))
+        }
+        if(!showError){
+            ToastMessage(message = stringResource(id = R.string.edit_complete, nombre))
         }
 
         ErrorAlert(show = showError, mensaje = error_message) { showError = false }

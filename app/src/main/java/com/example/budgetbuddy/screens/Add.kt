@@ -59,30 +59,36 @@ fun Add(
     appViewModel: AppViewModel,
     navController: NavController,
     idioma: String,
+    fecha_actual: LocalDate,
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
+    val coroutineScope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-    var nombre by rememberSaveable { mutableStateOf("") }
-    var euros by rememberSaveable { mutableStateOf("") }
-    var fecha by rememberSaveable { mutableStateOf(LocalDate.now()) }
-
-    var error_message by remember { mutableStateOf("") }
     val error_double = stringResource(id = R.string.error_double)
     val error_insert = stringResource(id = R.string.error_insert)
-    val coroutineScope = rememberCoroutineScope()
 
-    var isTextFieldFocused by remember { mutableStateOf(-1) }
-    var showError by rememberSaveable { mutableStateOf(false) }
+    /*******************************************************************
+     **                     Valores del formulario                    **
+     * (rememberSaveable para no perder datos en caso de interrupción) *
+     ******************************************************************/
+    var euros by rememberSaveable { mutableStateOf("") }
+    var fecha by rememberSaveable { mutableStateOf(fecha_actual) }
+    var selectedOption by rememberSaveable { mutableStateOf(TipoGasto.Otros) }
+    var nombre by rememberSaveable { mutableStateOf("") }
 
+    /**    Parámetros para el control de los estados de los composables    **/
+    var error_message by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(TipoGasto.Otros) }
+    var isTextFieldFocused by remember { mutableStateOf(-1) }
 
+    /**    Funciones parámetro para gestionar las acciones del estado   **/
     val onCalendarConfirm: (LocalDate) -> Unit = {
         fecha = it
         isTextFieldFocused = -1
     }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -155,7 +161,6 @@ fun Add(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(color = MaterialTheme.colors.background),
-                // Set maxHeight to ContentHeight.Intrinsic to adjust height dynamically
             ) {
                 TipoGasto.entries.forEach { option ->
                     DropdownMenuItem(
@@ -228,6 +233,10 @@ fun Add(
 
         Button(
             onClick = {
+                // Lanzamiento de corrutina:
+                // En caso de bloqueo o congelado de la base de datos, para que no afecte
+                // al uso normal y fluido de la aplicación.
+                // (Necedario en los métodos de tipo insert, delete y update)
                 coroutineScope.launch(Dispatchers.IO) {
                     if (nombre != "" && euros != "") {
                         if (euros.toDoubleOrNull() != null) {

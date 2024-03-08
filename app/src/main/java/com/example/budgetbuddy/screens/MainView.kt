@@ -86,9 +86,14 @@ fun MainView(
     preferencesViewModel: PreferencesViewModel,
     guardarFichero: (LocalDate, String)-> Boolean
 ){
+
     val primero by preferencesViewModel.primero.collectAsState(initial = false)
     if(primero){
         val coroutineScope = rememberCoroutineScope()
+        // Lanzamiento de corrutina:
+        // En caso de bloqueo o congelado de la base de datos, para que no afecte
+        // al uso normal y fluido de la aplicación.
+        // (Necedario en los métodos de tipo insert, delete y update)
         coroutineScope.launch(Dispatchers.IO) {appViewModel.gastosPrueba()}
         preferencesViewModel.primero()
     }
@@ -97,6 +102,10 @@ fun MainView(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    /*******************************************************************
+     **    Recoger el valor actual de cada flow de los ViewModel      **
+     **                 (valor por defecto: initial)                  **
+     ******************************************************************/
     val idioma by preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang)
     val fecha  by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val factura by appViewModel.facturaActual(fecha, idioma).collectAsState(initial = "")
@@ -174,7 +183,7 @@ fun MainView(
         }
     ){ innerPadding ->
         if (!isVertical){
-            NavHorizontal(idioma, gastoEditable, innerPadding, navController, appViewModel)
+            NavHorizontal(idioma, fecha, gastoEditable, innerPadding, navController, appViewModel)
 
         }else{
             NavHost(
@@ -183,7 +192,7 @@ fun MainView(
                 startDestination = AppScreens.Home.route
             ) {
                 composable(AppScreens.Home.route) { Home(appViewModel, idioma, navController){gastoEditable = it} }
-                composable(AppScreens.Add.route){ Add(appViewModel, navController, idioma.code)}
+                composable(AppScreens.Add.route){ Add(appViewModel, navController, idioma.code, fecha)}
                 composable(AppScreens.Edit.route){ Edit(gastoEditable, appViewModel, navController, idioma.code)}
                 composable( AppScreens.Facturas.route) { Facturas(appViewModel, idioma) }
                 composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code) }
@@ -309,7 +318,7 @@ fun BottomBarMainView(
     }
 }
 @Composable
-fun NavHorizontal(idioma: AppLanguage, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+fun NavHorizontal(idioma: AppLanguage, fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
     var gastoEditable = gasto
     Row {
         Column(
@@ -352,7 +361,7 @@ fun NavHorizontal(idioma: AppLanguage, gasto:Gasto, innerPadding: PaddingValues,
             startDestination = AppScreens.Home.route
         ) {
             composable(AppScreens.Home.route) { Home(appViewModel, idioma, navController){gastoEditable = it} }
-            composable(AppScreens.Add.route) { Add(appViewModel, navController, idioma.code) }
+            composable(AppScreens.Add.route) { Add(appViewModel, navController, idioma.code, fecha) }
             composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController, idioma.code) }
             composable(AppScreens.Facturas.route) { Facturas(appViewModel, idioma ) }
             composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code) }

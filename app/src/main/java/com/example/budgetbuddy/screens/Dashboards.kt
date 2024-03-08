@@ -56,18 +56,21 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
         Color(0xffF0CA8E),
         Color(0xffF08E8E),
     )
+    /*******************************************************************
+     **    Recoger el valor actual de cada flow del AppViewModel      **
+     **                 (valor por defecto: initial)                  **
+     ******************************************************************/
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val datosMes by appViewModel.listadoGastosMes(fecha).collectAsState(emptyList())
-    val onCalendarConfirm: (LocalDate) -> Unit = {
-        showCalendar = false
-        appViewModel.cambiarFecha(it)
-    }
+    val datosTipo by appViewModel.listadoGastosTipo(fecha).collectAsState(emptyList())
+
+    val textoMes = appViewModel.escribirMesyAño(fecha)
+
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val textoMes = appViewModel.escribirMesyAño(fecha)
         Header(
             titulo = stringResource(id = R.string.gasto_dia, textoMes),
             appViewModel = appViewModel
@@ -81,7 +84,6 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String){
             text = stringResource(id = R.string.gasto_tipo, textoMes),
             Modifier.padding(top=16.dp)
         )
-        val datosTipo by appViewModel.listadoGastosTipo(fecha).collectAsState(emptyList())
         LeyendaColores(idioma, colors, datosTipo)
         Pastel(datosTipo, colors)
     }

@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +46,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/**************************************************
+***             Pantalla Home                   ***
+***************************************************/
+/*
+Este composable forma la pantalla de inicio de la aplicación.
 
+Contiene la lista de gastos con sus respectivas Card (una por gasto).
+
+Se le pasan los parámetros de:
+    * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los gastos.
+    * Idioma:        Necesario para la conversión de tipos de gasto.
+    * NavController: De forma que se pueda acceder a las pantallas auxiliares de Add y Edit.
+    * Modifier:      Para dar un estilo predeterminado a los composables (default).
+    * onEdit:        Función necesaria para actualizar los datos en caso de edición.
+*/
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Home(
@@ -53,15 +68,20 @@ fun Home(
     idioma: AppLanguage,
     navController: NavController,
     modifier: Modifier = Modifier,
-    onEdit:(Gasto)->Unit,
+    onEdit: (Gasto)->Unit,
 ){
 
+    val coroutineScope = rememberCoroutineScope() // Parámetro necesario para realizar corrutinas
 
-    val coroutineScope = rememberCoroutineScope()
+    /*******************************************************************
+     **    Recoger el valor actual de cada flow del AppViewModel      **
+     **                 (valor por defecto: initial)                  **
+     ******************************************************************/
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
-    var toast by remember { mutableStateOf(0) }
+    /**    Parámetros para el control de los estados de los composables    **/
+    var toast by remember { mutableStateOf(false) }
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,6 +125,10 @@ fun Home(
                                         containerColor = Color.Transparent
                                     ),
                                     onClick = {
+                                        // Lanzamiento de corrutina:
+                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte
+                                        // al uso normal y fluido de la aplicación.
+                                        // (Necedario en los métodos de tipo insert, delete y update)
                                         coroutineScope.launch(Dispatchers.IO) { onEdit(it) }
 
                                         navController.navigate(AppScreens.Edit.route) {
@@ -114,7 +138,6 @@ fun Home(
                                             launchSingleTop = true
                                             restoreState = true
                                         }
-                                        toast = 1
                                     }
                                 ) {
                                     Icon(
@@ -129,8 +152,12 @@ fun Home(
                                         containerColor = Color.Transparent
                                     ),
                                     onClick = {
+                                        // Lanzamiento de corrutina:
+                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte
+                                        // al uso normal y fluido de la aplicación.
+                                        // (Necedario en los métodos de tipo insert, delete y update)
                                         coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
-                                        toast = 2
+                                        toast = true
                                     }
                                 ) {
                                     Icon(
@@ -139,12 +166,9 @@ fun Home(
                                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 }
-                                if( toast == 1 ){
-                                    ToastMessage(message = stringResource(id = R.string.edit_complete, it.nombre))
-                                    toast = 0
-                                }else if ( toast == 2 ){
+                                if( toast ){
                                     ToastMessage(message = stringResource(id = R.string.delete_complete, it.nombre))
-                                    toast = 0
+                                    toast = false
                                 }
                             }
                         }

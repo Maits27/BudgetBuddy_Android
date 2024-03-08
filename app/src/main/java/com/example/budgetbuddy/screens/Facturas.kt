@@ -44,7 +44,10 @@ fun Facturas(
     modifier: Modifier = Modifier
 ){
 
-
+    /*******************************************************************
+     **    Recoger el valor actual de cada flow del AppViewModel      **
+     **                 (valor por defecto: initial)                  **
+     ******************************************************************/
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val factura by appViewModel.facturaActual(fecha, idioma).collectAsState(initial = "")
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
