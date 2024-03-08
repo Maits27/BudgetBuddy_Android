@@ -2,6 +2,8 @@ package com.example.budgetbuddy.preferences
 
 import kotlinx.coroutines.flow.Flow
 
+
+// Interfaz de acceso a las preferencias del usuario en el Datastore
 interface IGeneralPreferences {
     fun language(): Flow<String>
     suspend fun setLanguage(code: String)
@@ -12,7 +14,4 @@ interface IGeneralPreferences {
 
     suspend fun primero()
     fun getPrimero(): Flow<Boolean>
-//
-//    fun themeChoice(): Flow<String>
-//    suspend fun setThemeChoice(theme: String)
 }

@@ -1,11 +1,9 @@
 package com.example.budgetbuddy.Data
 
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate

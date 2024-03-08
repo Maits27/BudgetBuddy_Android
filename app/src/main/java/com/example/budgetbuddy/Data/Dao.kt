@@ -10,9 +10,6 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
-import com.example.budgetbuddy.Data.Gasto
-import com.example.budgetbuddy.Data.TipoGasto
-
 
 /**
  * La DAO define la API de acceso a la base de datos de Room,

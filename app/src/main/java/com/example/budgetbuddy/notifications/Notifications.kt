@@ -10,10 +10,21 @@ import com.example.budgetbuddy.MainActivity
 import com.example.budgetbuddy.R
 import java.io.File
 
-fun downloadNotification(context: Context,
-                         titulo: String,
-                         description: String,
-                         id: Int
+/***************************************
+ **  Notificaciones de la aplicación  **
+ ***************************************/
+
+// Aquí se implementan todas las notificaciones de la aplicación.
+// Además, se implementan los intent implícitos para interactuar con otras aplicaciones del teléfono.
+
+/**
+ * Notificación de aviso de descarga, informando de la localización del archivo.
+ */
+fun downloadNotification(
+    context: Context,
+    titulo: String,
+    description: String,
+    id: Int
 ){
     val notificationManager = context.getSystemService(NotificationManager::class.java)
 
@@ -30,6 +41,16 @@ fun downloadNotification(context: Context,
 
     notificationManager.notify(id, notification)
 }
+
+/**
+ * Mediante intents implícitos genera un intent de texto plano
+ * o una acción de envio por email, según los parámetros que
+ * reciba o las características de estos.
+ *
+ * También se encarga, en caso de envio por email, de preparar
+ * una estructura predefinida para este con los parámetros de
+ * [asunto] y [contenido].
+ */
 
 fun compartirContenido(
     context: Context,
@@ -61,12 +82,5 @@ fun compartirContenido(
 
 }
 
-//private fun sendImage(context: Context){
-//    val intent = Intent().apply {
-//        action = Intent.ACTION_SEND
-//        putExtra(Intent.EXTRA_STREAM, Uri.EMPTY)
-//        type = "image/*"
-//    }
-//    context.startActivity(Intent.createChooser(intent, null))
-//}
+
 

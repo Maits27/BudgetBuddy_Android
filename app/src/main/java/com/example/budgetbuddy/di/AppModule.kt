@@ -17,52 +17,47 @@ import javax.inject.Singleton
 
 
 /*******************************************************************************
- ****                              Hilt Module                              ****
+ ****                                 Hilt                                  ****
  *******************************************************************************/
 
 /**
- *  This module is installed in [SingletonComponent], witch means,
- *  all the instance here are stored in the application level,
- *  so they will not be destroyed until application is finished/killed;
- *  and are shared between activities.
+ * Este módulo se instala en [SingletonComponent] por lo que todas las instancias
+ * que se definan aquí, estarán definidas a nivel de aplicación. Esto implica que
+ * no se destruirán hasta que lo haga la aplicación y que puedan ser compartidas
+ * entre actividades (de haberlas).
  *
- *  Hilt injects these instances in the required objects automatically.
+ * Hilt se encarga de la inyección de estos elementos donde sea necesario.
  */
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // With Singleton we tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationComponent (i.e. everywhere in the application)
+    /**
+     * Con el @Singleton nos aseguramos de que haya una única instancia
+     * de cada uno de los siguientes elementos en toda la APP
+     */
 
-    /*************************************************
-     **           ROOM Database Instances           **
-     *************************************************/
+
+    //////////////   Instancia de ROOM   //////////////
     @Singleton
     @Provides
     fun providesBudgetBuddyDatabase(@ApplicationContext app: Context) =
-        Room.databaseBuilder(app, Database::class.java, "database")
-//            .createFromAsset("database/budgetbuddy_database.db")
-            .build()
+        Room.databaseBuilder(app, Database::class.java, "database").build()
 
-    //------------------   DAOs   ------------------//
+    ////////////////////// DAO //////////////////////
     @Singleton
     @Provides
     fun provideGastoDao(db: Database) = db.gastoDao()
 
 
-    /*************************************************
-     **                 Repositories                **
-     *************************************************/
-
-    //---------------   Repository   ----------------//
+    //////////////   Repositorio Gastos   //////////////
     @Singleton
     @Provides
     fun provideGastoRepository(gastoDao: GastoDao): IGastoRepository = GastoRepository(gastoDao)
 
 
-    //--   Settings & Preferences Repositories   ---//
-
+    /////////// Repositorio de preferencias ///////////
     @Singleton
     @Provides
     fun provideUserPreferences(@ApplicationContext app: Context): IGeneralPreferences = PreferencesRepository(app)

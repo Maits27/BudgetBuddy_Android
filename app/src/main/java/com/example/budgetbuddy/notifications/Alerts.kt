@@ -30,12 +30,28 @@ import com.example.budgetbuddy.Data.obtenerTema
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.utils.AppLanguage
 
+
+/************************************
+ **    Diálogos de la aplicación   **
+ ************************************/
+
+// Aquí se implementan todos los diálogos (o AlertDialog) de la aplicación.
+
+/**
+ * Diálogos de la barra superior del Scaffold:
+ *  Aquí se definen las tres opciones de la barra superior:
+ *      - Información
+ *      - Idiomas
+ *      - Temas
+ */
 @Composable
 fun Informacion(show: Boolean, onConfirm: () -> Unit) {
     val context = LocalContext.current
+
     val shareMessage = stringResource(id = R.string.share_message)
     val asunto = stringResource(id = R.string.asunto)
     val contenidoMail = stringResource(id = R.string.contenidoEmail)
+
     if(show){
         AlertDialog(
             onDismissRequest = {},
@@ -187,6 +203,12 @@ fun Temas(
     }
 }
 
+/**
+ * Alerta de error por defecto:
+ * Este diálogo se utiliza para informar de cualquier error (generado por el usuario
+ * o por ciertos problemas de la misma APP, generalmente con el timing) ocurrido en
+ * la aplicación. Solo será necesario cambiar el mensaje del contenido.
+ */
 @Composable
 fun ErrorAlert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
     Log.d("DOWNLOAD ERROR", "ERROR ALERT: $show")
