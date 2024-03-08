@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,10 +39,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.dataStoreFile
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
@@ -49,6 +55,7 @@ import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.notifications.ErrorAlert
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -85,6 +92,7 @@ fun Edit(
     var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
+    var showToast by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
 
     /**    Funciones parámetro para gestionar las acciones del estado   **/
@@ -265,6 +273,7 @@ fun Edit(
                         error_message = error_insert
                     }
                     if (!showError) {
+                        showToast=true
                         withContext(Dispatchers.Main) {
                             navController.navigateUp()
                         }
@@ -276,7 +285,7 @@ fun Edit(
         ) {
             Text(text = stringResource(id = R.string.edit))
         }
-        if(!showError){
+        if(showToast){
             ToastMessage(message = stringResource(id = R.string.edit_complete, nombre))
         }
 

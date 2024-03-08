@@ -29,7 +29,7 @@ class AppViewModel @Inject constructor(
     private val _fecha = MutableStateFlow(LocalDate.now())
     val fecha: Flow<LocalDate> = _fecha
 
-    val listadoGastos = gastoRepository.todosLosGastos()
+    private val listadoGastos = gastoRepository.todosLosGastos()
 
     val listadoGastosFecha: (LocalDate)-> Flow<List<Gasto>> = { gastoRepository.elementosFecha(it) }
 
@@ -87,16 +87,9 @@ class AppViewModel @Inject constructor(
 
 
 
-    fun gastoTotalTipo(tipo: TipoGasto): Flow<Double>{
-        return gastoRepository.gastoTotalTipo(tipo)
-    }
-
     /*SELECCIONAR ELEMENTOS*/
 
 
-    fun todosLosGastosTipo(tipoGasto: TipoGasto): List<Gasto> {
-        return gastoRepository.elementosTipo(tipoGasto)
-    }
 
     /*PRINTEAR ELEMENTOS*/
 

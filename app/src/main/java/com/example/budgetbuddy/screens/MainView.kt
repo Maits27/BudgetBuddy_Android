@@ -291,9 +291,9 @@ fun BottomBarMainView(
         backgroundColor = MaterialTheme.colorScheme.secondary
     ){
         val items = listOf(
-            Diseño(AppScreens.Facturas, "Factura", painterResource(id = R.drawable.bill)),
-            Diseño(AppScreens.Home, "Home", painterResource(id = R.drawable.home)),
-            Diseño(AppScreens.Dashboards, "Metrics", painterResource(id = R.drawable.dashboard)),
+            Diseño(AppScreens.Facturas, painterResource(id = R.drawable.bill)),
+            Diseño(AppScreens.Home, painterResource(id = R.drawable.home)),
+            Diseño(AppScreens.Dashboards, painterResource(id = R.drawable.dashboard)),
         )
 
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -328,10 +328,10 @@ fun NavHorizontal(idioma: AppLanguage, fecha: LocalDate, gasto:Gasto, innerPaddi
                 .padding(innerPadding),
         ) {
             val items = listOf(
-                Diseño(AppScreens.Home, "Home", painterResource(id = R.drawable.home)),
-                Diseño(AppScreens.Add, "Add", painterResource(id = R.drawable.add)),
-                Diseño(AppScreens.Facturas, "Facturas", painterResource(id = R.drawable.bill)),
-                Diseño(AppScreens.Dashboards, "Dashboards", painterResource(id = R.drawable.dashboard)),
+                Diseño(AppScreens.Home, painterResource(id = R.drawable.home)),
+                Diseño(AppScreens.Add, painterResource(id = R.drawable.add)),
+                Diseño(AppScreens.Facturas, painterResource(id = R.drawable.bill)),
+                Diseño(AppScreens.Dashboards, painterResource(id = R.drawable.dashboard)),
             )
             items.forEach { screen ->
                 Button(

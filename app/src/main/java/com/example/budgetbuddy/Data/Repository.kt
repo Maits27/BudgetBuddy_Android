@@ -9,22 +9,30 @@ import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
+/******************************************************************
+ * Interfaz que define la API del listado de gastos - Repositorio
+ * Los métodos definidos son las acciones posibles para interactuar
+ * con la BBDD
+ *******************************************************************/
 interface IGastoRepository{
     fun insertGasto(gasto: Gasto)
     suspend fun insertGastos(gastos: List<Gasto>): List<Unit>
     fun deleteGasto(gasto: Gasto): Int
     fun todosLosGastos(): Flow<List<Gasto>>
     fun elementosFecha(fecha: LocalDate): Flow<List<Gasto>>
-    fun elementosTipo(tipo: TipoGasto): List<Gasto>
     fun gastoTotal(): Flow<Double>
     fun gastoTotalDia(fecha: LocalDate): Flow<Double>
-    fun gastoTotalTipo(tipoGasto: TipoGasto): Flow<Double>
     fun gastosIsEmpty(): Boolean
     fun tipoIsEmpty(tipo: TipoGasto): Boolean
     fun diaIsEmpty(fecha: LocalDate): Boolean
     fun editarGasto(gasto: Gasto): Int
 }
-
+/**
+ * Implementación de [IGastoRepository] que usa Hilt para inyectar los
+ * parámetros necesarios. Desde aquí se accede a [GastoDao], que se encarga
+ * de la conexión a la BBDD de Room.
+ * */
 @Singleton
 class GastoRepository @Inject constructor(
     private val gastoDao: GastoDao
@@ -49,20 +57,12 @@ class GastoRepository @Inject constructor(
         return gastoDao.elementosFecha(fecha)
     }
 
-    override fun elementosTipo(tipo: TipoGasto): List<Gasto>{
-        return gastoDao.elementosTipo(tipo)
-    }
-
     override fun gastoTotal(): Flow<Double>{
         return gastoDao.gastoTotal()
     }
 
     override fun gastoTotalDia(fecha: LocalDate): Flow<Double>{
         return gastoDao.gastoTotalDia(fecha)
-    }
-
-    override fun gastoTotalTipo(tipoGasto: TipoGasto): Flow<Double>{
-        return gastoDao.gastoTotalTipo(tipoGasto)
     }
 
     override fun gastosIsEmpty(): Boolean {
