@@ -38,8 +38,7 @@ class AppViewModel @Inject constructor(
     val listadoGastosMes: (LocalDate)-> Flow<List<GastoDia>> = { sacarDatosMes(it) }
 
     val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
-    val mapaDatosPorTipo: (LocalDate, String)-> Flow<Map<String, Int>> = {
-        fecha, idioma -> sacarDatosPorTipo(fecha, idioma)}
+
 
     val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
 
@@ -54,6 +53,7 @@ class AppViewModel @Inject constructor(
             var i = Random.nextInt(0,6)
             añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+20), TipoGasto.entries[i])
             añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.entries[i])
+            i = Random.nextInt(0,6)
             añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.entries[i])
             añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.entries[i])
             añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10),TipoGasto.entries[i])
@@ -144,14 +144,7 @@ class AppViewModel @Inject constructor(
         }
         return gastosAgrupados
     }
-fun sacarDatosPorTipo(fecha: LocalDate, idioma: String): Flow<Map<String, Int>>{
-    val mapa = listadoGastosTipo(fecha).map { gastosPorTipo ->
-        gastosPorTipo.map { (cantidad, tipo) ->
-            obtenerTipoEnIdioma(tipo, idioma) to cantidad.toInt()
-        }.toMap()
-    }
-    return mapa
-}
+
 
 
 }

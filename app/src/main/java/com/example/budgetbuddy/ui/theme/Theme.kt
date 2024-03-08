@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import com.example.budgetbuddy.VM.PreferencesViewModel
 
-private val DarkColorScheme = darkColorScheme(
+private val DarkColorScheme = lightColorScheme(
     primary = Color(0xff082e20), //Verde oscuro
     secondary = Color(0xff082e20), //Verde oscuro
     tertiary = Color(0xffCFFFDB), //Verde claro
@@ -45,7 +45,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = Color(0xff0E2D68), //Azul oscuro
 )
 
-private val CustomColorScheme = darkColorScheme(
+private val CustomColorScheme = lightColorScheme(
     primary = Color(0xff4A126E), // Morado oscuro
     secondary = Color(0xff4A126E), // Morado oscuro
     tertiary = Color(0xffEBCFFF), // Rosa claro
@@ -63,6 +63,7 @@ private val CustomColorScheme = darkColorScheme(
     onSurface = Color(0xff4A126E),// Morado oscuro
     onSurfaceVariant = Color(0xff4A126E),// Morado oscuro
     inverseOnSurface = Color(0xff4A126E)// Morado oscuro
+
 )
 
 
@@ -74,14 +75,14 @@ fun BudgetBuddyTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val dark by preferencesViewModel.theme.collectAsState(initial = true)
-    if (dark==0){
+    val theme by preferencesViewModel.theme.collectAsState(initial = true)
+    if (theme==0){
         MaterialTheme(
             colorScheme = DarkColorScheme,
             typography = Typography,
             content = content
         )
-    }else if (dark==1){
+    }else if (theme==1){
         MaterialTheme(
             colorScheme = LightColorScheme,
             typography = Typography,
@@ -94,5 +95,37 @@ fun BudgetBuddyTheme(
             content = content
         )
     }
+}
+
+fun dashboardTheme(theme: Int): List<Color>{
+    if (theme == 0) {
+        return listOf(
+            Color(0xff3C7046), // Verde oscuro
+            Color(0xff569E5C), // Verde musgo
+            Color(0xff73B96E), // Verde claro
+            Color(0xff8FD288), // Verde pastel
+            Color(0xffACECA5), // Verde pálido
+            Color(0xffC8FFD2)  // Verde muy claro
+        )
+    } else if (theme == 1) {
+        return listOf(
+            Color(0xff0E2D68),
+            Color(0xff09579e),
+            Color(0xff1678cf),
+            Color(0xff239dff),
+            Color(0xff77c3fe),
+            Color(0xffcddbe7),
+        )
+    } else {
+        return listOf(
+            Color(0xff602D6C), // Morado oscuro
+            Color(0xff7F4185), // Púrpura profundo
+            Color(0xff9C5FAF), // Lila intenso
+            Color(0xffB980CB), // Morado suave
+            Color(0xffD0AAD2), // Rosa lavanda
+            Color(0xffE9C9E4)  // Lavanda claro
+        )
+    }
+
 
 }

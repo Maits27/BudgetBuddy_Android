@@ -103,6 +103,7 @@ fun MainView(
      **                 (valor por defecto: initial)                  **
      ******************************************************************/
     val idioma by preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang)
+    val tema by preferencesViewModel.theme.collectAsState(initial = 0)
     val fecha  by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val factura by appViewModel.facturaActual(fecha, idioma).collectAsState(initial = "")
     val total  by appViewModel.totalGasto(fecha).collectAsState(initial = 0.0)
@@ -179,7 +180,7 @@ fun MainView(
         }
     ){ innerPadding ->
         if (!isVertical){
-            NavHorizontal(idioma, fecha, gastoEditable, innerPadding, navController, appViewModel)
+            NavHorizontal(idioma, tema, fecha, gastoEditable, innerPadding, navController, appViewModel)
 
         }else{
             NavHost(
@@ -191,7 +192,7 @@ fun MainView(
                 composable(AppScreens.Add.route){ Add(appViewModel, navController, idioma.code, fecha)}
                 composable(AppScreens.Edit.route){ Edit(gastoEditable, appViewModel, navController, idioma.code)}
                 composable( AppScreens.Facturas.route) { Facturas(appViewModel, idioma) }
-                composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code) }
+                composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code, tema) }
             }
         }
         
@@ -314,7 +315,7 @@ fun BottomBarMainView(
     }
 }
 @Composable
-fun NavHorizontal(idioma: AppLanguage, fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+fun NavHorizontal(idioma: AppLanguage, tema: Int,  fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
     var gastoEditable = gasto
     Row {
         Column(
@@ -360,7 +361,7 @@ fun NavHorizontal(idioma: AppLanguage, fecha: LocalDate, gasto:Gasto, innerPaddi
             composable(AppScreens.Add.route) { Add(appViewModel, navController, idioma.code, fecha) }
             composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController, idioma.code) }
             composable(AppScreens.Facturas.route) { Facturas(appViewModel, idioma ) }
-            composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code) }
+            composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code, tema) }
         }
     }
 }
