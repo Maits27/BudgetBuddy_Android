@@ -1,7 +1,6 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,23 +38,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
-import androidx.datastore.dataStoreFile
-import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.notifications.ErrorAlert
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.budgetbuddy.shared.Calendario
+import com.example.budgetbuddy.shared.ErrorAlert
+import com.example.budgetbuddy.shared.ToastMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -72,6 +67,9 @@ fun Edit(
     modifier: Modifier = Modifier.verticalScroll(rememberScrollState())
 ){
     val coroutineScope = rememberCoroutineScope()
+
+    val error_double = stringResource(id = R.string.error_double)
+    val error_insert = stringResource(id = R.string.error_insert)
 
     /*******************************************************************
      **    Recoger el valor actual de cada flow del AppViewModel      **
@@ -92,6 +90,7 @@ fun Edit(
     var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
+    var enabledDate by remember { mutableStateOf(true) }
     var showToast by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -99,6 +98,7 @@ fun Edit(
     val onCalendarConfirm: (LocalDate) -> Unit = {
         isTextFieldFocused = -1
         fechaTemporal=it
+        enabledDate = false
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -113,6 +113,7 @@ fun Edit(
         )
         Divider()
 
+        ///////////////////////////////////////// Campo de Nombre /////////////////////////////////////////
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -133,6 +134,7 @@ fun Edit(
                 }
         )
 
+        ///////////////////////////////////////// Campo de Tipo /////////////////////////////////////////
         Box(
             modifier = Modifier
                 .padding(16.dp)
@@ -174,7 +176,6 @@ fun Edit(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(color = MaterialTheme.colors.background),
-                // Set maxHeight to ContentHeight.Intrinsic to adjust height dynamically
             ) {
                 TipoGasto.entries.forEach { option ->
                     DropdownMenuItem(
@@ -192,6 +193,8 @@ fun Edit(
                 }
             }
         }
+
+        ///////////////////////////////////////// Campo de Cantidad /////////////////////////////////////////
         OutlinedTextField(
             value = euros,
             onValueChange = { euros = it },
@@ -215,16 +218,16 @@ fun Edit(
                 }
         )
 
+        ///////////////////////////////////////// Campo de Fecha /////////////////////////////////////////
         OutlinedTextField(
             value = fechaTemporal.toString(),
             onValueChange = {
                 fechaTemporal = try {
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {
-                    // Manejo de errores o asigna un valor predeterminado
+                    // Asigna un valor predeterminado en caso de introducir un valor que no sea tipo LocalDate
                     LocalDate.now()
                 }
-
             },
             label = { Text(stringResource(id = R.string.date_pick)) },
             modifier = Modifier
@@ -237,21 +240,17 @@ fun Edit(
                         isTextFieldFocused = -1 // Cuando el campo de texto pierde el enfoque
                     }
                 },
+            enabled = enabledDate,
             keyboardOptions = KeyboardOptions.Default.copy(showKeyboardOnFocus = false)
         )
-
+        if (!enabledDate) { enabledDate = true }
 
         Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
-
-
-        val error_double = stringResource(id = R.string.error_double)
-        val error_insert = stringResource(id = R.string.error_insert)
 
         Button(
             onClick = {
                 // Lanzamiento de corrutina:
-                // En caso de bloqueo o congelado de la base de datos, para que no afecte
-                // al uso normal y fluido de la aplicación.
+                // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                 // (Necedario en los métodos de tipo insert, delete y update)
                 coroutineScope.launch(Dispatchers.IO) {
                     if (nombre != "" && euros != "") {

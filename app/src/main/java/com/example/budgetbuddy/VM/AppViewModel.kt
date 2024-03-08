@@ -10,6 +10,7 @@ import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
 import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.utils.AppLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,7 @@ import java.io.File
 import java.io.FileWriter
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
@@ -36,6 +38,8 @@ class AppViewModel @Inject constructor(
     val listadoGastosMes: (LocalDate)-> Flow<List<GastoDia>> = { sacarDatosMes(it) }
 
     val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
+    val mapaDatosPorTipo: (LocalDate, String)-> Flow<Map<String, Int>> = {
+        fecha, idioma -> sacarDatosPorTipo(fecha, idioma)}
 
     val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
 
@@ -47,11 +51,13 @@ class AppViewModel @Inject constructor(
 
     fun gastosPrueba(){
         for (cantidad in 1 until 10){
-            añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+20), TipoGasto.Comida)
-            añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.Transporte)
-            añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.Hogar)
-            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.Ropa)
-            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10), TipoGasto.Actividad)
+            var i = Random.nextInt(0,6)
+            añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+20), TipoGasto.entries[i])
+            añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10),TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 6$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.entries[i])
         }
     }
 
@@ -138,6 +144,14 @@ class AppViewModel @Inject constructor(
         }
         return gastosAgrupados
     }
+fun sacarDatosPorTipo(fecha: LocalDate, idioma: String): Flow<Map<String, Int>>{
+    val mapa = listadoGastosTipo(fecha).map { gastosPorTipo ->
+        gastosPorTipo.map { (cantidad, tipo) ->
+            obtenerTipoEnIdioma(tipo, idioma) to cantidad.toInt()
+        }.toMap()
+    }
+    return mapa
+}
 
 
 }

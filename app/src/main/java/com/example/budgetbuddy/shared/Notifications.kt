@@ -1,14 +1,12 @@
-package com.example.budgetbuddy.notifications
+package com.example.budgetbuddy.shared
 
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
-import androidx.core.content.FileProvider
 import com.example.budgetbuddy.MainActivity
 import com.example.budgetbuddy.R
-import java.io.File
 
 /***************************************
  **  Notificaciones de la aplicación  **

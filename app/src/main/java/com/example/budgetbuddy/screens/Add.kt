@@ -46,7 +46,8 @@ import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.notifications.ErrorAlert
+import com.example.budgetbuddy.shared.Calendario
+import com.example.budgetbuddy.shared.ErrorAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -80,6 +81,7 @@ fun Add(
     /**    Parámetros para el control de los estados de los composables    **/
     var error_message by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
+    var enabledDate by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(false) }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
 
@@ -87,6 +89,8 @@ fun Add(
     val onCalendarConfirm: (LocalDate) -> Unit = {
         fecha = it
         isTextFieldFocused = -1
+        enabledDate = false
+        keyboardController?.hide()
     }
 
     Column(
@@ -100,6 +104,7 @@ fun Add(
         )
         Divider()
 
+        ///////////////////////////////////////// Campo de Nombre /////////////////////////////////////////
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -120,6 +125,7 @@ fun Add(
                 }
         )
 
+        ///////////////////////////////////////// Campo de Tipo /////////////////////////////////////////
         Box(
             modifier = Modifier
                 .padding(16.dp)
@@ -179,7 +185,7 @@ fun Add(
             }
         }
 
-
+        ///////////////////////////////////////// Campo de Cantidad /////////////////////////////////////////
         OutlinedTextField(
             value = euros,
             onValueChange = { euros = it },
@@ -202,16 +208,18 @@ fun Add(
                     }
                 }
         )
+
+        ///////////////////////////////////////// Campo de Fecha /////////////////////////////////////////
         OutlinedTextField(
             value = fecha.toString(),
             onValueChange = {
                 fecha = try {
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {
-                    // Manejo de errores o asigna un valor predeterminado
+                    // Asigna un valor predeterminado en caso de introducir un valor que no sea tipo LocalDate
                     LocalDate.now()
                 }
-
+                keyboardController?.hide()
             },
             label = { Text(stringResource(id = R.string.date_pick)) },
             modifier = Modifier
@@ -220,22 +228,23 @@ fun Add(
                 .onFocusChanged { focusState ->
                     if (focusState.isFocused) {
                         isTextFieldFocused = 2 // Cuando el campo de texto está enfocado
+                        keyboardController?.hide()
                     } else {
                         isTextFieldFocused = -1 // Cuando el campo de texto pierde el enfoque
+                        keyboardController?.hide()
                     }
                 },
+            enabled = enabledDate,
             keyboardOptions = KeyboardOptions.Default.copy(showKeyboardOnFocus = false)
         )
-
+        if (!enabledDate) { enabledDate = true }
 
         Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
-
 
         Button(
             onClick = {
                 // Lanzamiento de corrutina:
-                // En caso de bloqueo o congelado de la base de datos, para que no afecte
-                // al uso normal y fluido de la aplicación.
+                // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                 // (Necedario en los métodos de tipo insert, delete y update)
                 coroutineScope.launch(Dispatchers.IO) {
                     if (nombre != "" && euros != "") {

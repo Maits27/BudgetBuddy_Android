@@ -44,11 +44,8 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("BudgetBuddy", "Init")
         super.onCreate(savedInstanceState)
-        Log.d("BudgetBuddy", "Notificaciones")
         createNotificationChannel()
-
 
         setContent {
             BudgetBuddyTheme(preferencesViewModel = preferencesViewModel) {

@@ -2,19 +2,16 @@ package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -60,14 +57,14 @@ import com.example.budgetbuddy.Data.Diseño
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.TipoGasto
 import com.example.budgetbuddy.VM.PreferencesViewModel
-import com.example.budgetbuddy.notifications.Idiomas
-import com.example.budgetbuddy.notifications.Informacion
+import com.example.budgetbuddy.shared.Idiomas
+import com.example.budgetbuddy.shared.Informacion
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
-import com.example.budgetbuddy.notifications.ErrorAlert
-import com.example.budgetbuddy.notifications.Temas
-import com.example.budgetbuddy.notifications.compartirContenido
-import com.example.budgetbuddy.notifications.downloadNotification
+import com.example.budgetbuddy.shared.ErrorAlert
+import com.example.budgetbuddy.shared.Temas
+import com.example.budgetbuddy.shared.compartirContenido
+import com.example.budgetbuddy.shared.downloadNotification
 import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
 import com.example.budgetbuddy.screens.Edit
@@ -91,8 +88,7 @@ fun MainView(
     if(primero){
         val coroutineScope = rememberCoroutineScope()
         // Lanzamiento de corrutina:
-        // En caso de bloqueo o congelado de la base de datos, para que no afecte
-        // al uso normal y fluido de la aplicación.
+        // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
         // (Necedario en los métodos de tipo insert, delete y update)
         coroutineScope.launch(Dispatchers.IO) {appViewModel.gastosPrueba()}
         preferencesViewModel.primero()

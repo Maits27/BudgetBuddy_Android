@@ -1,8 +1,6 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,7 +32,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
@@ -41,6 +39,9 @@ import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
+import com.example.budgetbuddy.shared.Header
+import com.example.budgetbuddy.shared.NoData
+import com.example.budgetbuddy.shared.ToastMessage
 import com.example.budgetbuddy.utils.AppLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -85,7 +86,7 @@ fun Home(
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ){
         Header(
             titulo = stringResource(id = R.string.list_explain, appViewModel.escribirFecha(fecha)),
@@ -126,8 +127,7 @@ fun Home(
                                     ),
                                     onClick = {
                                         // Lanzamiento de corrutina:
-                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte
-                                        // al uso normal y fluido de la aplicación.
+                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                                         // (Necedario en los métodos de tipo insert, delete y update)
                                         coroutineScope.launch(Dispatchers.IO) { onEdit(it) }
 
@@ -153,8 +153,7 @@ fun Home(
                                     ),
                                     onClick = {
                                         // Lanzamiento de corrutina:
-                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte
-                                        // al uso normal y fluido de la aplicación.
+                                        // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                                         // (Necedario en los métodos de tipo insert, delete y update)
                                         coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
                                         toast = true
