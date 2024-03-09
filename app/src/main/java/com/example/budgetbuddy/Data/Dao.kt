@@ -46,10 +46,10 @@ interface GastoDao {
      */
 
     @Transaction
-    @Query("SELECT IFNULL(SUM(cantidad), 0.0) FROM Gasto")
+    @Query("SELECT ROUND(IFNULL(SUM(cantidad), 0.0), 2) FROM Gasto")
     fun gastoTotal(): Flow<Double>
     @Transaction
-    @Query("SELECT IFNULL(SUM(cantidad), 0.0) FROM Gasto WHERE fecha=:fecha")
+    @Query("SELECT ROUND(IFNULL(SUM(cantidad), 0.0), 2) FROM Gasto WHERE fecha=:fecha")
     fun gastoTotalDia(fecha: LocalDate): Flow<Double>
     @Transaction
     @Query("SELECT IFNULL(COUNT(*), 0) FROM Gasto")

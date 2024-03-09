@@ -290,7 +290,7 @@ fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTi
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         modifier = Modifier.padding(start = 15.dp),
-                                        text = datosTipo[index+1].tipo.tipo,
+                                        text = obtenerTipoEnIdioma(datosTipo[index+1].tipo, idioma),
                                         fontWeight = FontWeight.Medium,
                                         fontSize = 12.sp,
                                         color = Color.Black
