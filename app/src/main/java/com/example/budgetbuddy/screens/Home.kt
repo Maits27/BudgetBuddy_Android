@@ -32,15 +32,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
-import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
+import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.navigation.AppScreens
 import com.example.budgetbuddy.shared.Header
 import com.example.budgetbuddy.shared.NoData
 import com.example.budgetbuddy.shared.ToastMessage
-import com.example.budgetbuddy.utils.AppLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -54,11 +54,11 @@ Este composable forma la pantalla de inicio de la aplicación.
 Contiene la lista de gastos con sus respectivas Card (una por gasto).
 
 Se le pasan los parámetros de:
-    * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los gastos.
-    * Idioma:        Necesario para la conversión de tipos de gasto.
-    * NavController: De forma que se pueda acceder a las pantallas auxiliares de Add y Edit.
-    * Modifier:      Para dar un estilo predeterminado a los composables (default).
-    * onEdit:        Función necesaria para actualizar los datos en caso de edición.
+    * @appViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los gastos.
+    * @idioma:        Necesario para la conversión de tipos de gasto.
+    * @navController: De forma que se pueda acceder a las pantallas auxiliares de Add y Edit.
+    * @modifier:      Para dar un estilo predeterminado a los composables (default).
+    * @onEdit:        Función necesaria para actualizar los datos en caso de edición.
 */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable

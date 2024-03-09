@@ -4,8 +4,10 @@ import androidx.compose.ui.graphics.painter.Painter
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
+import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.navigation.AppScreens
-import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate
 import java.util.UUID
 

@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,55 +33,23 @@ private fun Context.getActivity(): ComponentActivity? = when (this) {
 }
 
 
-/*************************************************
- **          App's Available Languages          **
- *************************************************/
-
-/**
- * Class containing the App's available languages.
- *
- * @property language Full name of that language (in that language)
- * @property code Language's locale code
- */
-enum class AppLanguage(val language: String, val code: String) {
-    EN("English", "en"),
-    EU("Euskera", "eu"),
-    ES("Español", "es");
-
-
-    companion object {
-        /**
-         * Get the [AppLanguage] from a language code.
-         *
-         * @param code Language's code as string
-         * @return That code's corresponding App's language as an [AppLanguage]. Defaults to [EN].
-         */
-        fun getFromCode(code: String) = when (code) {
-            EU.code -> EU
-            EN.code -> EN
-            ES.code -> ES
-            else -> EN
-        }
-    }
-}
-
 
 /*************************************************
  **            App's Language Manager           **
  *************************************************/
 
 /**
- * Class to manage the current app's language.
+ * Clase de modificación del idioma actual
  *
- * It is annotated with Hilt's singleton annotation so only one instance is created in the whole Application.
+ * Se le ha establecido como @Singleton de Hilt para crear una única instancia en toda la APP
  */
 @Singleton
 class LanguageManager @Inject constructor() {
 
-    // Current application's lang
+    // Idioma actual de la APP
     var currentLang: AppLanguage = AppLanguage.getFromCode(Locale.getDefault().language.lowercase())
 
-    // Method to change the App's language setting a new locale
+    // Método que cambia el idioma de la aplicación de forma local e instantánea
     fun changeLang(lang: AppLanguage) {
         val localeList = LocaleListCompat.forLanguageTags(lang.code)
         AppCompatDelegate.setApplicationLocales(localeList)

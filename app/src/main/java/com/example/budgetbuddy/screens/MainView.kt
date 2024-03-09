@@ -54,8 +54,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Diseño
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.Data.Gasto
-import com.example.budgetbuddy.Data.TipoGasto
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
 import com.example.budgetbuddy.VM.PreferencesViewModel
 import com.example.budgetbuddy.shared.Idiomas
 import com.example.budgetbuddy.shared.Informacion
@@ -69,7 +70,6 @@ import com.example.budgetbuddy.screens.Add
 import com.example.budgetbuddy.screens.Dashboards
 import com.example.budgetbuddy.screens.Edit
 import com.example.budgetbuddy.screens.Home
-import com.example.budgetbuddy.utils.AppLanguage
 import com.example.budgetbuddy.utils.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,9 +84,9 @@ Este composable forma el marco general de la aplicación.
 Contiene el [NavHost] que permite navegar entre pantallas.
 
 Se le pasan los parámetros de:
- * AppViewModel:            ViewModel general de la aplicación con los flows de la información relativa a la BBDD.
- * PreferencesViewModel:    ViewModel con las preferencias de [idioma] y [tema] del usuario local.
- * guardarFichero:          Función necesaria en caso de querer descargar un fichero, ya que esto requiere volver a la [MainActivity].
+ * @appViewModel:            ViewModel general de la aplicación con los flows de la información relativa a la BBDD.
+ * @preferencesViewModel:    ViewModel con las preferencias de [idioma] y [tema] del usuario local.
+ * @guardarFichero:          Función necesaria en caso de querer descargar un fichero, ya que esto requiere volver a la [MainActivity].
  */
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -331,7 +331,7 @@ fun BottomBarMainView(
  * Equivalente al fragment del marco en caso de poner la pantalla en posición horizontal.
  */
 @Composable
-fun NavHorizontal(idioma: AppLanguage, tema: Int,  fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
+fun NavHorizontal(idioma: AppLanguage, tema: Int, fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
     var gastoEditable = gasto
     Row {
         Column(

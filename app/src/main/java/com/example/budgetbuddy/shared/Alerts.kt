@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.budgetbuddy.Data.Tema
-import com.example.budgetbuddy.Data.obtenerTema
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
+import com.example.budgetbuddy.Data.Enumeration.Tema
+import com.example.budgetbuddy.Data.Enumeration.obtenerTema
 import com.example.budgetbuddy.R
-import com.example.budgetbuddy.utils.AppLanguage
 
 
 /************************************

@@ -9,8 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.preferences.IGeneralPreferences
-import com.example.budgetbuddy.utils.AppLanguage
 import com.example.budgetbuddy.utils.LanguageManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

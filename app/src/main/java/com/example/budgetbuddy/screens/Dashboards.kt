@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
-import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
+import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.shared.Header
 import com.example.budgetbuddy.shared.NoData
@@ -54,9 +54,9 @@ Este composable forma la pantalla principal de Dashboards.
 Contiene la información del mes seleccionado en la APP de forma gráfica.
 
 Se le pasan los parámetros de:
- * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto].
- * Idioma:        Necesario para la conversión de tipos de gasto.
- * Tema:          Para dar el estilo necesario al gráfico [Pastel].
+ * @appViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto].
+ * @idioma:        Necesario para la conversión de tipos de gasto.
+ * @tema:          Para dar el estilo necesario al gráfico [Pastel].
  */
 @Composable
 fun Dashboards(

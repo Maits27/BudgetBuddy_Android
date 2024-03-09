@@ -1,4 +1,4 @@
-package com.example.budgetbuddy.Data
+package com.example.budgetbuddy.Data.Enumeration
 
 /*******************************************************************
  **       Clase enumerando los temas de colores posibles          **

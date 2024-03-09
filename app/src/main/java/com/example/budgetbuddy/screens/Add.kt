@@ -43,8 +43,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
-import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
+import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.shared.Calendario
 import com.example.budgetbuddy.shared.ErrorAlert
@@ -62,11 +62,11 @@ import java.time.format.DateTimeParseException
 Este composable forma la pantalla del formulario para añadir elementos.
 
 Se le pasan los parámetros de:
- * AppViewModel:  ViewModel general de la aplicación con los métodos necesarios para editar la fecha.
- * NavController: De forma que se pueda volver a la pantalla [Home].
- * Idioma:        Necesario para la conversión de tipos de gasto.
- * Fecha:         Fecha en la que se presupone que se va a añadir el gasto.
- * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ * @appViewModel:  ViewModel general de la aplicación con los métodos necesarios para editar la fecha.
+ * @navController: De forma que se pueda volver a la pantalla [Home].
+ * @idioma:        Necesario para la conversión de tipos de gasto.
+ * @fecha_actual:  Fecha en la que se presupone que se va a añadir el gasto.
+ * @modifier:      Para dar un estilo predeterminado a los composables (default).
  */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

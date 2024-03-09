@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 

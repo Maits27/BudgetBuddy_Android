@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.Data.Gasto
-import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
+import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.shared.Calendario
 import com.example.budgetbuddy.shared.ErrorAlert
@@ -64,11 +64,11 @@ import java.time.format.DateTimeParseException
 Este composable forma la pantalla del formulario para editar elementos.
 
 Se le pasan los parámetros de:
- * Gasto:          elemento tipo [Gasto] que se quiere editar (con sus datos hasta el momento).
- * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a la [Fecha].
- * NavController: De forma que se pueda volver a la pantalla [Home].
- * Idioma:        Necesario para la conversión de tipos de gasto.
- * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ * @gasto:          elemento tipo [Gasto] que se quiere editar (con sus datos hasta el momento).
+ * @ppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a la [Fecha].
+ * @navController: De forma que se pueda volver a la pantalla [Home].
+ * @idioma:        Necesario para la conversión de tipos de gasto.
+ * @modifier:      Para dar un estilo predeterminado a los composables (default).
  */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable

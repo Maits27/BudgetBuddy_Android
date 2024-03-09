@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.Data
 
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject

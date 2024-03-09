@@ -2,12 +2,12 @@ package com.example.budgetbuddy.VM
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
-import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.utils.AppLanguage
+import com.example.budgetbuddy.Data.Enumeration.TipoGasto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +50,8 @@ class AppViewModel @Inject constructor(
             i = Random.nextInt(0,6)
             añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.entries[i])
             añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10),TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10),
+                TipoGasto.entries[i])
             añadirGasto( "Gasto Inicial 6$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.entries[i])
         }
     }

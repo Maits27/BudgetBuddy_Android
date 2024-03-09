@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.shared.Header
 import com.example.budgetbuddy.shared.NoData
-import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate
 
 /**************************************************
@@ -38,9 +38,9 @@ Este composable forma la pantalla de facturas de la aplicación.
 Contiene la factura del día seleccionado en la APP.
 
 Se le pasan los parámetros de:
- * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto] y [factura].
- * Idioma:        Necesario para la conversión de tipos de gasto.
- * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ * @appViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto] y [factura].
+ * @idioma:        Necesario para la conversión de tipos de gasto.
+ * @modifier:      Para dar un estilo predeterminado a los composables (default).
  */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
