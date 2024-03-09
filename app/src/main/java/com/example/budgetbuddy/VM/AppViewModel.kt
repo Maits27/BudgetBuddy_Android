@@ -8,6 +8,7 @@ import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
 import com.example.budgetbuddy.Data.Enumeration.TipoGasto
+import com.example.budgetbuddy.preferences.IGeneralPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,13 +17,29 @@ import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
 
+/********************************************************
+ ****                 App View Model                 ****
+ ********************************************************/
+/**
+ * View Model de Hilt para los datos del usuario
+ * Encargado de las interacciones entre el frontend de la app y el repositorio [gastoRepository] que realiza los cambios en ROOM.
+ *
+ * @gastoRepository: implementación de [IGastoRepository] y repositorio a cargo de realizar los cambios en la BBDD.
+ */
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val gastoRepository: IGastoRepository,
 ) : ViewModel() {
 
+    /*************************************************
+     **                    Estados                  **
+     *************************************************/
+
+    // Flows a los que les llega constantemente las actualizaciones y datos de la BBDD.
+    // De esta forma no es necesaria una actualización cada vez que se realice un cambio.
 
     private val _fecha = MutableStateFlow(LocalDate.now())
+
     val fecha: Flow<LocalDate> = _fecha
 
     private val listadoGastos = gastoRepository.todosLosGastos()
@@ -42,6 +59,9 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    /*************************************************
+     **          Inicialización de la BBDD          **
+     *************************************************/
     fun gastosPrueba(){
         for (cantidad in 1 until 10){
             var i = Random.nextInt(0,6)
@@ -56,7 +76,12 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    /*AÑADIR Y ELIMINAR ELEMENTOS*/
+    /*************************************************
+     **                    Eventos                  **
+     *************************************************/
+
+
+    ////////////////////// Añadir y eliminar elementos //////////////////////
 
     fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo: TipoGasto):Gasto {
         val gasto = Gasto(nombre, cantidad, fecha, tipo)
@@ -72,27 +97,17 @@ class AppViewModel @Inject constructor(
         gastoRepository.deleteGasto(gasto)
     }
 
-    /*EDITAR ELEMENTOS*/
+    ////////////////////// Editar elementos //////////////////////
 
 
     fun cambiarFecha(nuevoValor: LocalDate) {
         _fecha.value = nuevoValor
     }
-
-
     fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
         gastoRepository.editarGasto(Gasto(nombre, cantidad,fecha, tipo, gasto_previo.id))
     }
 
-    /*CALCULAR ELEMENTOS*/
-
-
-
-    /*SELECCIONAR ELEMENTOS*/
-
-
-
-    /*PRINTEAR ELEMENTOS*/
+    ////////////////////// Pasar a formato String //////////////////////
 
     fun escribirFecha(fecha: LocalDate): String {
         return "${fecha.dayOfMonth}/${fecha.monthValue}/${fecha.year}"
@@ -106,7 +121,7 @@ class AppViewModel @Inject constructor(
         return "${fecha.dayOfMonth}_${fecha.monthValue}_${fecha.year}"
     }
 
-    /*PRINTEAR ELEMENTOS GRAFICOS*/
+    ////////////////////// Recopilar datos gráficos //////////////////////
 
     fun sacarDatosMes(fecha: LocalDate): Flow<List<GastoDia>>{
         val gastosFechados = listadoGastos.map{
@@ -139,8 +154,6 @@ class AppViewModel @Inject constructor(
         }
         return gastosAgrupados
     }
-
-
 
 }
 

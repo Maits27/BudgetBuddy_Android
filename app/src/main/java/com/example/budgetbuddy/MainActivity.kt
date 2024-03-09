@@ -31,9 +31,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
-
+/************************************************
+ ****              Main Activity             ****
+ ***********************************************/
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    /**
+     * View models e ID del canal para las notificaciones.
+     */
 
     val appViewModel by viewModels<AppViewModel> ()
     val preferencesViewModel by viewModels<PreferencesViewModel> ()
@@ -41,21 +47,26 @@ class MainActivity : AppCompatActivity() {
         const val CHANNEL_ID = "BudgetBuddy"
     }
 
+    /**
+     * Métodos principales de la actividad relativos al ciclo de vida
+     */
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Creación del canal de notificación
         createNotificationChannel()
-
         setContent {
             BudgetBuddyTheme(preferencesViewModel = preferencesViewModel) {
-                // A surface container using the 'background' color from the theme
-                val guardarFichero: ( LocalDate, String)-> Boolean = { fecha, datos -> guardarDatosEnArchivo(appViewModel, fecha, datos) }
+                // Método para la descarga de ficheros
+                val guardarFichero: ( LocalDate, String)-> Boolean = { fecha, datos ->
+                    guardarDatosEnArchivo(appViewModel, fecha, datos) }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    // Solicitud de permisos
                     NotificationPermission()
                     MainView(
                         appViewModel = appViewModel,
@@ -67,22 +78,29 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun guardarDatosEnArchivo(appViewModel: AppViewModel, fecha: LocalDate, datos:String): Boolean{
+
+    /**
+     * Descargar contenido String a fichero TXT
+     * Código de: https://www.geeksforgeeks.org/android-jetpack-compose-external-storage/
+     */
+    fun guardarDatosEnArchivo(
+        appViewModel: AppViewModel,
+        fecha: LocalDate,
+        datos:String
+    ): Boolean{
         val nombre = appViewModel.fecha_txt(fecha)
         ActivityCompat.requestPermissions(
             this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 23
         )
-
-        // getExternalStoragePublicDirectory() represents root of external storage, we are using DOWNLOADS
-        // We can use following directories: MUSIC, PODCASTS, ALARMS, RINGTONES, NOTIFICATIONS, PICTURES, MOVIES
         val folder: File =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-        // Storing the data in file with name as geeksData.txt
         val file = File(folder, "Factura${nombre}.txt")
         return writeTextData(file, datos)
     }
-    fun writeTextData(file: File, data: String):Boolean {
+    fun writeTextData(
+        file: File,
+        data: String
+    ):Boolean {
         var fileOutputStream: FileOutputStream? = null
         try {
             fileOutputStream = FileOutputStream(file)
@@ -102,6 +120,11 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
+    /**
+     * Método de creación del canal:
+     * Android Developers: https://developer.android.com/develop/ui/views/notifications/build-notification?hl=es-419
+     */
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
@@ -133,7 +156,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-}
-fun getAPILevel(): Int {
-    return android.os.Build.VERSION.SDK_INT
 }

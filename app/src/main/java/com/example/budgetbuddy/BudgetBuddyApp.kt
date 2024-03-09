@@ -15,18 +15,12 @@ import dagger.hilt.android.HiltAndroidApp
 
 
 /*******************************************************************************
- ****                        Custom Aplication Class                        ****
+ ****                          Aplication Class                             ****
  *******************************************************************************/
 
-/*
-
-This class is needed for Hilt Framework.
-
-I also initialize notification channels here so they are not created each time we send a notification.
-
-Avoiding code  repetition
-
-*/
+/**
+Necesaria para el Framework de Hilt.
+**/
 
 @HiltAndroidApp
 class BudgetBuddyApp : Application() {

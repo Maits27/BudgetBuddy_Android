@@ -1,12 +1,5 @@
 package com.example.budgetbuddy.VM
 
-import android.content.Context
-import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgetbuddy.Data.Enumeration.AppLanguage
@@ -16,22 +9,29 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
+/********************************************************
+ ****            Preferences View Model              ****
+ ********************************************************/
+/**
+ * View Model de Hilt para preferencias del usuario local
+ *
+ * @preferencesRepository: implementación de [IGeneralPreferences] y repositorio a cargo de realizar los cambios en el DataStore.
+ * @languageManager: Encargado del cambio de idioma en la APP.
+ */
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
     private val preferencesRepository: IGeneralPreferences,
     private val languageManager: LanguageManager,
 ) : ViewModel() {
 
+    /*************************************************
+     **                    Estados                  **
+     *************************************************/
 
-    /*------------------------------------------------
-    |               Preferences States               |
-    ------------------------------------------------*/
-
-    // Current app's language and preferred language (may not be the same at the beginning)
     val currentSetLang by languageManager::currentLang
+
     val idioma = preferencesRepository.language().map { AppLanguage.getFromCode(it) }
 
     val theme = preferencesRepository.getThemePreference()
@@ -39,28 +39,31 @@ class PreferencesViewModel @Inject constructor(
     var primero = preferencesRepository.getPrimero()
 
     /*************************************************
-     **                    Events                   **
+     **                    Eventos                  **
      *************************************************/
 
 
-    //------------   Language Related   ------------//
+    ////////////////////// Idioma //////////////////////
 
-    // Change language preference, adjust the locale and reload de interface
+    // Cambio del idioma de preferencia
     fun changeLang(idioma: AppLanguage) {
         languageManager.changeLang(idioma)
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setLanguage(idioma.code) }
     }
 
+    ////////////////////// Tema //////////////////////
+
+    // Cambio del tema de preferencia
     fun changeTheme(color: Int){
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(color) }
     }
 
+    ////////////////////// Inicio //////////////////////
+
+    // Una vez instalada por primera vez la APP, siempre a false
     fun primero(){
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.primero() }
     }
 
-//    fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang)
-
-    //------------   Theme Related   ------------//
 
 }
