@@ -2,7 +2,6 @@ package com.example.budgetbuddy2.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.budgetbuddy.VM.AppViewModel
 import com.example.budgetbuddy.R
@@ -29,7 +29,19 @@ import com.example.budgetbuddy.shared.NoData
 import com.example.budgetbuddy.utils.AppLanguage
 import java.time.LocalDate
 
+/**************************************************
+ ***            Pantalla Facturas               ***
+ ***************************************************/
+/**
+Este composable forma la pantalla de facturas de la aplicación.
 
+Contiene la factura del día seleccionado en la APP.
+
+Se le pasan los parámetros de:
+ * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto] y [factura].
+ * Idioma:        Necesario para la conversión de tipos de gasto.
+ * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Facturas(
@@ -59,6 +71,9 @@ fun Facturas(
             appViewModel = appViewModel
         )
         when {
+            /**
+             * Factura del día completo con todos los [Gasto] y el [totalGastos]
+             */
             gastos.isNotEmpty() -> {
                 Card(
                     shape = CardDefaults.outlinedShape,
@@ -72,20 +87,22 @@ fun Facturas(
                         .padding(10.dp)
                         .wrapContentWidth(align = Alignment.CenterHorizontally)
                 ) {
+                    // Cabecera
                     Text(
                         text = stringResource( id = R.string.factura_init, appViewModel.escribirFecha(fecha)),
-                        modifier
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                            .fillMaxWidth()
+                        modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth(),
+                        fontWeight = FontWeight.Bold
                     )
+                    // Gastos
                     Text(
                         text = factura,
-                        Modifier
-                            .padding(start = 16.dp, end = 16.dp)
-                            .background(color = Color.Transparent)
+                        modifier.padding(start = 16.dp, end = 16.dp)
                     )
-                    Text(text = stringResource(id = R.string.factura_total, totalGastos),
-                        modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
+                    // Total
+                    Text(
+                        text = stringResource(id = R.string.factura_total, totalGastos),
+                        modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }else->{

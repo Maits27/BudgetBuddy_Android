@@ -1,18 +1,12 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,26 +15,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.budgetbuddy.VM.AppViewModel
@@ -58,11 +43,27 @@ import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import java.time.LocalDate
-import java.util.stream.Collectors.groupingBy
 
+
+/**************************************************
+ ***           Pantalla Dashboards              ***
+ ***************************************************/
+/**
+Este composable forma la pantalla principal de Dashboards.
+
+Contiene la información del mes seleccionado en la APP de forma gráfica.
+
+Se le pasan los parámetros de:
+ * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a los elementos [Gasto].
+ * Idioma:        Necesario para la conversión de tipos de gasto.
+ * Tema:          Para dar el estilo necesario al gráfico [Pastel].
+ */
 @Composable
-fun Dashboards(appViewModel: AppViewModel, idioma: String, tema: Int){
-
+fun Dashboards(
+    appViewModel: AppViewModel,
+    idioma: String,
+    tema: Int
+){
     val colors = dashboardTheme(tema)
     /*******************************************************************
      **    Recoger el valor actual de cada flow del AppViewModel      **
@@ -99,6 +100,9 @@ fun Dashboards(appViewModel: AppViewModel, idioma: String, tema: Int){
     }
 }
 
+/**
+ * Gráfico de barras con los gastos del mes por día
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun Barras(
@@ -114,6 +118,8 @@ fun Barras(
         val diasSinDatos = diasEnMes.filter { dia ->
             datosMes.none { it.fecha.dayOfMonth == dia.dayOfMonth }
         }
+        // De esta forma se consigue que siempre aparezcan los días impares impresos en el gráfico,
+        // aunque no tengan datos:
         diasEnMes.mapIndexed {index, dia ->
             if (dia in diasSinDatos) {
                 if ((diasSinDatos[index-kont].dayOfMonth)%2!=0){
@@ -121,7 +127,7 @@ fun Barras(
                         BarChartData.Bar(
                             label = diasSinDatos[index-kont].dayOfMonth.toString(),
                             value = 0f,
-                            color = Color.Gray // Puedes ajustar el color según tus preferencias
+                            color = Color.Gray
                         )
                     )
                 }else{
@@ -129,7 +135,7 @@ fun Barras(
                         BarChartData.Bar(
                             label = "",
                             value = 0f,
-                            color = Color.Gray // Puedes ajustar el color según tus preferencias
+                            color = Color.Gray
                         )
                     )
                 }
@@ -168,7 +174,9 @@ fun Barras(
     }
 }
 
-// Función para obtener todos los días en el mes
+/**
+ * Función para obtener todos los días en el mes (utilizado en el composable [Barras])
+ */
 fun obtenerDiasEnMes(fecha: LocalDate): List<LocalDate> {
     val primerDia = fecha.withDayOfMonth(1)
     val ultimoDia = fecha.withDayOfMonth(fecha.month.length(fecha.isLeapYear))
@@ -184,6 +192,10 @@ fun obtenerDiasEnMes(fecha: LocalDate): List<LocalDate> {
     return listaDias
 }
 
+
+/**
+ * Gráfico de tipo donut con los datos agrupados del mes por cada [TipoGasto]
+ */
 @Composable
 fun Pastel(datosTipo: List<GastoTipo>, colors: List<Color>){
     var slices = ArrayList<PieChartData.Slice>()
@@ -214,6 +226,9 @@ fun Pastel(datosTipo: List<GastoTipo>, colors: List<Color>){
     }
 }
 
+/**
+ * Leyenda que mapea los colores usados en [Pastel] por cada [TipoGasto]
+ */
 @Composable
 fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTipo>) {
     when{
@@ -224,9 +239,11 @@ fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTi
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
+                // Los if sirven para generar dos columnas en la leyenda en vez de una sola
                 datosTipo.mapIndexed{index, gasto ->
                     if (index%2 == 0){
                         Row (horizontalArrangement = Arrangement.Center) {
+                            // Primera columna
                             Row(
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start,
@@ -253,6 +270,7 @@ fun LeyendaColores(idioma: String,  colors: List<Color>, datosTipo: List<GastoTi
                                     color = Color.Black
                                 )
                             }
+                            // Segunda columna
                             if (index+1<datosTipo.size){
                                 Row(
                                     verticalAlignment = Alignment.Top,

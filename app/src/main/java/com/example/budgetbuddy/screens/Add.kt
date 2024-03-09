@@ -54,6 +54,20 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
+
+/***************************************************
+ ***          Pantalla auxiliar Add             ***
+ ***************************************************/
+/**
+Este composable forma la pantalla del formulario para añadir elementos.
+
+Se le pasan los parámetros de:
+ * AppViewModel:  ViewModel general de la aplicación con los métodos necesarios para editar la fecha.
+ * NavController: De forma que se pueda volver a la pantalla [Home].
+ * Idioma:        Necesario para la conversión de tipos de gasto.
+ * Fecha:         Fecha en la que se presupone que se va a añadir el gasto.
+ * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Add(

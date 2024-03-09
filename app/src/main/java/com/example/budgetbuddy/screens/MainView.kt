@@ -75,6 +75,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/**************************************************
+ ***             Marco de la APP                ***
+ ***************************************************/
+/**
+Este composable forma el marco general de la aplicación.
+
+Contiene el [NavHost] que permite navegar entre pantallas.
+
+Se le pasan los parámetros de:
+ * AppViewModel:            ViewModel general de la aplicación con los flows de la información relativa a la BBDD.
+ * PreferencesViewModel:    ViewModel con las preferencias de [idioma] y [tema] del usuario local.
+ * guardarFichero:          Función necesaria en caso de querer descargar un fichero, ya que esto requiere volver a la [MainActivity].
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,7 +147,6 @@ fun MainView(
                     }
                     val texto_factura = "$factura_init$factura\n$factura_end"
                     Expansion(showExpansion, texto_factura, onClose){
-//                        showDownloadError = !appViewModel.guardarDatosEnArchivo(fecha, texto_factura)
                         showDownloadError = guardarFichero(fecha, texto_factura)
                         if (!showDownloadError){
                             downloadNotification(
@@ -183,6 +195,12 @@ fun MainView(
             NavHorizontal(idioma, tema, fecha, gastoEditable, innerPadding, navController, appViewModel)
 
         }else{
+            /**
+             * [NavHost] que permite navegar entre las diferentes pantallas
+             * únicamente cambiando la vista del contenido del [Scaffold].
+             *
+             * Gracias a esto no se requiere de otra [Activity].
+             */
             NavHost(
                 modifier = Modifier.padding(innerPadding),
                 navController = navController,
@@ -199,19 +217,9 @@ fun MainView(
     }
 }
 
-
-
-@Composable
-fun FloatButton(icon: Painter, onClick: () -> Unit) {
-    FloatingActionButton(
-        onClick = { onClick() },
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondary,
-        shape = CircleShape
-    ) {
-        Icon(icon, stringResource(id = R.string.add))
-    }
-}
+/**
+ * Barra superior del marco general con las funciones principales de la APP.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMainView(
@@ -280,6 +288,9 @@ fun TopBarMainView(
 
 }
 
+/**
+ * Barra inferior con el [ActionBar] en modo Vertical.
+ */
 @Composable
 fun BottomBarMainView(
     navController: NavController
@@ -314,6 +325,11 @@ fun BottomBarMainView(
 
     }
 }
+
+
+/**
+ * Equivalente al fragment del marco en caso de poner la pantalla en posición horizontal.
+ */
 @Composable
 fun NavHorizontal(idioma: AppLanguage, tema: Int,  fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
     var gastoEditable = gasto
@@ -347,11 +363,16 @@ fun NavHorizontal(idioma: AppLanguage, tema: Int,  fecha: LocalDate, gasto:Gasto
                     }
                 ) {
                     Icon(screen.icono, contentDescription = null, tint = Color.White)
-//                    Text(screen.nombre, color = Color.White)
                 }
             }
 
         }
+        /**
+         * Mismo [NavHost] que permite navegar entre las diferentes pantallas
+         * únicamente cambiando la vista del contenido del [Scaffold] (en la versión horizontal).
+         *
+         * Gracias a esto no se requiere de otra [Activity].
+         */
         NavHost(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
@@ -366,6 +387,25 @@ fun NavHorizontal(idioma: AppLanguage, tema: Int,  fecha: LocalDate, gasto:Gasto
     }
 }
 
+
+/**
+ * Botón flotante de las pantallas [Facturas] y [Home] en versión compacta.
+ */
+@Composable
+fun FloatButton(icon: Painter, onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onClick() },
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        shape = CircleShape
+    ) {
+        Icon(icon, stringResource(id = R.string.add))
+    }
+}
+
+/**
+ * Botón flotante de la pantalla [Facturas] en versión expandida.
+ */
 @Composable
 fun Expansion(show: Boolean, textoFactura: String, onClose:()-> Unit, onDownload:()-> Unit){
     if(show){

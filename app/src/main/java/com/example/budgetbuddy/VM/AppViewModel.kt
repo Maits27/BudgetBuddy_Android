@@ -1,23 +1,17 @@
 package com.example.budgetbuddy.VM
 
-import android.Manifest
-import android.os.Environment
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.GastoDia
 import com.example.budgetbuddy.Data.GastoTipo
 import com.example.budgetbuddy.Data.IGastoRepository
 import com.example.budgetbuddy.Data.TipoGasto
-import com.example.budgetbuddy.Data.obtenerTipoEnIdioma
 import com.example.budgetbuddy.utils.AppLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import java.io.File
-import java.io.FileWriter
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
@@ -44,7 +38,7 @@ class AppViewModel @Inject constructor(
 
     var facturaActual: (LocalDate, AppLanguage)->  Flow<String> = { data, idioma->
         listadoGastosFecha(data).map { listaGastos ->
-            listaGastos.fold("") { f, gasto -> f + gasto.toString(idioma) }
+            listaGastos.fold("") { f, gasto -> f + "\t- " + gasto.toString(idioma) }
         }
     }
 

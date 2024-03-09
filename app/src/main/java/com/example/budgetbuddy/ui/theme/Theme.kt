@@ -70,9 +70,6 @@ private val CustomColorScheme = lightColorScheme(
 @Composable
 fun BudgetBuddyTheme(
     preferencesViewModel: PreferencesViewModel,
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val theme by preferencesViewModel.theme.collectAsState(initial = true)
@@ -111,10 +108,10 @@ fun dashboardTheme(theme: Int): List<Color>{
         return listOf(
             Color(0xff0E2D68),
             Color(0xff09579e),
-            Color(0xff1678cf),
             Color(0xff239dff),
             Color(0xff77c3fe),
             Color(0xffcddbe7),
+            Color(0xff9BB0C1),
         )
     } else {
         return listOf(

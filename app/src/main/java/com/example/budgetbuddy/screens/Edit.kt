@@ -57,6 +57,19 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
+/***************************************************
+ ***          Pantalla auxiliar Edit             ***
+ ***************************************************/
+/**
+Este composable forma la pantalla del formulario para editar elementos.
+
+Se le pasan los parámetros de:
+ * Gasto:          elemento tipo [Gasto] que se quiere editar (con sus datos hasta el momento).
+ * AppViewModel:  ViewModel general de la aplicación con los flows de la información relativa a la [Fecha].
+ * NavController: De forma que se pueda volver a la pantalla [Home].
+ * Idioma:        Necesario para la conversión de tipos de gasto.
+ * Modifier:      Para dar un estilo predeterminado a los composables (default).
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun Edit(
