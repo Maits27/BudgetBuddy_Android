@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.shared
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -222,3 +223,13 @@ fun ErrorAlert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
     }
 }
 
+/**
+ * Mensaje Toast customizable mediante [message]
+ */
+@Composable
+fun ToastMessage(message: String) {
+    var toast = android.widget.Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT)
+    toast.setMargin(160f, 160f)
+    toast.setGravity(160, 100, 100)
+    toast.show()
+}

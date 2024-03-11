@@ -135,13 +135,3 @@ fun NoData(){
     }
 }
 
-/**
- * Mensaje Toast customizable mediante [message]
- */
-@Composable
-fun ToastMessage(message: String) {
-    var toast = Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT)
-    toast.setMargin(160f, 160f)
-    toast.setGravity(160, 100, 100)
-    toast.show()
-}

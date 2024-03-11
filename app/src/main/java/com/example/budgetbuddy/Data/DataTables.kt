@@ -36,8 +36,6 @@ data class Diseño(val pantalla: AppScreens, val icono: Painter)
  * tipo [Gasto] en la base de datos de Room. Si se quieren utilizar datos específicos
  * dependiendo de la pantalla (como es siempre el caso). Se recurren a las data-class
  * definidas arriba.
- *
- * Esta clase se utiliza con propósito de almacenaje.
  */
 
 @Entity

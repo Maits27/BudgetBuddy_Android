@@ -50,7 +50,6 @@ class AppViewModel @Inject constructor(
 
     val listadoGastosTipo: (LocalDate)-> Flow<List<GastoTipo>> = { sacarDatosPorTipo(it) }
 
-
     val totalGasto: (LocalDate)-> Flow<Double> = { gastoRepository.gastoTotalDia(it) }
 
     var facturaActual: (LocalDate, AppLanguage)->  Flow<String> = { data, idioma->
@@ -69,10 +68,13 @@ class AppViewModel @Inject constructor(
             añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.entries[i])
             i = Random.nextInt(0,6)
             añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,1, cantidad+20), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,1, cantidad+10),
-                TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 6$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,3, cantidad+20), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,3, cantidad+10), TipoGasto.entries[i])
+            i = Random.nextInt(0,6)
+            añadirGasto( "Gasto Inicial 6$cantidad", 10.0*cantidad, LocalDate.of(2024,4, cantidad), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 7$cantidad", 4.0*cantidad, LocalDate.of(2024,4, cantidad+20), TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 8$cantidad", 5.0*cantidad, LocalDate.of(2024,4, cantidad+10),TipoGasto.entries[i])
+            añadirGasto( "Gasto Inicial 9$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.entries[i])
         }
     }
 

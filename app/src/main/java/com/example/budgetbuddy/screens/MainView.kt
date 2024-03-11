@@ -162,7 +162,7 @@ fun MainView(
                         showDownloadError = false
                     }
                 }
-            } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route) {
+            } else if (navBackStackEntry?.destination?.route == AppScreens.Home.route && isVertical) {
                 FloatButton(
                     painterResource(id = R.drawable.add)
                 ) {
@@ -191,10 +191,10 @@ fun MainView(
             }
         }
     ){ innerPadding ->
-        if (!isVertical){
-            NavHorizontal(idioma, tema, fecha, gastoEditable, innerPadding, navController, appViewModel)
-
-        }else{
+        Row {
+            if (!isVertical){
+                NavHorizontal(innerPadding, navController)
+            }
             /**
              * [NavHost] que permite navegar entre las diferentes pantallas
              * únicamente cambiando la vista del contenido del [Scaffold].
@@ -212,8 +212,9 @@ fun MainView(
                 composable( AppScreens.Facturas.route) { Facturas(appViewModel, idioma) }
                 composable( AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code, tema) }
             }
+
         }
-        
+
     }
 }
 
@@ -331,58 +332,40 @@ fun BottomBarMainView(
  * Equivalente al fragment del marco en caso de poner la pantalla en posición horizontal.
  */
 @Composable
-fun NavHorizontal(idioma: AppLanguage, tema: Int, fecha: LocalDate, gasto:Gasto, innerPadding: PaddingValues, navController:NavHostController, appViewModel: AppViewModel){
-    var gastoEditable = gasto
-    Row {
-        Column(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.primaryContainer)
-                .fillMaxHeight()
-                .padding(innerPadding),
-        ) {
-            val items = listOf(
-                Diseño(AppScreens.Home, painterResource(id = R.drawable.home)),
-                Diseño(AppScreens.Add, painterResource(id = R.drawable.add)),
-                Diseño(AppScreens.Facturas, painterResource(id = R.drawable.bill)),
-                Diseño(AppScreens.Dashboards, painterResource(id = R.drawable.dashboard)),
-            )
-            items.forEach { screen ->
-                Button(
-                    modifier = Modifier.padding(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    onClick = {
-                        navController.navigate(screen.pantalla.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+fun NavHorizontal(
+    innerPadding: PaddingValues,
+    navController:NavHostController
+){
+    Column(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxHeight()
+            .padding(innerPadding),
+    ) {
+        val items = listOf(
+            Diseño(AppScreens.Home, painterResource(id = R.drawable.home)),
+            Diseño(AppScreens.Add, painterResource(id = R.drawable.add)),
+            Diseño(AppScreens.Facturas, painterResource(id = R.drawable.bill)),
+            Diseño(AppScreens.Dashboards, painterResource(id = R.drawable.dashboard)),
+        )
+        items.forEach { screen ->
+            Button(
+                modifier = Modifier.padding(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+                onClick = {
+                    navController.navigate(screen.pantalla.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                ) {
-                    Icon(screen.icono, contentDescription = null, tint = Color.White)
                 }
+            ) {
+                Icon(screen.icono, contentDescription = null, tint = Color.White)
             }
-
-        }
-        /**
-         * Mismo [NavHost] que permite navegar entre las diferentes pantallas
-         * únicamente cambiando la vista del contenido del [Scaffold] (en la versión horizontal).
-         *
-         * Gracias a esto no se requiere de otra [Activity].
-         */
-        NavHost(
-            modifier = Modifier.padding(innerPadding),
-            navController = navController,
-            startDestination = AppScreens.Home.route
-        ) {
-            composable(AppScreens.Home.route) { Home(appViewModel, idioma, navController){gastoEditable = it} }
-            composable(AppScreens.Add.route) { Add(appViewModel, navController, idioma.code, fecha) }
-            composable(AppScreens.Edit.route) { Edit(gastoEditable, appViewModel, navController, idioma.code) }
-            composable(AppScreens.Facturas.route) { Facturas(appViewModel, idioma ) }
-            composable(AppScreens.Dashboards.route) { Dashboards(appViewModel, idioma.code, tema) }
         }
     }
 }

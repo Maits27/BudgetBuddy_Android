@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -94,7 +95,8 @@ fun Home(
             gastos.isNotEmpty() -> {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center, modifier = Modifier.padding(6.dp)
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(start = 6.dp, end = 6.dp, top=6.dp, bottom = 30.dp)
                 ) {
                     items(gastos) {
                         Card(
