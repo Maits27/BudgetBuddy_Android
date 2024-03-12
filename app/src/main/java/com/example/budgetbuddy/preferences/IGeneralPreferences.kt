@@ -12,6 +12,4 @@ interface IGeneralPreferences {
 
     suspend fun saveThemePreference(theme: Int)
 
-    suspend fun primero()
-    fun getPrimero(): Flow<Boolean>
 }

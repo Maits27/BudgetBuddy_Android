@@ -29,7 +29,6 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PreferencesRepository @Inject constructor(private val context: Context) : IGeneralPreferences {
     val PREFERENCE_LANGUAGE = stringPreferencesKey("preference_lang")
     val PREFERENCE_THEME_DARK = intPreferencesKey("preference_theme")
-    val PRIMERO = booleanPreferencesKey("primero")
 
 
     //////////////// Preferencias de idioma ////////////////
@@ -65,21 +64,6 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
         }
     }
 
-    //////////////// Inicio de la aplicación ////////////////
 
-    /**
-     * Estos métodos se han utilizado para identificar el primer uso de la aplicación
-     * y de esta forma cargar los datos de prueba o no. Una vez descargada por primera
-     * vez estos datos no se volverán a cargar.
-     */
-
-    override fun getPrimero(): Flow<Boolean> = context.dataStore.data.map {
-            preferences -> preferences[PRIMERO]?: true
-    }
-    override suspend fun primero() {
-        context.dataStore.edit { preferences ->
-            preferences[PRIMERO] = false
-        }
-    }
 
 }

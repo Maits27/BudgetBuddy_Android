@@ -36,7 +36,6 @@ class PreferencesViewModel @Inject constructor(
 
     val theme = preferencesRepository.getThemePreference()
 
-    var primero = preferencesRepository.getPrimero()
 
     /*************************************************
      **                    Eventos                  **
@@ -58,12 +57,7 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(color) }
     }
 
-    ////////////////////// Inicio //////////////////////
 
-    // Una vez instalada por primera vez la APP, siempre a false
-    fun primero(){
-        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.primero() }
-    }
 
 
 }

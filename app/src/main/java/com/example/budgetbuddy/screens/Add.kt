@@ -48,6 +48,7 @@ import com.example.budgetbuddy.Data.Enumeration.obtenerTipoEnIdioma
 import com.example.budgetbuddy.R
 import com.example.budgetbuddy.shared.Calendario
 import com.example.budgetbuddy.shared.ErrorAlert
+import com.example.budgetbuddy.ui.theme.grisClaro
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -151,7 +152,8 @@ fun Add(
                     .fillMaxWidth()
                     .clickable(onClick = { expanded = true }),
                 shape = MaterialTheme.shapes.small,
-                border = BorderStroke(1.dp, Color.Black)
+                border = BorderStroke(1.dp, Color.DarkGray),
+                color = grisClaro
             ) {
                 Row(
                     modifier = Modifier
@@ -160,7 +162,8 @@ fun Add(
                 ) {
                     Text(
                         text = obtenerTipoEnIdioma(selectedOption, idioma),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
+                        color = Color.DarkGray
                     )
                     Row(
                         horizontalArrangement = Arrangement.End
@@ -168,7 +171,8 @@ fun Add(
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = null,
-                            modifier = Modifier.padding(end = 12.dp)
+                            modifier = Modifier.padding(end = 12.dp),
+                            tint = Color.DarkGray
                         )
                     }
 

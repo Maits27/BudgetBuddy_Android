@@ -63,20 +63,20 @@ class AppViewModel @Inject constructor(
     /*************************************************
      **          Inicialización de la BBDD          **
      *************************************************/
-    init {
-        viewModelScope.launch {
-            for (cantidad in 1 until 10){
-                Log.d("BD-Preloading", "Loading cantidad $cantidad")
-                añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.Comida)
-                añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,3, cantidad+20), TipoGasto.Ropa)
-                añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,3, cantidad+10), TipoGasto.Hogar)
-                añadirGasto( "Gasto Inicial 6$cantidad", 10.0*cantidad, LocalDate.of(2024,4, cantidad), TipoGasto.Transporte)
-                añadirGasto( "Gasto Inicial 7$cantidad", 4.0*cantidad, LocalDate.of(2024,4, cantidad+20), TipoGasto.Comida)
-                añadirGasto( "Gasto Inicial 8$cantidad", 5.0*cantidad, LocalDate.of(2024,4, cantidad+10), TipoGasto.Actividad)
-                añadirGasto( "Gasto Inicial 9$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
-            }
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            for (cantidad in 1 until 10){
+//                Log.d("BD-Preloading", "Loading cantidad $cantidad")
+//                añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.Comida)
+//                añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,3, cantidad+20), TipoGasto.Ropa)
+//                añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,3, cantidad+10), TipoGasto.Hogar)
+//                añadirGasto( "Gasto Inicial 6$cantidad", 10.0*cantidad, LocalDate.of(2024,4, cantidad), TipoGasto.Transporte)
+//                añadirGasto( "Gasto Inicial 7$cantidad", 4.0*cantidad, LocalDate.of(2024,4, cantidad+20), TipoGasto.Comida)
+//                añadirGasto( "Gasto Inicial 8$cantidad", 5.0*cantidad, LocalDate.of(2024,4, cantidad+10), TipoGasto.Actividad)
+//                añadirGasto( "Gasto Inicial 9$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
+//            }
+//        }
+//    }
 
 
     /*************************************************
