@@ -140,7 +140,7 @@ fun MainView(
                     }
                     val texto_factura = "$factura_init$factura\n$factura_end"
                     Expansion(showExpansion, texto_factura, onClose){
-                        showDownloadError = guardarFichero(fecha, texto_factura)
+                        showDownloadError = !guardarFichero(fecha, texto_factura)
                         if (!showDownloadError){
                             downloadNotification(
                                 context = context,

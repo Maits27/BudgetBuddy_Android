@@ -31,6 +31,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
+import java.util.UUID
+
 /************************************************
  ****              Main Activity             ****
  ***********************************************/
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         )
         val folder: File =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(folder, "Factura${nombre}.txt")
+        val file = File(folder, "Factura${nombre}_${UUID.randomUUID()}.txt")
         return writeTextData(file, datos)
     }
     fun writeTextData(
@@ -106,14 +108,14 @@ class MainActivity : AppCompatActivity() {
             fileOutputStream = FileOutputStream(file)
             fileOutputStream.write(data.toByteArray())
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d("DOWNLOAD WARNING", "1: $e")
             return false
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close()
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    Log.d("DOWNLOAD WARNING", "2: $e")
                     return false
                 }
             }
