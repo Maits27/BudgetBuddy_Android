@@ -97,6 +97,12 @@ class MainActivity : AppCompatActivity() {
         val folder: File =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val file = File(folder, "Factura${nombre}_${UUID.randomUUID()}.txt")
+//        if (file.exists()) {
+//            if (!file.delete()) {
+//                Log.d("DOWNLOAD WARNING", "No se pudo eliminar el archivo existente.")
+//                return false
+//            }
+//        }
         return writeTextData(file, datos)
     }
     fun writeTextData(
