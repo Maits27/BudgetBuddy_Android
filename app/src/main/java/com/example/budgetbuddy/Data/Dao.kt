@@ -22,13 +22,13 @@ interface GastoDao {
     /////////////// Funciones Insert ///////////////
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGasto(gasto: Gasto)
+    suspend fun insertGasto(gasto: Gasto)
 
     suspend fun insertGastos(gastos: List<Gasto>) = gastos.map { insertGasto(it) }
 
     /////////////// Funciones Delete ///////////////
     @Delete
-    fun deleteGasto(gasto: Gasto): Int
+    suspend fun deleteGasto(gasto: Gasto): Int
 
     /////////////// Funciones Select ///////////////
     @Transaction

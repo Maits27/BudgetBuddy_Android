@@ -97,15 +97,8 @@ fun MainView(
     guardarFichero: (LocalDate, String)-> Boolean
 ){
 
-    val primero by preferencesViewModel.primero.collectAsState(initial = false)
-    if(primero){
-        val coroutineScope = rememberCoroutineScope()
-        // Lanzamiento de corrutina:
-        // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
-        // (Necedario en los métodos de tipo insert, delete y update)
-        coroutineScope.launch(Dispatchers.IO) {appViewModel.gastosPrueba()}
-        preferencesViewModel.primero()
-    }
+
+
     val context = LocalContext.current
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())

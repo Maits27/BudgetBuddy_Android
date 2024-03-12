@@ -2,6 +2,7 @@ package com.example.budgetbuddy.VM
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.budgetbuddy.Data.Enumeration.AppLanguage
 import com.example.budgetbuddy.Data.Gasto
 import com.example.budgetbuddy.Data.GastoDia
@@ -13,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
@@ -61,22 +63,21 @@ class AppViewModel @Inject constructor(
     /*************************************************
      **          Inicialización de la BBDD          **
      *************************************************/
-    fun gastosPrueba(){
-        for (cantidad in 1 until 10){
-            var i = Random.nextInt(0,6)
-            añadirGasto( "Gasto Inicial $cantidad", 1.0*cantidad, LocalDate.of(2024,2, cantidad+20), TipoGasto.entries[i])
-            añadirGasto("Gasto Inicial 1$cantidad", 2.0*cantidad, LocalDate.of(2024,2, cantidad+10), TipoGasto.entries[i])
-            i = Random.nextInt(0,6)
-            añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,3, cantidad+20), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,3, cantidad+10), TipoGasto.entries[i])
-            i = Random.nextInt(0,6)
-            añadirGasto( "Gasto Inicial 6$cantidad", 10.0*cantidad, LocalDate.of(2024,4, cantidad), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 7$cantidad", 4.0*cantidad, LocalDate.of(2024,4, cantidad+20), TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 8$cantidad", 5.0*cantidad, LocalDate.of(2024,4, cantidad+10),TipoGasto.entries[i])
-            añadirGasto( "Gasto Inicial 9$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.entries[i])
+    init {
+        viewModelScope.launch {
+            for (cantidad in 1 until 10){
+                Log.d("BD-Preloading", "Loading cantidad $cantidad")
+                añadirGasto( "Gasto Inicial 2$cantidad", 10.0*cantidad, LocalDate.of(2024,3, cantidad), TipoGasto.Comida)
+                añadirGasto( "Gasto Inicial 5$cantidad", 4.0*cantidad, LocalDate.of(2024,3, cantidad+20), TipoGasto.Ropa)
+                añadirGasto( "Gasto Inicial 4$cantidad", 5.0*cantidad, LocalDate.of(2024,3, cantidad+10), TipoGasto.Hogar)
+                añadirGasto( "Gasto Inicial 6$cantidad", 10.0*cantidad, LocalDate.of(2024,4, cantidad), TipoGasto.Transporte)
+                añadirGasto( "Gasto Inicial 7$cantidad", 4.0*cantidad, LocalDate.of(2024,4, cantidad+20), TipoGasto.Comida)
+                añadirGasto( "Gasto Inicial 8$cantidad", 5.0*cantidad, LocalDate.of(2024,4, cantidad+10), TipoGasto.Actividad)
+                añadirGasto( "Gasto Inicial 9$cantidad", 1.0*cantidad, LocalDate.now(), TipoGasto.Otros)
+            }
         }
     }
+
 
     /*************************************************
      **                    Eventos                  **
@@ -85,7 +86,7 @@ class AppViewModel @Inject constructor(
 
     ////////////////////// Añadir y eliminar elementos //////////////////////
 
-    fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo: TipoGasto):Gasto {
+    suspend fun añadirGasto(nombre: String, cantidad: Double, fecha: LocalDate, tipo: TipoGasto):Gasto {
         val gasto = Gasto(nombre, cantidad, fecha, tipo)
         try {
             gastoRepository.insertGasto(gasto)
@@ -95,7 +96,7 @@ class AppViewModel @Inject constructor(
         return gasto
     }
 
-    fun borrarGasto(gasto: Gasto){
+    suspend fun borrarGasto(gasto: Gasto){
         gastoRepository.deleteGasto(gasto)
     }
 
@@ -156,7 +157,6 @@ class AppViewModel @Inject constructor(
         }
         return gastosAgrupados
     }
-
 }
 
 
