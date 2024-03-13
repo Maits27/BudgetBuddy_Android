@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     // Solicitud de permisos
                     NotificationPermission()
+                    StoragePermission()
                     MainView(
                         appViewModel = appViewModel,
                         preferencesViewModel = preferencesViewModel,
@@ -161,6 +162,16 @@ class MainActivity : AppCompatActivity() {
         )
         LaunchedEffect(true){
             permissionState.launchPermissionRequest()
+        }
+    }
+    @OptIn(ExperimentalPermissionsApi::class)
+    @Composable
+    fun StoragePermission(){
+        val permissionState2 = rememberPermissionState(
+            permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        LaunchedEffect(true){
+            permissionState2.launchPermissionRequest()
         }
     }
 
