@@ -1,5 +1,6 @@
 package com.example.budgetbuddy.shared
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,6 +63,7 @@ fun Header(
     val onCalendarConfirm: (LocalDate) -> Unit = {
         showCalendar = false
         appViewModel.cambiarFecha(it)
+        Log.d("CAMBIAR FECHA COMUNES", it.toString())
     }
     Text(
         text = titulo,

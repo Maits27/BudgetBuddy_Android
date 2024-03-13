@@ -105,6 +105,8 @@ class AppViewModel @Inject constructor(
 
     fun cambiarFecha(nuevoValor: LocalDate) {
         _fecha.value = nuevoValor
+        Log.d("CAMBIO DE FECHA APP", _fecha.value.toString())
+
     }
     fun editarGasto(gasto_previo:Gasto, nombre:String, cantidad: Double, fecha:LocalDate, tipo: TipoGasto){
         gastoRepository.editarGasto(Gasto(nombre, cantidad,fecha, tipo, gasto_previo.id))

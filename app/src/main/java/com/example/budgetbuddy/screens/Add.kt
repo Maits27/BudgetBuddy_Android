@@ -235,7 +235,7 @@ fun Add(
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {
                     // Asigna un valor predeterminado en caso de introducir un valor que no sea tipo LocalDate
-                    LocalDate.now()
+                    fecha_actual
                 }
                 keyboardController?.hide()
             },

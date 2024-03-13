@@ -229,5 +229,5 @@ fun ErrorAlert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
  */
 @Composable
 fun ToastMessage(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

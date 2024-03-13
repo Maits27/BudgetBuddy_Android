@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -91,6 +92,7 @@ fun Edit(
      **                 (valor por defecto: initial)                  **
      ******************************************************************/
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
+    Log.d("EDIT", fecha.toString())
 
     /*******************************************************************
      **                     Valores del formulario                    **
@@ -108,6 +110,7 @@ fun Edit(
     var enabledDate by remember { mutableStateOf(true) }
     var showToast by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
+    var changeDate by remember { mutableStateOf(false) }
 
     /**    Funciones parámetro para gestionar las acciones del estado   **/
     val onCalendarConfirm: (LocalDate) -> Unit = {
@@ -237,14 +240,16 @@ fun Edit(
         )
 
         ///////////////////////////////////////// Campo de Fecha /////////////////////////////////////////
+        if(!changeDate && fechaTemporal!=fecha){fechaTemporal = fecha}
         OutlinedTextField(
-            value = fechaTemporal.toString(),
+            value = if(changeDate){fechaTemporal.toString()}else{fecha.toString()},
             onValueChange = {
+                changeDate = true
                 fechaTemporal = try {
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {
                     // Asigna un valor predeterminado en caso de introducir un valor que no sea tipo LocalDate
-                    LocalDate.now()
+                    fecha
                 }
             },
             label = { Text(stringResource(id = R.string.date_pick)) },
