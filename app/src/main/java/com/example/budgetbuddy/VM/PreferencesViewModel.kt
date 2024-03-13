@@ -57,7 +57,9 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(color) }
     }
 
-
+    fun restartLang(idioma: AppLanguage){
+        languageManager.changeLang(idioma)
+    }
 
 
 }

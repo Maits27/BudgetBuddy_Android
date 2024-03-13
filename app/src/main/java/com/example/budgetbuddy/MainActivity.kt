@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 // Método para la descarga de ficheros
                 val guardarFichero: ( LocalDate, String)-> Boolean = { fecha, datos ->
                     guardarDatosEnArchivo(appViewModel, fecha, datos) }
-
+                preferencesViewModel.restartLang(preferencesViewModel.idioma.collectAsState(initial = preferencesViewModel.currentSetLang).value)
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

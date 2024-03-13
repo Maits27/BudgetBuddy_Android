@@ -51,6 +51,7 @@ class LanguageManager @Inject constructor() {
 
     // Método que cambia el idioma de la aplicación de forma local e instantánea
     fun changeLang(lang: AppLanguage) {
+        currentLang = lang
         val localeList = LocaleListCompat.forLanguageTags(lang.code)
         AppCompatDelegate.setApplicationLocales(localeList)
     }
