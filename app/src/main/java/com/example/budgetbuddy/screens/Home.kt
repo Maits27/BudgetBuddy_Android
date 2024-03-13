@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.budgetbuddy.Data.Enumeration.AppLanguage
@@ -168,7 +169,7 @@ fun Home(
                                     )
                                 }
                                 if( toast ){
-                                    ToastMessage(message = stringResource(id = R.string.delete_complete, it.nombre))
+                                    ToastMessage(LocalContext.current, message = stringResource(id = R.string.delete_complete, it.nombre))
                                     toast = false
                                 }
                             }

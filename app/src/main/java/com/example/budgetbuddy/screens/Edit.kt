@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -302,7 +303,7 @@ fun Edit(
             Text(text = stringResource(id = R.string.edit))
         }
         if(showToast){
-            ToastMessage(message = stringResource(id = R.string.edit_complete, nombre))
+            ToastMessage(LocalContext.current, message = stringResource(id = R.string.edit_complete, nombre))
         }
 
         ErrorAlert(show = showError, mensaje = error_message) { showError = false }
