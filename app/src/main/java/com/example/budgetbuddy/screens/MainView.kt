@@ -114,15 +114,18 @@ fun MainView(
     val factura by appViewModel.facturaActual(fecha, idioma).collectAsState(initial = "")
     val total  by appViewModel.totalGasto(fecha).collectAsState(initial = 0.0)
 
+    /**    Parámetros para el control de los estados de los composables    **/
     var showDownloadError by rememberSaveable { mutableStateOf(false) }
     var showExpansion by rememberSaveable { mutableStateOf(false) }
     var gastoEditable by remember { mutableStateOf(Gasto("", 0.0, fecha, TipoGasto.Otros)) }
 
+    /**    Textos traducidos (no se puede acceder a ellos fuera de composables)   **/
     val factura_init = stringResource(id = R.string.factura_init, fecha.toString())
     val factura_end = stringResource(id = R.string.factura_total, total.toString())
     val tit_notificacion = stringResource(id = R.string.factura_download)
     val desk_notificacion = stringResource(id = R.string.download_description, fecha.toString())
 
+    /**    Funciones parámetro para gestionar las acciones del estado   **/
     val onClose:()->Unit = {showExpansion = false}
 
     Scaffold (

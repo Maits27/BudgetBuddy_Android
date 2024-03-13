@@ -3,6 +3,7 @@ package com.example.budgetbuddy.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +97,8 @@ fun Home(
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(start = 6.dp, end = 6.dp, top=6.dp, bottom = 30.dp)
+                    modifier = Modifier.padding(6.dp),
+                    contentPadding = PaddingValues(bottom = 30.dp)
                 ) {
                     items(gastos) {
                         Card(
