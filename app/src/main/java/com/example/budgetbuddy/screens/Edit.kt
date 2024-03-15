@@ -117,6 +117,7 @@ fun Edit(
         isTextFieldFocused = -1
         fechaTemporal=it
         enabledDate = false
+        changeDate = true
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -244,7 +245,6 @@ fun Edit(
         OutlinedTextField(
             value = if(changeDate){fechaTemporal.toString()}else{fecha.toString()},
             onValueChange = {
-                changeDate = true
                 fechaTemporal = try {
                     LocalDate.parse(it)
                 } catch (e: DateTimeParseException) {

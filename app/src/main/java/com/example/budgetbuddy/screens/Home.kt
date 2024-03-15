@@ -1,6 +1,7 @@
 package com.example.budgetbuddy.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -83,7 +84,7 @@ fun Home(
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
     /**    Parámetros para el control de los estados de los composables    **/
-    var toast by remember { mutableStateOf(false) }
+    var toast by remember { mutableStateOf("") }
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -158,19 +159,20 @@ fun Home(
                                         // Lanzamiento de corrutina:
                                         // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                                         // (Necedario en los métodos de tipo insert, delete y update)
+                                        Log.d("BORRAR GASTO", it.toString())
+                                        toast = it.nombre
                                         coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
-                                        toast = true
                                     }
                                 ) {
                                     Icon(
                                         Icons.Filled.Delete,
-                                        stringResource(id = R.string.add),
+                                        stringResource(id = R.string.delete),
                                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 }
-                                if( toast ){
-                                    ToastMessage(LocalContext.current, message = stringResource(id = R.string.delete_complete, it.nombre))
-                                    toast = false
+                                if( toast != "" ){
+                                    ToastMessage(LocalContext.current, message = stringResource(id = R.string.delete_complete, toast))
+                                    toast = ""
                                 }
                             }
                         }
