@@ -23,6 +23,8 @@ import javax.inject.Singleton
 /*************************************************
  **                  Data Store                 **
  *************************************************/
+
+/**             (Requisito opcional)           **/
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "PREFERENCES_SETTINGS")
 
 @Singleton

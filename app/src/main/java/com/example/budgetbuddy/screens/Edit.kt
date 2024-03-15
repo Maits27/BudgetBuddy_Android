@@ -92,7 +92,6 @@ fun Edit(
      **                 (valor por defecto: initial)                  **
      ******************************************************************/
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
-    Log.d("EDIT", fecha.toString())
 
     /*******************************************************************
      **                     Valores del formulario                    **
@@ -103,7 +102,7 @@ fun Edit(
     var selectedOption by rememberSaveable { mutableStateOf(gasto.tipo) }
     var fechaTemporal by rememberSaveable {mutableStateOf(fecha)}
 
-    /**    Parámetros para el control de los estados de los composables    **/
+    /**    Parámetros para el control de los estados de los composables (Requisito 5)   **/
     var error_message by remember { mutableStateOf("") }
     var isTextFieldFocused by remember { mutableStateOf(-1) }
     var showError by rememberSaveable { mutableStateOf(false) }
@@ -270,6 +269,7 @@ fun Edit(
 
         Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
 
+        /** Botón para guardar los cambios en Room **/
         Button(
             onClick = {
                 // Lanzamiento de corrutina:

@@ -83,7 +83,7 @@ fun Home(
     val fecha by appViewModel.fecha.collectAsState(initial = LocalDate.now())
     val gastos by appViewModel.listadoGastosFecha(fecha).collectAsState(emptyList())
 
-    /**    Parámetros para el control de los estados de los composables    **/
+    /**    Parámetros para el control de los estados de los composables (Requisito 5)   **/
     var toast by remember { mutableStateOf("") }
 
     Column (
@@ -95,6 +95,7 @@ fun Home(
             appViewModel = appViewModel
         )
         when {
+            /** Listado de gastos (cada uno en su elemento Card) dentro de la LazyColumn (Requisito 1) **/
             gastos.isNotEmpty() -> {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,6 +104,7 @@ fun Home(
                     contentPadding = PaddingValues(bottom = 30.dp)
                 ) {
                     items(gastos) {
+                        /** Elementos Card **/
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -124,6 +126,7 @@ fun Home(
                                     Text(text = stringResource(id = R.string.cantidad, it.cantidad))
                                     Text(text = stringResource(id = R.string.tipo, obtenerTipoEnIdioma(it.tipo, idioma.code)))
                                 }
+                                /** Botones de edición y borrado **/
                                 Button(
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors(
@@ -159,7 +162,6 @@ fun Home(
                                         // Lanzamiento de corrutina:
                                         // En caso de bloqueo o congelado de la base de datos, para que no afecte al uso normal y fluido de la aplicación.
                                         // (Necedario en los métodos de tipo insert, delete y update)
-                                        Log.d("BORRAR GASTO", it.toString())
                                         toast = it.nombre
                                         coroutineScope.launch(Dispatchers.IO) {appViewModel.borrarGasto(it)}
                                     }

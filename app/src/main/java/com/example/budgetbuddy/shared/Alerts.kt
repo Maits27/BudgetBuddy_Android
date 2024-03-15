@@ -31,7 +31,7 @@ import com.example.budgetbuddy.R
  **    Diálogos de la aplicación   **
  ************************************/
 
-// Aquí se implementan todos los diálogos (o AlertDialog) de la aplicación.
+// Aquí se implementan todos los diálogos (o AlertDialog) de la aplicación. (Requisito 3)
 
 /**
  * Diálogos de la barra superior del Scaffold:
@@ -207,7 +207,6 @@ fun Temas(
  */
 @Composable
 fun ErrorAlert(show: Boolean, mensaje: String, onConfirm: () -> Unit) {
-    Log.d("DOWNLOAD ERROR", "ERROR ALERT: $show")
     if(show){
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.background,

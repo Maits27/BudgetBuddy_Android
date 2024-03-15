@@ -63,7 +63,6 @@ fun Header(
     val onCalendarConfirm: (LocalDate) -> Unit = {
         showCalendar = false
         appViewModel.cambiarFecha(it)
-        Log.d("CAMBIAR FECHA COMUNES", it.toString())
     }
     Text(
         text = titulo,

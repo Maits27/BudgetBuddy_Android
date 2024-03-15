@@ -16,7 +16,7 @@ import com.example.budgetbuddy.R
 // Además, se implementan los intent implícitos para interactuar con otras aplicaciones del teléfono.
 
 /**
- * Notificación de aviso de descarga, informando de la localización del archivo.
+ * Notificación de aviso de descarga, informando de la localización del archivo (Requisito 4).
  */
 fun downloadNotification(
     context: Context,
@@ -48,6 +48,8 @@ fun downloadNotification(
  * También se encarga, en caso de envio por email, de preparar
  * una estructura predefinida para este con los parámetros de
  * [asunto] y [contenido].
+ *
+ * (Requisito opcional)
  */
 
 fun compartirContenido(

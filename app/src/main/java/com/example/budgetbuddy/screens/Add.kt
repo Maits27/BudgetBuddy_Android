@@ -93,7 +93,7 @@ fun Add(
     var selectedOption by rememberSaveable { mutableStateOf(TipoGasto.Otros) }
     var nombre by rememberSaveable { mutableStateOf("") }
 
-    /**    Parámetros para el control de los estados de los composables    **/
+    /**    Parámetros para el control de los estados de los composables (Requisito 5)   **/
     var error_message by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
     var enabledDate by remember { mutableStateOf(true) }
@@ -259,6 +259,7 @@ fun Add(
 
         Calendario(show = (isTextFieldFocused == 2), onCalendarConfirm)
 
+        /** Botón para añadir elemento en Room **/
         Button(
             onClick = {
                 // Lanzamiento de corrutina:
